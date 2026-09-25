@@ -1,101 +1,74 @@
-# WardFrontend
+# Ward Monitor
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A real-time nurse station for a hospital ward — the running example for the Angular workshop
+*From bootstrapApplication to Resource-Driven Routing*. Angular 22.2 (standalone, zoneless, signals,
+router resources) on STOMP over WebSockets with `@stomp/rx-stomp`.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+> All patients, readings and thresholds are fictional and illustrative, not clinical.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
-
-## Run tasks
-
-To run the dev server for your app, use:
+## Run it
 
 ```sh
-npx nx serve ward
+pnpm install
+pnpm start                  # http://localhost:4200
 ```
 
-To create a production bundle:
+- **Without a backend:** open <http://localhost:4200/ward?mock>. `?mock` swaps the whole messaging
+  layer (and PDF downloads) for an in-memory ward. It is remembered for the tab; `?mock=0` switches back.
+- **With the backend:** start [ward-worker](https://github.com/Dyqmin/ward-worker) (`npx wrangler dev`,
+  port 8787) and open <http://localhost:4200>. The app talks to `http(s)://<page host>:8787`, so the
+  same build works for phones on the workshop LAN (add the origin to `ALLOWED_ORIGINS`).
 
-```sh
-npx nx build ward
-```
+| Command | What it does |
+| --- | --- |
+| `pnpm start` | dev server (`nx serve ward`) |
+| `pnpm test` | Vitest unit tests (`nx test ward`) |
+| `pnpm lint` | ESLint (`nx lint ward`) |
+| `pnpm build` | production build (`nx build ward`) |
 
-To see all available targets to run for a project, run:
+## Screens
 
-```sh
-npx nx show project ward
-```
+| URL | Who | What |
+| --- | --- | --- |
+| `/login` | everyone | join as nurse or doctor, shared room or private sandbox |
+| `/ward` | nurse | **Nurse station**: 18 live beds, active alarms with acknowledge/snooze, stale-data warnings |
+| `/ward` | doctor | **Ward rounds**: escalations first, same tiles, entry to the medication wizard |
+| `/ward/icu-3` | both | **Bed detail**: patient record (blocking), 10-min vitals snapshot then live stream, alarms, medication, temperatures |
+| `/ward/icu-3/meds/new/…` | doctor | **Medication order wizard**: patient → drug and dose → review |
+| `/ward/icu-3/temperature` | nurse | **Record temperature** (the lab) |
+| `/reports/lab/icu-3` | both | PDF download with progress (`discharge` is served in mock mode only) |
+| `/monitor/icu-3` | phones | **Monitor simulator** for the room game: a heart-rate slider for one bed |
+| `/forbidden` | — | where the wrong role lands |
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+In mock mode a **Dev** toolbar (bottom left) switches role, simulates an 8 s outage, and shows every
+request the fake broker received with its `commandId`.
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Where each act lives
 
-## Add new projects
+| Act | Files |
+| --- | --- |
+| Day 1 contract | `shared/contract.ts` (copied **unchanged** from ward-worker), `core/messaging/contract.ts` (`MessageBus`, `FRAME_GUARDS`, `parseFrame`, `MockFixtures`, `link()`) |
+| 1 – bootstrapApplication | `main.ts`, `app.config.ts`, `ward/ui/bed-tile.ts` |
+| 2 – providers | `core/http/reports.ts` + `reports/reports.routes.ts` (own `HttpClient`, `withRequestsMadeViaParent`), `@Service()` everywhere, `ward/med-order/med-order-draft-store.ts` (`autoProvided: false`, route-level) |
+| 3 – your own `provideX()` | `core/providers/skeleton.ts`, `core/providers/seo.ts`, `core/messaging/provide-stomp.ts`, `stomp-message-bus.ts`, `fake-message-bus.ts`, `testing/ward-fixtures.ts` |
+| 4 – hospital Wi-Fi | `core/http/interceptors.ts`, `withAuthToken()` / `withExponentialReconnect()` / `withErrorLogging()`, `ward/ui/bed-tile.ts` (stale data), `core/messaging/command-retry.ts`, `ward/ui/alarm-actions.ts` |
+| 5 – routing | `app.routes.ts`, `ward/ward.routes.ts`, `ward/guards.ts`, `ward/med-order/guards.ts`, `core/auth/guards.ts` (`canMatch` by role), `core/providers/wifi-aware-preloading.ts` |
+| 6 – router resources | `ward/bed-detail/bed-resources.ts`, `snapshot-then-stream.ts`, `bed-detail.ts`, `core/navigation-errors.ts` |
+| Lab | `ward/temperature/temperature-form.ts`, the `vitals.record` fixture, `ward/temperature/record-temperature.spec.ts` |
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
+The lab was built in four commits (`feat(lab): step 1` … `step 4`), handy as checkpoint branches.
 
-Use the plugin's generator to create new projects.
+## Notes for the instructor
 
-To generate a new application, use:
-
-```sh
-npx nx g @nx/angular:app demo
-```
-
-To generate a new library, use:
-
-```sh
-npx nx g @nx/angular:lib mylib
-```
-
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- **Resource loaders and `RedirectCommand`.** A resource wraps a thrown `RedirectCommand` in an
+  `Error` (`cause`), so the router sees a navigation error, not a redirect. `handleNavigationError`
+  (registered with `withNavigationErrorHandler`) unwraps it — that is what sends `/ward/icu-6` to
+  `/ward?empty=ICU-6`.
+- **Blocking resources arrive after construction.** They are bound to inputs by a router effect, so
+  don't read them in constructor-time `toObservable()` (NG0950); read route params instead.
+- **Download progress** still uses `reportProgress: true` in 22.2 (with the default fetch backend).
+- **Alarm endings are silent** unless the instructor enables `emitResolved`; the app re-fetches the
+  alarm snapshot on every reconnect and every 30 s. Handling `{ status: 'resolved' }` is an exercise.
+- **The mock ward lives in one tab.** Two browser windows in `?mock` don't share alarms; use the real
+  backend for the multi-nurse room game.
+- Lab stretch goal left open: replace the last `as` in `StompMessageBus.request()` with `RPC_GUARDS`.
