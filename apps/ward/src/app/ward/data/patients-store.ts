@@ -3,7 +3,12 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { EMPTY, catchError, filter, forkJoin, map, switchMap } from 'rxjs';
 
 import { Logger } from '@core/logger';
-import { ALL_BEDS, MessageBus, type BedId, type Patient } from '@core/messaging/contract';
+import {
+  ALL_BEDS,
+  MessageBus,
+  type BedId,
+  type Patient,
+} from '@core/messaging/contract';
 
 /**
  * Who lies in which bed, for the overview screens. Loaded once per (re)connect: an instructor
@@ -19,8 +24,13 @@ export class PatientsStore {
     toObservable(this.bus.connected).pipe(
       filter(Boolean),
       switchMap(() =>
-        forkJoin(ALL_BEDS.map((bed) => this.bus.request('/app/patients.get', { bed }))).pipe(
-          map((patients): ReadonlyMap<BedId, Patient | null> => new Map(ALL_BEDS.map((bed, i) => [bed, patients[i] ?? null]))),
+        forkJoin(
+          ALL_BEDS.map((bed) => this.bus.request('/app/patients.get', { bed })),
+        ).pipe(
+          map(
+            (patients): ReadonlyMap<BedId, Patient | null> =>
+              new Map(ALL_BEDS.map((bed, i) => [bed, patients[i] ?? null])),
+          ),
           catchError((e) => {
             this.logger.warn('Loading patients failed', e);
             return EMPTY;

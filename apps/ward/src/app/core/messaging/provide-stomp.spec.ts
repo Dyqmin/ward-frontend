@@ -19,7 +19,10 @@ describe('provideStomp(…, withMockBroker())', () => {
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
-        provideStomp({ brokerURL: 'ws://unused/rooms/{room}/ws' }, withMockBroker(createWardFixtures(ward))),
+        provideStomp(
+          { brokerURL: 'ws://unused/rooms/{room}/ws' },
+          withMockBroker(createWardFixtures(ward)),
+        ),
       ],
     });
     await TestBed.inject(AuthStore).join('Ann', 'nurse', 'ward-demo');
@@ -30,15 +33,23 @@ describe('provideStomp(…, withMockBroker())', () => {
 
   it('gives the app the fake broker, typed by the contract', async () => {
     expect(bus).toBeInstanceOf(FakeMessageBus);
-    const reply = firstValueFrom(bus.request('/app/patients.get', { bed: 'ICU-3' }));
+    const reply = firstValueFrom(
+      bus.request('/app/patients.get', { bed: 'ICU-3' }),
+    );
     await vi.advanceTimersByTimeAsync(300);
     expect((await reply)?.bed).toBe('ICU-3');
   });
 
   it('streams vitals once per second while connected', async () => {
-    const frames = firstValueFrom(bus.watch('/topic/vitals.ICU-1').pipe(take(3), toArray()));
+    const frames = firstValueFrom(
+      bus.watch('/topic/vitals.ICU-1').pipe(take(3), toArray()),
+    );
     await vi.advanceTimersByTimeAsync(3_000);
-    expect((await frames).map((f) => f.bed)).toEqual(['ICU-1', 'ICU-1', 'ICU-1']);
+    expect((await frames).map((f) => f.bed)).toEqual([
+      'ICU-1',
+      'ICU-1',
+      'ICU-1',
+    ]);
   });
 
   it('never gives a second dose: a repeated commandId returns the stored result', async () => {
@@ -63,21 +74,35 @@ describe('provideStomp(…, withMockBroker())', () => {
     bus.simulateOutage(2_000);
     expect(bus.connected()).toBe(false);
 
-    const result = firstValueFrom(bus.send('/app/medication.given', { id: orderId }).pipe(retry({ count: 5, delay: 800 })));
+    const result = firstValueFrom(
+      bus
+        .send('/app/medication.given', { id: orderId })
+        .pipe(retry({ count: 5, delay: 800 })),
+    );
     await vi.advanceTimersByTimeAsync(4_000);
 
     expect(await result).toEqual({ status: 'accepted', value: null });
     const attempts = bus.log();
-    expect(attempts.filter((e) => e.outcome === 'offline').length).toBeGreaterThanOrEqual(2);
+    expect(
+      attempts.filter((e) => e.outcome === 'offline').length,
+    ).toBeGreaterThanOrEqual(2);
     expect(attempts.filter((e) => e.outcome === 'handled')).toHaveLength(1);
     expect(new Set(attempts.map((e) => e.commandId)).size).toBe(1);
   });
 
   it('lets the fixture refuse commands from the wrong role', async () => {
     const reply = firstValueFrom(
-      bus.send('/app/medication.order', { patientId: 'pat_icu1', drug: 'Paracetamol', doseMg: 500, route: 'oral' }),
+      bus.send('/app/medication.order', {
+        patientId: 'pat_icu1',
+        drug: 'Paracetamol',
+        doseMg: 500,
+        route: 'oral',
+      }),
     );
     await vi.advanceTimersByTimeAsync(300);
-    expect(await reply).toEqual({ status: 'forbidden', reason: 'Only doctors can order medication' });
+    expect(await reply).toEqual({
+      status: 'forbidden',
+      reason: 'Only doctors can order medication',
+    });
   });
 });

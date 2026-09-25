@@ -49,5 +49,7 @@ export class VitalValue {
   readonly value = input.required<number>();
   readonly unit = input('');
   readonly stale = input(false);
-  protected readonly out = computed(() => isOutOfRange(this.vital(), this.value()));
+  protected readonly out = computed(() =>
+    isOutOfRange(this.vital(), this.value()),
+  );
 }

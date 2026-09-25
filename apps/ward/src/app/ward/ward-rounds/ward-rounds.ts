@@ -22,7 +22,10 @@ import { alarmsByBed } from '../ui/format';
         @for (a of escalated(); track a.event.alarmId) {
           <app-alarm-actions [alarm]="a" />
         } @empty {
-          <p class="muted">Nothing escalated. Nurses acknowledge alarms within 20 s, or they come here.</p>
+          <p class="muted">
+            Nothing escalated. Nurses acknowledge alarms within 20 s, or they
+            come here.
+          </p>
         }
       </section>
 
@@ -32,9 +35,17 @@ import { alarmsByBed } from '../ui/format';
           @for (bed of bedsOf(w); track bed) {
             @let patient = patients.patient(bed);
             <div class="slot">
-              <app-bed-tile [bed]="bed" [patient]="patient" [alarms]="alarmsFor()(bed)" />
+              <app-bed-tile
+                [bed]="bed"
+                [patient]="patient"
+                [alarms]="alarmsFor()(bed)"
+              />
               @if (patient) {
-                <a class="button small" [routerLink]="['/ward', slug(bed), 'meds', 'new']">Order medication</a>
+                <a
+                  class="button small"
+                  [routerLink]="['/ward', slug(bed), 'meds', 'new']"
+                  >Order medication</a
+                >
               }
             </div>
           }
@@ -65,10 +76,14 @@ import { alarmsByBed } from '../ui/format';
 })
 export default class WardRounds {
   protected readonly patients = inject(PatientsStore);
-  private readonly alarms = toSignal(inject(AlarmsStore).all$(), { initialValue: [] });
+  private readonly alarms = toSignal(inject(AlarmsStore).all$(), {
+    initialValue: [],
+  });
 
   protected readonly wards = WARDS;
-  protected readonly escalated = computed(() => this.alarms().filter((a) => a.event.status === 'escalated'));
+  protected readonly escalated = computed(() =>
+    this.alarms().filter((a) => a.event.status === 'escalated'),
+  );
   protected readonly bedsOf = bedsOf;
   protected readonly slug = toSlug;
   protected readonly alarmsFor = computed(() => alarmsByBed(this.alarms()));

@@ -28,7 +28,11 @@ type AnyPayload = StreamContract[StreamName]['payload'];
 export const RPC_TIMEOUT_MS = 8_000;
 
 const toConnectionState = (s: RxStompState): ConnectionState =>
-  s === RxStompState.OPEN ? 'open' : s === RxStompState.CONNECTING ? 'connecting' : 'closed';
+  s === RxStompState.OPEN
+    ? 'open'
+    : s === RxStompState.CONNECTING
+      ? 'connecting'
+      : 'closed';
 
 /** The real broker, via @stomp/rx-stomp. Created only when STOMP_MODE is 'real'. */
 export class StompMessageBus extends MessageBus {
@@ -37,23 +41,38 @@ export class StompMessageBus extends MessageBus {
   private readonly logger = inject(Logger);
   private readonly locale = inject(LOCALE_ID);
 
-  readonly state = toSignal(this.stomp.connectionState$.pipe(map(toConnectionState)), {
-    initialValue: 'closed' as ConnectionState,
-  });
+  readonly state = toSignal(
+    this.stomp.connectionState$.pipe(map(toConnectionState)),
+    {
+      initialValue: 'closed' as ConnectionState,
+    },
+  );
 
   /** rx-stomp re-subscribes every watch() after a reconnect, so callers never re-subscribe by hand. */
   watch<D extends StreamDestination>(destination: D): Observable<PayloadOf<D>> {
-    const guard: (x: unknown) => x is AnyPayload = FRAME_GUARDS[streamNameOf(destination)];
-    return this.stomp.watch({ destination }).pipe(
-      mergeMap((m) => this.parseOrDrop(destination, () => parseFrame(m.body, guard) as PayloadOf<D>)),
-    );
+    const guard: (x: unknown) => x is AnyPayload =
+      FRAME_GUARDS[streamNameOf(destination)];
+    return this.stomp
+      .watch({ destination })
+      .pipe(
+        mergeMap((m) =>
+          this.parseOrDrop(
+            destination,
+            () => parseFrame(m.body, guard) as PayloadOf<D>,
+          ),
+        ),
+      );
   }
 
   notices(participant: ParticipantId): Observable<GameNotice> {
     const destination = `/queue/game.${participant}`;
     return this.stomp
       .watch({ destination })
-      .pipe(mergeMap((m) => this.parseOrDrop(destination, () => parseFrame(m.body, isGameNotice))));
+      .pipe(
+        mergeMap((m) =>
+          this.parseOrDrop(destination, () => parseFrame(m.body, isGameNotice)),
+        ),
+      );
   }
 
   request<K extends WardRpcName>(
@@ -65,7 +84,10 @@ export class StompMessageBus extends MessageBus {
         destination,
         body: JSON.stringify(body),
         // the STOMP twin of localeInterceptor: every frame says which language the nurse reads
-        headers: { 'content-type': 'application/json', 'accept-language': this.locale },
+        headers: {
+          'content-type': 'application/json',
+          'accept-language': this.locale,
+        },
       })
       .pipe(
         timeout(RPC_TIMEOUT_MS),

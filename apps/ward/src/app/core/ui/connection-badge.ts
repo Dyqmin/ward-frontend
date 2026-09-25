@@ -50,7 +50,10 @@ export class ConnectionBadge {
   protected readonly bus = inject(MessageBus);
   protected readonly mock = inject(STOMP_MODE) === 'mock';
   /** When the current state began. */
-  private readonly since = linkedSignal({ source: this.bus.state, computation: () => new Date() });
+  private readonly since = linkedSignal({
+    source: this.bus.state,
+    computation: () => new Date(),
+  });
 
   protected readonly text = computed(() => {
     const since = this.since().toLocaleTimeString();

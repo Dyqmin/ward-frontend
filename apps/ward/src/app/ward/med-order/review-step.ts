@@ -29,12 +29,21 @@ import { MedOrderDraftStore } from './med-order-draft-store';
       <p class="error-text">{{ e }}</p>
     }
     <div class="row nav">
-      <button type="button" [disabled]="pending()" (click)="back()">Back</button>
+      <button type="button" [disabled]="pending()" (click)="back()">
+        Back
+      </button>
       <span class="spacer"></span>
       @if (pending()) {
         <span class="chip warn">pending sync…</span>
       }
-      <button type="button" class="primary" [disabled]="pending() || !store.complete()" (click)="submit()">Order medication</button>
+      <button
+        type="button"
+        class="primary"
+        [disabled]="pending() || !store.complete()"
+        (click)="submit()"
+      >
+        Order medication
+      </button>
     </div>
   `,
   styles: `
@@ -66,11 +75,16 @@ export default class ReviewStep {
   protected readonly error = signal<string | null>(null);
   protected readonly patientName = computed(() => {
     const id = this.store.draft().patientId;
-    return [...(this.patients.byBed()?.values() ?? [])].find((p) => p?.id === id)?.name ?? '';
+    return (
+      [...(this.patients.byBed()?.values() ?? [])].find((p) => p?.id === id)
+        ?.name ?? ''
+    );
   });
 
   protected back(): void {
-    void this.router.navigateByUrl('/' + link('ward/:bed/meds/new/:step', { bed: this.bed(), step: 'drug' }));
+    void this.router.navigateByUrl(
+      '/' + link('ward/:bed/meds/new/:step', { bed: this.bed(), step: 'drug' }),
+    );
   }
 
   protected submit(): void {
@@ -90,7 +104,9 @@ export default class ReviewStep {
             case 'accepted':
               this.store.markSaved(); // lets unsavedDraftGuard pass
               this.toasts.show(`Order ${r.value.id} placed`, 'success');
-              void this.router.navigateByUrl('/' + link('ward/:bed', { bed: this.bed() }));
+              void this.router.navigateByUrl(
+                '/' + link('ward/:bed', { bed: this.bed() }),
+              );
               return;
             case 'conflict':
               return this.error.set(`Conflicts with ${who(r.by)}`);
@@ -100,7 +116,10 @@ export default class ReviewStep {
               return assertNever(r);
           }
         },
-        error: () => this.error.set('Broker unreachable — the order was not placed. Try again.'),
+        error: () =>
+          this.error.set(
+            'Broker unreachable — the order was not placed. Try again.',
+          ),
       });
   }
 }

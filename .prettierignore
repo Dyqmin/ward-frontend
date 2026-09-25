@@ -5,3 +5,6 @@
 /.nx/workspace-data
 pnpm-lock.yaml
 .angular
+
+# copied unchanged from ward-worker (src/shared)
+apps/ward/src/app/shared

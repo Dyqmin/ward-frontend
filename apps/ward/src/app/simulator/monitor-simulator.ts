@@ -1,10 +1,28 @@
-import { Component, computed, effect, inject, input, linkedSignal } from '@angular/core';
-import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  linkedSignal,
+} from '@angular/core';
+import {
+  rxResource,
+  takeUntilDestroyed,
+  toSignal,
+} from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { EMPTY, Subject, map, of, switchMap, throttleTime } from 'rxjs';
 
 import { AuthStore } from '@core/auth/auth-store';
-import { ALL_BEDS, MessageBus, bedFromSlug, isOutOfRange, toSlug, type BedId } from '@core/messaging/contract';
+import {
+  ALL_BEDS,
+  MessageBus,
+  bedFromSlug,
+  isOutOfRange,
+  toSlug,
+  type BedId,
+} from '@core/messaging/contract';
 import { STOMP_MODE } from '@core/messaging/stomp-mode';
 import { ConnectionBadge } from '@core/ui/connection-badge';
 
@@ -31,16 +49,28 @@ import { ConnectionBadge } from '@core/ui/connection-badge';
         </div>
 
         <label class="slider">
-          <span>Heart rate: <strong>{{ target() }}</strong> bpm</span>
-          <input type="range" min="30" max="200" [value]="target()" (input)="move($event)" />
+          <span
+            >Heart rate: <strong>{{ target() }}</strong> bpm</span
+          >
+          <input
+            type="range"
+            min="30"
+            max="200"
+            [value]="target()"
+            (input)="move($event)"
+          />
         </label>
-        <p class="muted">Push it past 130 and an alarm fires on the nurse station.</p>
+        <p class="muted">
+          Push it past 130 and an alarm fires on the nurse station.
+        </p>
         @if (refusal(); as r) {
           <p class="error-text">{{ r }}</p>
         }
       } @else {
         <h1>Waiting…</h1>
-        <p class="muted">The instructor will make your phone the monitor for one bed.</p>
+        <p class="muted">
+          The instructor will make your phone the monitor for one bed.
+        </p>
       }
 
       @if (mock) {
@@ -49,7 +79,9 @@ import { ConnectionBadge } from '@core/ui/connection-badge';
           <select (change)="pick($event)">
             <option value="" [selected]="!monitored()">–</option>
             @for (b of beds; track b) {
-              <option [value]="b" [selected]="monitored() === b">{{ b }}</option>
+              <option [value]="b" [selected]="monitored() === b">
+                {{ b }}
+              </option>
             }
           </select>
         </label>
@@ -118,14 +150,22 @@ export default class MonitorSimulator {
     return bedFromSlug(this.bed() ?? '');
   });
 
-  protected readonly target = linkedSignal({ source: this.monitored, computation: () => 72 });
-  protected readonly refusal = linkedSignal<BedId | null, string | null>({ source: this.monitored, computation: () => null });
+  protected readonly target = linkedSignal({
+    source: this.monitored,
+    computation: () => 72,
+  });
+  protected readonly refusal = linkedSignal<BedId | null, string | null>({
+    source: this.monitored,
+    computation: () => null,
+  });
 
   private readonly vitals = rxResource({
     params: () => this.monitored() ?? undefined,
     stream: ({ params: bed }) => this.bus.watch(`/topic/vitals.${bed}`),
   });
-  protected readonly liveHr = computed(() => (this.vitals.hasValue() ? this.vitals.value()?.hr : undefined));
+  protected readonly liveHr = computed(() =>
+    this.vitals.hasValue() ? this.vitals.value()?.hr : undefined,
+  );
   protected readonly alarming = computed(() => {
     const hr = this.liveHr();
     return hr !== undefined && isOutOfRange('hr', hr);
@@ -140,17 +180,25 @@ export default class MonitorSimulator {
         throttleTime(250, undefined, { leading: true, trailing: true }),
         switchMap((hr) => {
           const bed = this.monitored();
-          return bed ? this.bus.send('/app/monitor.set', { bed, hr }) : of(null);
+          return bed
+            ? this.bus.send('/app/monitor.set', { bed, hr })
+            : of(null);
         }),
         map((r) => (r && r.status === 'forbidden' ? r.reason : null)),
         takeUntilDestroyed(),
       )
-      .subscribe({ next: (reason) => this.refusal.set(reason), error: () => this.refusal.set('Broker unreachable') });
+      .subscribe({
+        next: (reason) => this.refusal.set(reason),
+        error: () => this.refusal.set('Broker unreachable'),
+      });
 
     // keep the URL in step with the assigned bed, so a reload lands on the same monitor
     effect(() => {
       const bed = this.monitored();
-      if (bed && bedFromSlug(this.bed() ?? '') !== bed) void this.router.navigate(['/monitor', toSlug(bed)], { replaceUrl: true });
+      if (bed && bedFromSlug(this.bed() ?? '') !== bed)
+        void this.router.navigate(['/monitor', toSlug(bed)], {
+          replaceUrl: true,
+        });
     });
   }
 

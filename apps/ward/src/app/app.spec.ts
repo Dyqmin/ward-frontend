@@ -11,7 +11,11 @@ describe('App', () => {
     sessionStorage.clear();
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter([]), provideHttpClient(), provideStomp({}, withMockBroker())],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideStomp({}, withMockBroker()),
+      ],
     }).compileComponents();
   });
 
@@ -21,7 +25,9 @@ describe('App', () => {
     await fixture.whenStable();
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('.brand')?.textContent).toContain('Ward Monitor');
-    expect(el.querySelector('app-connection-badge')?.textContent).toContain('MOCK');
+    expect(el.querySelector('app-connection-badge')?.textContent).toContain(
+      'MOCK',
+    );
     expect(el.textContent).toContain('Ann · nurse');
   });
 });

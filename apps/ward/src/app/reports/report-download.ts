@@ -13,7 +13,9 @@ import { bedFromSlug } from '@core/messaging/contract';
     <section class="page narrow">
       <a class="back" [routerLink]="['/ward', bed()]">← {{ bedId() }}</a>
       <h1>{{ label() }} · {{ bedId() }}</h1>
-      <p class="muted">A fictional PDF, streamed in chunks so the download progress is visible.</p>
+      <p class="muted">
+        A fictional PDF, streamed in chunks so the download progress is visible.
+      </p>
 
       <div class="card stack">
         <progress [value]="progress()" max="1"></progress>
@@ -23,7 +25,9 @@ import { bedFromSlug } from '@core/messaging/contract';
           @if (busy()) {
             <button type="button" (click)="cancel()">Cancel</button>
           } @else {
-            <button type="button" class="primary" (click)="download()">Download PDF</button>
+            <button type="button" class="primary" (click)="download()">
+              Download PDF
+            </button>
           }
         </div>
         @if (error(); as e) {
@@ -57,10 +61,16 @@ export default class ReportDownload {
   private readonly reports = inject(Reports); // from the reports route injector
   private sub: Subscription | null = null;
 
-  protected readonly bedId = computed(() => bedFromSlug(this.bed()) ?? this.bed());
-  protected readonly label = computed(() => (this.kind() === 'lab' ? 'Lab report' : 'Discharge summary'));
+  protected readonly bedId = computed(
+    () => bedFromSlug(this.bed()) ?? this.bed(),
+  );
+  protected readonly label = computed(() =>
+    this.kind() === 'lab' ? 'Lab report' : 'Discharge summary',
+  );
   protected readonly progress = signal(0);
-  protected readonly percent = computed(() => Math.round(this.progress() * 100));
+  protected readonly percent = computed(() =>
+    Math.round(this.progress() * 100),
+  );
   protected readonly busy = signal(false);
   protected readonly error = signal<string | null>(null);
 

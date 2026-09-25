@@ -12,7 +12,11 @@ export function provideSkeletonConfig(): EnvironmentProviders {
       provide: NGX_SKELETON_LOADER_CONFIG,
       useFactory: () => ({
         animation: 'progress-dark',
-        theme: { backgroundColor: 'var(--card-2)', height: '1.1rem', marginBottom: '0.35rem' },
+        theme: {
+          backgroundColor: 'var(--card-2)',
+          height: '1.1rem',
+          marginBottom: '0.35rem',
+        },
       }),
     },
   ]);

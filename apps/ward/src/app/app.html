@@ -1,23 +1,22 @@
 @if (auth.signedIn() && !bare()) {
-  <header class="shell">
-    <a class="brand" routerLink="/ward">
-      <span class="logo" aria-hidden="true">✚</span>
-      Ward Monitor
-    </a>
-    <nav class="row">
-      <a routerLink="/ward" routerLinkActive="active">Ward</a>
-      <a routerLink="/monitor" routerLinkActive="active">Monitor simulator</a>
-    </nav>
-    <span class="spacer"></span>
-    <app-connection-badge />
-    <span class="user" [title]="auth.participantId() ?? ''">
-      {{ displayName() }}
-      @if (auth.session()?.useSandbox) {
-        <span class="chip">sandbox</span>
-      }
-    </span>
-    <button type="button" class="small" (click)="logout()">Sign out</button>
-  </header>
+<header class="shell">
+  <a class="brand" routerLink="/ward">
+    <span class="logo" aria-hidden="true">✚</span>
+    Ward Monitor
+  </a>
+  <nav class="row">
+    <a routerLink="/ward" routerLinkActive="active">Ward</a>
+    <a routerLink="/monitor" routerLinkActive="active">Monitor simulator</a>
+  </nav>
+  <span class="spacer"></span>
+  <app-connection-badge />
+  <span class="user" [title]="auth.participantId() ?? ''">
+    {{ displayName() }} @if (auth.session()?.useSandbox) {
+    <span class="chip">sandbox</span>
+    }
+  </span>
+  <button type="button" class="small" (click)="logout()">Sign out</button>
+</header>
 }
 
 <main>
@@ -25,7 +24,7 @@
 </main>
 
 @if (mock && auth.signedIn() && !bare()) {
-  <app-dev-toolbar />
+<app-dev-toolbar />
 }
 
 <app-toast-outlet />

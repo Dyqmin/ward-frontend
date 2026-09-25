@@ -12,7 +12,9 @@ import { AuthStore } from './auth-store';
 export const authGuard: CanMatchFn = (_route, segments) =>
   inject(AuthStore).signedIn() ||
   new RedirectCommand(
-    inject(Router).createUrlTree(['/login'], { queryParams: { returnUrl: '/' + segments.map((s) => s.path).join('/') } }),
+    inject(Router).createUrlTree(['/login'], {
+      queryParams: { returnUrl: '/' + segments.map((s) => s.path).join('/') },
+    }),
   );
 
 /**

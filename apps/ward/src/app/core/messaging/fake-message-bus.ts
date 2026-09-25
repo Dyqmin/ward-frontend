@@ -1,5 +1,19 @@
 import { InjectionToken, computed, inject, signal } from '@angular/core';
-import { EMPTY, Observable, Subject, defer, delay, filter, interval, map, merge, of, share, throwError, timer } from 'rxjs';
+import {
+  EMPTY,
+  Observable,
+  Subject,
+  defer,
+  delay,
+  filter,
+  interval,
+  map,
+  merge,
+  of,
+  share,
+  throwError,
+  timer,
+} from 'rxjs';
 
 import { createWardFixtures } from '../../testing/ward-fixtures';
 import { AuthStore } from '../auth/auth-store';
@@ -34,7 +48,10 @@ export interface FakeLogEntry {
   outcome: FakeOutcome;
 }
 
-type Reply<K extends WardRpcName> = (req: WardRpcContract[K]['req'], ctx: MockContext) => WardRpcContract[K]['res'];
+type Reply<K extends WardRpcName> = (
+  req: WardRpcContract[K]['req'],
+  ctx: MockContext,
+) => WardRpcContract[K]['res'];
 
 /**
  * The in-memory ward. Same API as the real broker, no socket. Used by `?mock`, the lab and unit tests.
@@ -44,13 +61,21 @@ type Reply<K extends WardRpcName> = (req: WardRpcContract[K]['req'], ctx: MockCo
 export class FakeMessageBus extends MessageBus {
   private readonly fixtures = inject(MOCK_FIXTURES);
   private readonly auth = inject(AuthStore);
-  private readonly pushed = new Subject<{ destination: StreamDestination; payload: unknown }>();
-  private readonly pushedNotices = new Subject<{ to: ParticipantId; notice: GameNotice }>();
+  private readonly pushed = new Subject<{
+    destination: StreamDestination;
+    payload: unknown;
+  }>();
+  private readonly pushedNotices = new Subject<{
+    to: ParticipantId;
+    notice: GameNotice;
+  }>();
   private readonly handled = new Map<string, unknown>(); // commandId → first reply
   private readonly online = signal(true);
   private readonly _log = signal<readonly FakeLogEntry[]>([]);
 
-  readonly state = computed<ConnectionState>(() => (this.online() ? 'open' : 'closed'));
+  readonly state = computed<ConnectionState>(() =>
+    this.online() ? 'open' : 'closed',
+  );
   /** Every request the fake broker received (including refused attempts), newest last. */
   readonly log = this._log.asReadonly();
 
@@ -92,7 +117,9 @@ export class FakeMessageBus extends MessageBus {
     return defer(() => {
       if (!this.online()) {
         this.record(destination, id, 'offline');
-        return throwError(() => new Error('Broker unreachable (simulated outage)'));
+        return throwError(
+          () => new Error('Broker unreachable (simulated outage)'),
+        );
       }
       if (id && this.handled.has(id)) {
         this.record(destination, id, 'duplicate');
@@ -110,7 +137,10 @@ export class FakeMessageBus extends MessageBus {
   }
 
   /** Push a frame to every subscriber of a topic, as the server would. */
-  emit<D extends StreamDestination>(destination: D, payload: PayloadOf<D>): void {
+  emit<D extends StreamDestination>(
+    destination: D,
+    payload: PayloadOf<D>,
+  ): void {
     this.pushed.next({ destination, payload });
   }
 
@@ -130,14 +160,22 @@ export class FakeMessageBus extends MessageBus {
 
   private context(): MockContext {
     return {
-      emit: (destination, payload) => queueMicrotask(() => this.emit(destination, payload)),
+      emit: (destination, payload) =>
+        queueMicrotask(() => this.emit(destination, payload)),
       actor: this.auth.participantId(),
       now: Date.now(),
     };
   }
 
-  private record(destination: string, commandId: string | null, outcome: FakeOutcome): void {
-    this._log.update((all) => [...all.slice(-49), { at: Date.now(), destination, commandId, outcome }]);
+  private record(
+    destination: string,
+    commandId: string | null,
+    outcome: FakeOutcome,
+  ): void {
+    this._log.update((all) => [
+      ...all.slice(-49),
+      { at: Date.now(), destination, commandId, outcome },
+    ]);
   }
 }
 

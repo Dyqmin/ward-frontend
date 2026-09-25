@@ -1,5 +1,8 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import {
   provideRouter,
   withAutoCleanupInjectors,
@@ -18,7 +21,12 @@ import {
   retryInterceptor,
 } from '@core/http/interceptors';
 import { handleNavigationError } from '@core/navigation-errors';
-import { provideStomp, withAuthToken, withErrorLogging, withExponentialReconnect } from '@core/messaging/provide-stomp';
+import {
+  provideStomp,
+  withAuthToken,
+  withErrorLogging,
+  withExponentialReconnect,
+} from '@core/messaging/provide-stomp';
 import { provideAppSeo } from '@core/providers/seo';
 import { provideSkeletonConfig } from '@core/providers/skeleton';
 import { WifiAwarePreloading } from '@core/providers/wifi-aware-preloading';
@@ -38,11 +46,20 @@ export const appConfig: ApplicationConfig = {
     ),
     // PDF reports only; mock first so it can short-circuit the chain
     provideHttpClient(
-      withInterceptors([mockInterceptor, authInterceptor, localeInterceptor, retryInterceptor, errorLogInterceptor]),
+      withInterceptors([
+        mockInterceptor,
+        authInterceptor,
+        localeInterceptor,
+        retryInterceptor,
+        errorLogInterceptor,
+      ]),
     ),
     // everything live
     provideStomp(
-      { brokerURL: `${environment.wsUrl}/rooms/{room}/ws`, debug: () => undefined /* (m) => console.debug(m) */ },
+      {
+        brokerURL: `${environment.wsUrl}/rooms/{room}/ws`,
+        debug: () => undefined /* (m) => console.debug(m) */,
+      },
       withAuthToken(),
       withExponentialReconnect({ initialMs: 500, maxMs: 15_000 }),
       withErrorLogging(),

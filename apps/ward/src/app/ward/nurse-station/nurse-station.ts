@@ -23,20 +23,28 @@ export default class NurseStation {
   readonly empty = input<string>();
 
   protected readonly patients = inject(PatientsStore);
-  private readonly allAlarms = toSignal(inject(AlarmsStore).all$(), { initialValue: [] });
+  private readonly allAlarms = toSignal(inject(AlarmsStore).all$(), {
+    initialValue: [],
+  });
 
   protected readonly wards = WARDS;
   protected readonly selected = computed<Ward | null>(() => {
     const w = this.ward()?.toUpperCase() ?? '';
     return isWardName(w) ? w : null;
   });
-  protected readonly visibleWards = computed(() => (this.selected() ? [this.selected() as Ward] : WARDS));
+  protected readonly visibleWards = computed(() =>
+    this.selected() ? [this.selected() as Ward] : WARDS,
+  );
   protected readonly alarms = computed(() =>
     this.allAlarms()
-      .filter((a) => this.visibleWards().some((w) => a.event.bed.startsWith(`${w}-`)))
+      .filter((a) =>
+        this.visibleWards().some((w) => a.event.bed.startsWith(`${w}-`)),
+      )
       .sort((a, b) => Number(isUrgent(b)) - Number(isUrgent(a))),
   );
-  protected readonly urgentCount = computed(() => this.alarms().filter(isUrgent).length);
+  protected readonly urgentCount = computed(
+    () => this.alarms().filter(isUrgent).length,
+  );
 
   protected bedsOf = bedsOf;
   protected readonly alarmsFor = computed(() => alarmsByBed(this.allAlarms()));

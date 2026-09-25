@@ -1,13 +1,24 @@
-import { provideHttpClient, withInterceptors, withRequestsMadeViaParent } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptors,
+  withRequestsMadeViaParent,
+} from '@angular/common/http';
 import { inject } from '@angular/core';
-import { CanActivateFn, RedirectCommand, ResolveFn, Router, Routes } from '@angular/router';
+import {
+  CanActivateFn,
+  RedirectCommand,
+  ResolveFn,
+  Router,
+  Routes,
+} from '@angular/router';
 
 import { auditInterceptor } from '@core/http/interceptors';
 import { Reports, isReportKind } from '@core/http/reports';
 import { bedFromSlug } from '@core/messaging/contract';
 
 const validReport: CanActivateFn = (route) =>
-  (isReportKind(route.params['kind'] ?? '') && bedFromSlug(route.params['bed'] ?? '') !== null) ||
+  (isReportKind(route.params['kind'] ?? '') &&
+    bedFromSlug(route.params['bed'] ?? '') !== null) ||
   new RedirectCommand(inject(Router).parseUrl('/ward'));
 
 const reportTitle: ResolveFn<string> = (route) =>
@@ -25,7 +36,12 @@ export default [
       Reports,
     ],
     children: [
-      { path: ':kind/:bed', title: reportTitle, canActivate: [validReport], loadComponent: () => import('./report-download') },
+      {
+        path: ':kind/:bed',
+        title: reportTitle,
+        canActivate: [validReport],
+        loadComponent: () => import('./report-download'),
+      },
     ],
   },
 ] satisfies Routes;

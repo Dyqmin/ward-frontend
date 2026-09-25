@@ -3,7 +3,13 @@ import { Observable, finalize } from 'rxjs';
 
 import { commandRetry } from '@core/messaging/command-retry';
 import { AuthStore } from '@core/auth/auth-store';
-import { MessageBus, assertNever, type CommandResult, type SnoozeMinutes, SNOOZE_MINUTES } from '@core/messaging/contract';
+import {
+  MessageBus,
+  assertNever,
+  type CommandResult,
+  type SnoozeMinutes,
+  SNOOZE_MINUTES,
+} from '@core/messaging/contract';
 import { Toasts } from '@core/ui/toasts';
 import type { AlarmView } from '../data/alarms-store';
 import { alarmStatus, alarmTitle, clock, isUrgent, who } from './format';
@@ -22,11 +28,25 @@ import { alarmStatus, alarmTitle, clock, isUrgent, who } from './format';
         }
         @if (isNurse()) {
           @if (canAck()) {
-            <button type="button" class="primary small" [disabled]="pending()" (click)="ack()">Acknowledge</button>
+            <button
+              type="button"
+              class="primary small"
+              [disabled]="pending()"
+              (click)="ack()"
+            >
+              Acknowledge
+            </button>
           }
           @if (canSnooze()) {
             @for (m of snoozeOptions; track m) {
-              <button type="button" class="small" [disabled]="pending()" (click)="snooze(m)">Snooze {{ m }}′</button>
+              <button
+                type="button"
+                class="small"
+                [disabled]="pending()"
+                (click)="snooze(m)"
+              >
+                Snooze {{ m }}′
+              </button>
             }
           }
         }
@@ -66,7 +86,9 @@ export class AlarmActions {
   protected readonly status = computed(() => alarmStatus(this.alarm()));
   protected readonly urgent = computed(() => isUrgent(this.alarm()));
   protected readonly canAck = computed(() => isUrgent(this.alarm()));
-  protected readonly canSnooze = computed(() => this.alarm().event.status !== 'snoozed');
+  protected readonly canSnooze = computed(
+    () => this.alarm().event.status !== 'snoozed',
+  );
 
   ack(): void {
     const { alarmId } = this.alarm().event;
@@ -75,8 +97,10 @@ export class AlarmActions {
 
   snooze(minutes: SnoozeMinutes): void {
     const { alarmId } = this.alarm().event;
-    this.run(this.bus.send('/app/alarms.snooze', { alarmId, minutes }), (until) =>
-      this.toasts.show(`Snoozed until ${clock(until.until)}`, 'success'),
+    this.run(
+      this.bus.send('/app/alarms.snooze', { alarmId, minutes }),
+      (until) =>
+        this.toasts.show(`Snoozed until ${clock(until.until)}`, 'success'),
     );
   }
 
@@ -84,7 +108,10 @@ export class AlarmActions {
    * Command, then event: the reply only tells THIS nurse the outcome. Every screen, including this
    * one, updates from the /topic/alarms.{ward} broadcast.
    */
-  private run<T>(command$: Observable<CommandResult<T>>, onAccepted: (value: T) => void): void {
+  private run<T>(
+    command$: Observable<CommandResult<T>>,
+    onAccepted: (value: T) => void,
+  ): void {
     this.pending.set(true);
     command$
       .pipe(
@@ -97,14 +124,21 @@ export class AlarmActions {
             case 'accepted':
               return onAccepted(r.value); // the ward topic will broadcast the new state
             case 'conflict':
-              return this.toasts.show(`Already handled by ${who(r.by)} at ${clock(r.at)}`, 'warn'); // the room-game moment
+              return this.toasts.show(
+                `Already handled by ${who(r.by)} at ${clock(r.at)}`,
+                'warn',
+              ); // the room-game moment
             case 'forbidden':
               return this.toasts.show(r.reason, 'error');
             default:
               return assertNever(r);
           }
         },
-        error: () => this.toasts.show('Broker unreachable — the alarm was not updated, try again', 'error'),
+        error: () =>
+          this.toasts.show(
+            'Broker unreachable — the alarm was not updated, try again',
+            'error',
+          ),
       });
   }
 }

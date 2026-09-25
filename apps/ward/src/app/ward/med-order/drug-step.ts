@@ -11,7 +11,12 @@ import { MedOrderDraftStore } from './med-order-draft-store';
     <div class="form">
       <label>
         Drug
-        <input name="drug" list="drugs" [value]="store.draft().drug ?? ''" (input)="store.patch({ drug: text($event) })" />
+        <input
+          name="drug"
+          list="drugs"
+          [value]="store.draft().drug ?? ''"
+          (input)="store.patch({ drug: text($event) })"
+        />
         <datalist id="drugs">
           @for (d of commonDrugs; track d) {
             <option [value]="d"></option>
@@ -31,10 +36,16 @@ import { MedOrderDraftStore } from './med-order-draft-store';
       </label>
       <label>
         Route
-        <select name="route" [value]="store.draft().route ?? ''" (change)="store.patch({ route: route($event) })">
+        <select
+          name="route"
+          [value]="store.draft().route ?? ''"
+          (change)="store.patch({ route: route($event) })"
+        >
           <option value="" disabled>Choose…</option>
           @for (r of routes; track r) {
-            <option [value]="r">{{ r === 'iv' ? 'Intravenous (iv)' : 'Oral' }}</option>
+            <option [value]="r">
+              {{ r === 'iv' ? 'Intravenous (iv)' : 'Oral' }}
+            </option>
           }
         </select>
       </label>
@@ -42,7 +53,14 @@ import { MedOrderDraftStore } from './med-order-draft-store';
     <div class="row nav">
       <button type="button" (click)="go('patient')">Back</button>
       <span class="spacer"></span>
-      <button type="button" class="primary" [disabled]="!store.isDone('drug')" (click)="go('review')">Next</button>
+      <button
+        type="button"
+        class="primary"
+        [disabled]="!store.isDone('drug')"
+        (click)="go('review')"
+      >
+        Next
+      </button>
     </div>
   `,
   styles: `
@@ -61,7 +79,13 @@ export default class DrugStep {
   protected readonly store = inject(MedOrderDraftStore);
   private readonly router = inject(Router);
   protected readonly routes = MED_ROUTES;
-  protected readonly commonDrugs = ['Paracetamol', 'Ondansetron', 'Amoxicillin', 'Metoprolol', 'Furosemide'];
+  protected readonly commonDrugs = [
+    'Paracetamol',
+    'Ondansetron',
+    'Amoxicillin',
+    'Metoprolol',
+    'Furosemide',
+  ];
 
   protected text(e: Event): string {
     return (e.target as HTMLInputElement).value.trim();
@@ -77,6 +101,8 @@ export default class DrugStep {
   }
 
   protected go(step: 'patient' | 'review'): void {
-    void this.router.navigateByUrl('/' + link('ward/:bed/meds/new/:step', { bed: this.bed(), step }));
+    void this.router.navigateByUrl(
+      '/' + link('ward/:bed/meds/new/:step', { bed: this.bed(), step }),
+    );
   }
 }

@@ -1,11 +1,17 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, CanDeactivateFn, RedirectCommand, Router } from '@angular/router';
+import {
+  CanActivateFn,
+  CanDeactivateFn,
+  RedirectCommand,
+  Router,
+} from '@angular/router';
 
 import { bedFromSlug } from '@core/messaging/contract';
 
 /** Yesterday's `bedFromSlug` at the URL boundary: 'icu-3' → 'ICU-3' ✅, 'icu-9' → null → back to /ward. */
 export const validBed: CanActivateFn = (route) =>
-  bedFromSlug(route.params['bed'] ?? '') !== null || new RedirectCommand(inject(Router).parseUrl('/ward'));
+  bedFromSlug(route.params['bed'] ?? '') !== null ||
+  new RedirectCommand(inject(Router).parseUrl('/ward'));
 
 /**
  * A typed but unsent value asks before leaving. Typed structurally, so ward.routes.ts does not

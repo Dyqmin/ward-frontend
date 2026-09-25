@@ -9,12 +9,19 @@ import { MedOrderDraftStore, type WizardStep } from './med-order-draft-store';
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
   template: `
     <section class="page wizard">
-      <a class="back" [routerLink]="['/ward', bed()]">← {{ bed().toUpperCase() }}</a>
+      <a class="back" [routerLink]="['/ward', bed()]"
+        >← {{ bed().toUpperCase() }}</a
+      >
       <h1>New medication order</h1>
       <ol class="steps">
         @for (s of steps; track s.path; let i = $index) {
           <li>
-            <a [routerLink]="s.path" routerLinkActive="active" [class.done]="done(s.path)">{{ i + 1 }}. {{ s.label }}</a>
+            <a
+              [routerLink]="s.path"
+              routerLinkActive="active"
+              [class.done]="done(s.path)"
+              >{{ i + 1 }}. {{ s.label }}</a
+            >
           </li>
         }
       </ol>

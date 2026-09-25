@@ -1,6 +1,10 @@
 import { Component, computed, input, signal } from '@angular/core';
 
-import { THRESHOLDS, type StreamedVital, type VitalsFrame } from '@core/messaging/contract';
+import {
+  THRESHOLDS,
+  type StreamedVital,
+  type VitalsFrame,
+} from '@core/messaging/contract';
 
 interface Panel {
   vital: StreamedVital;
@@ -31,7 +35,8 @@ const WINDOW = 600;
           <span>{{ p.label }}</span>
           <span class="latest">
             @if (hoverFrame(); as f) {
-              {{ f[p.vital] }} {{ p.unit }} <span class="muted">at {{ time(f.ts) }}</span>
+              {{ f[p.vital] }} {{ p.unit }}
+              <span class="muted">at {{ time(f.ts) }}</span>
             } @else {
               {{ p.latest ?? '–' }} {{ p.unit }}
             }
@@ -46,11 +51,23 @@ const WINDOW = 600;
           (pointerleave)="hoverIndex.set(null)"
         >
           @for (t of p.thresholds; track t) {
-            <line class="threshold" x1="0" [attr.x2]="width" [attr.y1]="t" [attr.y2]="t" />
+            <line
+              class="threshold"
+              x1="0"
+              [attr.x2]="width"
+              [attr.y1]="t"
+              [attr.y2]="t"
+            />
           }
           <polyline class="line" [attr.points]="p.points" />
           @if (hoverX() !== null) {
-            <line class="crosshair" [attr.x1]="hoverX()" [attr.x2]="hoverX()" y1="0" [attr.y2]="height" />
+            <line
+              class="crosshair"
+              [attr.x1]="hoverX()"
+              [attr.x2]="hoverX()"
+              y1="0"
+              [attr.y2]="height"
+            />
           }
         </svg>
       </figure>
@@ -125,13 +142,19 @@ export class VitalsChart {
     const frames = this.window();
     const x = (i: number) => (WINDOW - frames.length + i) * (W / (WINDOW - 1));
     return PANELS.map((p) => {
-      const y = (v: number) => H - ((Math.min(Math.max(v, p.min), p.max) - p.min) / (p.max - p.min)) * H;
+      const y = (v: number) =>
+        H -
+        ((Math.min(Math.max(v, p.min), p.max) - p.min) / (p.max - p.min)) * H;
       const t = THRESHOLDS[p.vital];
       return {
         ...p,
         latest: frames.at(-1)?.[p.vital],
-        points: frames.map((f, i) => `${x(i).toFixed(1)},${y(f[p.vital]).toFixed(1)}`).join(' '),
-        thresholds: [t.low, t.high].filter((v): v is number => v !== undefined).map(y),
+        points: frames
+          .map((f, i) => `${x(i).toFixed(1)},${y(f[p.vital]).toFixed(1)}`)
+          .join(' '),
+        thresholds: [t.low, t.high]
+          .filter((v): v is number => v !== undefined)
+          .map(y),
       };
     });
   });
@@ -142,15 +165,21 @@ export class VitalsChart {
   });
   protected readonly hoverX = computed(() => {
     const i = this.hoverIndex();
-    return i === null ? null : (WINDOW - this.window().length + i) * (W / (WINDOW - 1));
+    return i === null
+      ? null
+      : (WINDOW - this.window().length + i) * (W / (WINDOW - 1));
   });
 
   protected hover(e: PointerEvent): void {
     const svg = e.currentTarget as SVGElement;
     const rect = svg.getBoundingClientRect();
-    const slot = Math.round(((e.clientX - rect.left) / rect.width) * (WINDOW - 1));
+    const slot = Math.round(
+      ((e.clientX - rect.left) / rect.width) * (WINDOW - 1),
+    );
     const offset = WINDOW - this.window().length;
-    this.hoverIndex.set(slot < offset ? null : Math.min(slot - offset, this.window().length - 1));
+    this.hoverIndex.set(
+      slot < offset ? null : Math.min(slot - offset, this.window().length - 1),
+    );
   }
 
   protected time(ts: number): string {

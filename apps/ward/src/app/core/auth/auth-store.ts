@@ -3,7 +3,11 @@ import { Service, computed, inject, signal } from '@angular/core';
 import { environment } from '@env';
 import { firstValueFrom } from 'rxjs';
 
-import { isDoctorId, type ParticipantId, type Role } from '../messaging/contract';
+import {
+  isDoctorId,
+  type ParticipantId,
+  type Role,
+} from '../messaging/contract';
 import { STOMP_MODE } from '../messaging/stomp-mode';
 
 /** What `/api/join` and `/api/token/refresh` return. */
@@ -30,7 +34,9 @@ const STORAGE_KEY = 'ward.session';
 
 function readStored(): Session | null {
   try {
-    return JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? 'null') as Session | null;
+    return JSON.parse(
+      sessionStorage.getItem(STORAGE_KEY) ?? 'null',
+    ) as Session | null;
   } catch {
     return null;
   }
@@ -46,7 +52,9 @@ export class AuthStore {
   readonly session = this._session.asReadonly();
   readonly signedIn = computed(() => this._session() !== null);
   readonly token = computed(() => this._session()?.token ?? null);
-  readonly participantId = computed(() => this._session()?.participantId ?? null);
+  readonly participantId = computed(
+    () => this._session()?.participantId ?? null,
+  );
   readonly role = computed<Role | null>(() => {
     const id = this._session()?.participantId;
     return id ? (isDoctorId(id) ? 'doctor' : 'nurse') : null;
@@ -57,12 +65,21 @@ export class AuthStore {
     return s ? (s.useSandbox ? s.sandboxRoom : s.sharedRoom) : null;
   });
 
-  async join(name: string, role: Role, roomCode: string, useSandbox = false): Promise<Session> {
+  async join(
+    name: string,
+    role: Role,
+    roomCode: string,
+    useSandbox = false,
+  ): Promise<Session> {
     const res =
       this.mode === 'mock'
         ? mockJoin(name, role, roomCode)
         : await firstValueFrom(
-            this.http.post<JoinResponse>(`${environment.apiUrl}/api/join`, { name, role, roomCode }),
+            this.http.post<JoinResponse>(`${environment.apiUrl}/api/join`, {
+              name,
+              role,
+              roomCode,
+            }),
           );
     return this.store({ ...res, name, useSandbox });
   }
@@ -74,19 +91,26 @@ export class AuthStore {
    */
   freshToken(): Promise<string> {
     const current = this._session();
-    if (!current) return Promise.reject(new SessionExpiredError('Not signed in'));
+    if (!current)
+      return Promise.reject(new SessionExpiredError('Not signed in'));
     if (this.mode === 'mock') return Promise.resolve(current.token);
 
     this.refreshing ??= firstValueFrom(
-      this.http.post<JoinResponse>(`${environment.apiUrl}/api/token/refresh`, null, {
-        headers: { Authorization: `Bearer ${current.token}` },
-      }),
+      this.http.post<JoinResponse>(
+        `${environment.apiUrl}/api/token/refresh`,
+        null,
+        {
+          headers: { Authorization: `Bearer ${current.token}` },
+        },
+      ),
     )
       .then((next) => this.store({ ...current, ...next }).token)
       .catch((err: unknown) => {
         if (err instanceof HttpErrorResponse && err.status === 401) {
           this.logout();
-          throw new SessionExpiredError('Session expired, please sign in again');
+          throw new SessionExpiredError(
+            'Session expired, please sign in again',
+          );
         }
         throw err;
       })
@@ -122,8 +146,13 @@ export class AuthStore {
 }
 
 function mockJoin(name: string, role: Role, roomCode: string): JoinResponse {
-  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '') || 'anon';
-  const participantId: ParticipantId = role === 'doctor' ? `dr_${slug}_mock` : `nurse_${slug}_mock`;
+  const slug =
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_|_$/g, '') || 'anon';
+  const participantId: ParticipantId =
+    role === 'doctor' ? `dr_${slug}_mock` : `nurse_${slug}_mock`;
   return {
     token: 'mock-token',
     participantId,

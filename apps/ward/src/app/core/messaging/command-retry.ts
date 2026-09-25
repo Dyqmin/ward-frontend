@@ -1,4 +1,12 @@
-import { MonoTypeOperatorFunction, filter, interval, race, retry, take, timer } from 'rxjs';
+import {
+  MonoTypeOperatorFunction,
+  filter,
+  interval,
+  race,
+  retry,
+  take,
+  timer,
+} from 'rxjs';
 
 import type { MessageBus } from './contract';
 
@@ -9,7 +17,10 @@ import type { MessageBus } from './contract';
  * If the broker is down when an attempt fails, the next attempt also fires as soon as the
  * connection is back — "pending sync" confirms the moment the ward reconnects, nobody touches a button.
  */
-export function commandRetry<T>(bus: MessageBus, count = 5): MonoTypeOperatorFunction<T> {
+export function commandRetry<T>(
+  bus: MessageBus,
+  count = 5,
+): MonoTypeOperatorFunction<T> {
   return retry<T>({
     count,
     delay: (_, attempt) => {

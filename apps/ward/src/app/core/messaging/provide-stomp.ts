@@ -10,7 +10,12 @@ import {
   provideAppInitializer,
   untracked,
 } from '@angular/core';
-import { ReconnectionTimeMode, RxStomp, RxStompConfig, RxStompRPC } from '@stomp/rx-stomp';
+import {
+  ReconnectionTimeMode,
+  RxStomp,
+  RxStompConfig,
+  RxStompRPC,
+} from '@stomp/rx-stomp';
 
 import { AuthStore, SessionExpiredError } from '../auth/auth-store';
 import { Logger } from '../logger';
@@ -24,13 +29,20 @@ export { MOCK_FIXTURES } from './fake-message-bus';
 export { STOMP_MODE } from './stomp-mode';
 
 /** The base config handed to provideStomp(). `{room}` in brokerURL is filled in by withAuthToken(). */
-export const STOMP_BASE_CONFIG = new InjectionToken<RxStompConfig>('STOMP_BASE_CONFIG');
+export const STOMP_BASE_CONFIG = new InjectionToken<RxStompConfig>(
+  'STOMP_BASE_CONFIG',
+);
 /** Each withX() feature contributes a slice of RxStompConfig through this multi-provider. */
-const STOMP_CONFIG_PARTS = new InjectionToken<Partial<RxStompConfig>[]>('STOMP_CONFIG_PARTS');
+const STOMP_CONFIG_PARTS = new InjectionToken<Partial<RxStompConfig>[]>(
+  'STOMP_CONFIG_PARTS',
+);
 /** How the connection starts. Default: right away. withAuthToken(): only while someone is signed in. */
-const STOMP_ACTIVATION = new InjectionToken<(stomp: RxStomp) => void>('STOMP_ACTIVATION', {
-  factory: () => (stomp) => stomp.activate(),
-});
+const STOMP_ACTIVATION = new InjectionToken<(stomp: RxStomp) => void>(
+  'STOMP_ACTIVATION',
+  {
+    factory: () => (stomp) => stomp.activate(),
+  },
+);
 
 export type StompFeatureKind = 'auth' | 'reconnect' | 'mock' | 'errors';
 export interface StompFeature {
@@ -45,7 +57,10 @@ export interface StompFeature {
  *
  * Factories are lazy: in mock mode `RxStomp` is never created and no socket is opened.
  */
-export function provideStomp(base: RxStompConfig, ...features: StompFeature[]): EnvironmentProviders {
+export function provideStomp(
+  base: RxStompConfig,
+  ...features: StompFeature[]
+): EnvironmentProviders {
   return makeEnvironmentProviders([
     { provide: STOMP_BASE_CONFIG, useValue: base },
     {
@@ -72,7 +87,10 @@ export function provideStomp(base: RxStompConfig, ...features: StompFeature[]): 
     {
       provide: MessageBus,
       // a useFactory body is an injection context, so both classes can inject() in field initializers
-      useFactory: () => (inject(STOMP_MODE) === 'mock' ? new FakeMessageBus() : new StompMessageBus()),
+      useFactory: () =>
+        inject(STOMP_MODE) === 'mock'
+          ? new FakeMessageBus()
+          : new StompMessageBus(),
     },
     ...features.flatMap((f) => f.providers),
   ]);
@@ -102,13 +120,20 @@ export function withAuthToken(): StompFeature {
               try {
                 token = await auth.freshToken();
               } catch (e) {
-                if (e instanceof SessionExpiredError) return void (await stomp.deactivate());
+                if (e instanceof SessionExpiredError)
+                  return void (await stomp.deactivate());
                 // backend unreachable: try the socket anyway; a failed connect schedules the next attempt
-                logger.warn('Token refresh failed, reconnecting with the current token', e);
+                logger.warn(
+                  'Token refresh failed, reconnecting with the current token',
+                  e,
+                );
                 token = auth.token();
               }
               stomp.configure({
-                brokerURL: (base.brokerURL ?? '').replace('{room}', encodeURIComponent(room)),
+                brokerURL: (base.brokerURL ?? '').replace(
+                  '{room}',
+                  encodeURIComponent(room),
+                ),
                 connectHeaders: { Authorization: `Bearer ${token}` },
               });
             },
@@ -144,7 +169,10 @@ export function withAuthToken(): StompFeature {
 }
 
 /** Exponential back-off (stompjs 7) plus heart-beats, so a dead socket is noticed in seconds, not minutes. */
-export function withExponentialReconnect(o: { initialMs: number; maxMs: number }): StompFeature {
+export function withExponentialReconnect(o: {
+  initialMs: number;
+  maxMs: number;
+}): StompFeature {
   return {
     kind: 'reconnect',
     providers: [
@@ -176,9 +204,14 @@ export function withErrorLogging(): StompFeature {
         const toasts = inject(Toasts);
         stomp.stompErrors$.subscribe((f) => {
           logger.error('STOMP ERROR frame', f.headers['message'], f.body);
-          toasts.show(`Broker error: ${f.headers['message'] ?? 'unknown'}`, 'error');
+          toasts.show(
+            `Broker error: ${f.headers['message'] ?? 'unknown'}`,
+            'error',
+          );
         });
-        stomp.webSocketErrors$.subscribe((e) => logger.warn('WebSocket error', e));
+        stomp.webSocketErrors$.subscribe((e) =>
+          logger.warn('WebSocket error', e),
+        );
       }),
     ],
   };

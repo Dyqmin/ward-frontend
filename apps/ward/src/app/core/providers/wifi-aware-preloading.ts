@@ -14,8 +14,11 @@ interface NetworkInformationLike {
 @Service()
 export class WifiAwarePreloading implements PreloadingStrategy {
   preload(route: Route, load: () => Observable<unknown>): Observable<unknown> {
-    const conn = (navigator as Navigator & { connection?: NetworkInformationLike }).connection;
-    const slow = conn?.saveData === true || /2g/.test(conn?.effectiveType ?? '');
+    const conn = (
+      navigator as Navigator & { connection?: NetworkInformationLike }
+    ).connection;
+    const slow =
+      conn?.saveData === true || /2g/.test(conn?.effectiveType ?? '');
     return route.data?.['preload'] && !slow ? load() : of(null);
   }
 }

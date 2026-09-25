@@ -8,7 +8,10 @@ export type WizardStep = 'patient' | 'drug' | 'review';
 const REQUIRED = {
   patient: ['patientId'],
   drug: ['drug', 'doseMg', 'route'],
-} as const satisfies Record<'patient' | 'drug', readonly (keyof MedOrderDraft)[]>;
+} as const satisfies Record<
+  'patient' | 'drug',
+  readonly (keyof MedOrderDraft)[]
+>;
 
 /**
  * One draft per wizard. `autoProvided: false`: NOT in the root injector — it is provided on the
@@ -22,7 +25,11 @@ export class MedOrderDraftStore {
 
   readonly draft = this._draft.asReadonly();
   /** Typed into, and not submitted yet. */
-  readonly dirty = computed(() => !this._saved() && Object.values(this._draft()).some((v) => v !== undefined && v !== ''));
+  readonly dirty = computed(
+    () =>
+      !this._saved() &&
+      Object.values(this._draft()).some((v) => v !== undefined && v !== ''),
+  );
 
   patch(change: Partial<MedOrderDraft>): void {
     this._draft.update((d) => ({ ...d, ...change }));
@@ -37,7 +44,9 @@ export class MedOrderDraftStore {
   /** The full draft, once every step is done. */
   complete(): MedOrderDraft | null {
     const { patientId, drug, doseMg, route } = this.draft();
-    return patientId && drug && doseMg !== undefined && route ? { patientId, drug, doseMg, route } : null;
+    return patientId && drug && doseMg !== undefined && route
+      ? { patientId, drug, doseMg, route }
+      : null;
   }
 
   markSaved(): void {

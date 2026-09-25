@@ -2,7 +2,13 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
-import { MessageBus, assertNever, link, toSlug, type RpcResult } from '@core/messaging/contract';
+import {
+  MessageBus,
+  assertNever,
+  link,
+  toSlug,
+  type RpcResult,
+} from '@core/messaging/contract';
 import { Toasts } from '@core/ui/toasts';
 import { commandRetry } from '@core/messaging/command-retry';
 import { clock, who } from '../ui/format';
@@ -17,7 +23,11 @@ import { clock, who } from '../ui/format';
       <h1>Record temperature</h1>
       <p class="muted">{{ patient().name }} · {{ patient().bed }}</p>
 
-      <form class="card form" novalidate (submit)="$event.preventDefault(); save()">
+      <form
+        class="card form"
+        novalidate
+        (submit)="$event.preventDefault(); save()"
+      >
         <label>
           Temperature (°C)
           <input
@@ -39,7 +49,13 @@ import { clock, who } from '../ui/format';
             <span class="chip warn">pending sync…</span>
           }
           <span class="spacer"></span>
-          <button type="submit" class="primary" [disabled]="pending() || !value()">Save</button>
+          <button
+            type="submit"
+            class="primary"
+            [disabled]="pending() || !value()"
+          >
+            Save
+          </button>
         </div>
       </form>
     </section>
@@ -90,7 +106,11 @@ export default class TemperatureForm {
     // send() stamps ONE commandId; retry() resends that same command, so an outage never records twice.
     // vital: 'hr' or a missing bed would not compile – ManualVital is 'temp' only.
     this.bus
-      .send('/app/vitals.record', { bed: this.patient().bed, vital: 'temp', value })
+      .send('/app/vitals.record', {
+        bed: this.patient().bed,
+        vital: 'temp',
+        value,
+      })
       .pipe(
         commandRetry(this.bus),
         finalize(() => this.pending.set(false)),
@@ -100,18 +120,26 @@ export default class TemperatureForm {
           switch (r.status) {
             case 'accepted':
               this.saved.set(true); // lets the unsent-value guard pass
-              this.toasts.show(`${value.toFixed(1)} °C recorded for ${this.patient().bed}`, 'success');
-              void this.router.navigateByUrl('/' + link('ward/:bed', { bed: toSlug(this.patient().bed) }));
+              this.toasts.show(
+                `${value.toFixed(1)} °C recorded for ${this.patient().bed}`,
+                'success',
+              );
+              void this.router.navigateByUrl(
+                '/' + link('ward/:bed', { bed: toSlug(this.patient().bed) }),
+              );
               return;
             case 'conflict':
-              return this.error.set(`Recorded by ${who(r.by)} at ${clock(r.at)}`);
+              return this.error.set(
+                `Recorded by ${who(r.by)} at ${clock(r.at)}`,
+              );
             case 'forbidden':
               return this.error.set(r.reason); // e.g. "Implausible value"
             default:
               return assertNever(r);
           }
         },
-        error: () => this.error.set('Broker unreachable — not saved. Try again.'),
+        error: () =>
+          this.error.set('Broker unreachable — not saved. Try again.'),
       });
   }
 }

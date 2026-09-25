@@ -1,8 +1,20 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { finalize } from 'rxjs';
 
 import { AuthStore } from '@core/auth/auth-store';
-import { MessageBus, assertNever, type MedOrder, type MedOrderId } from '@core/messaging/contract';
+import {
+  MessageBus,
+  assertNever,
+  type MedOrder,
+  type MedOrderId,
+} from '@core/messaging/contract';
 import { Toasts } from '@core/ui/toasts';
 import { commandRetry } from '@core/messaging/command-retry';
 import { clock, who } from '../ui/format';
@@ -29,13 +41,17 @@ import { clock, who } from '../ui/format';
             <td>{{ o.route }}</td>
             <td>{{ who(o.orderedBy) }}, {{ clock(o.createdAt) }}</td>
             <td>
-              <span class="chip" [class.ok]="o.status === 'given'">{{ o.status }}</span>
+              <span class="chip" [class.ok]="o.status === 'given'">{{
+                o.status
+              }}</span>
             </td>
             <td>
               @if (pending().has(o.id)) {
                 <span class="chip warn">pending sync…</span>
               } @else if (isNurse() && o.status === 'ordered') {
-                <button type="button" class="small" (click)="give(o.id)">Confirm given</button>
+                <button type="button" class="small" (click)="give(o.id)">
+                  Confirm given
+                </button>
               }
             </td>
           </tr>
@@ -83,7 +99,10 @@ export class MedicationList {
               this.toasts.show('Dose recorded', 'success');
               break;
             case 'conflict':
-              this.toasts.show(`Already given by ${who(r.by)} at ${clock(r.at)}`, 'warn');
+              this.toasts.show(
+                `Already given by ${who(r.by)} at ${clock(r.at)}`,
+                'warn',
+              );
               break;
             case 'forbidden':
               this.toasts.show(r.reason, 'error');
@@ -93,7 +112,11 @@ export class MedicationList {
           }
           this.changed.emit();
         },
-        error: () => this.toasts.show('Broker unreachable — the dose was NOT recorded, try again', 'error'),
+        error: () =>
+          this.toasts.show(
+            'Broker unreachable — the dose was NOT recorded, try again',
+            'error',
+          ),
       });
   }
 }

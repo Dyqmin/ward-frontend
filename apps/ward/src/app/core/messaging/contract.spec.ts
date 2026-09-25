@@ -22,7 +22,9 @@ describe('contract (Day 1 layer)', () => {
   });
 
   it('builds links from typed params', () => {
-    expect(link('ward/:bed/meds/new/:step', { bed: 'icu-3', step: 'drug' })).toBe('ward/icu-3/meds/new/drug');
+    expect(
+      link('ward/:bed/meds/new/:step', { bed: 'icu-3', step: 'drug' }),
+    ).toBe('ward/icu-3/meds/new/drug');
     expect(link('ward')).toBe('ward');
     // @ts-expect-error – a missing param does not compile
     link('ward/:bed', {});
@@ -34,10 +36,17 @@ describe('contract (Day 1 layer)', () => {
   });
 
   it('parses frames through their guard', () => {
-    const frame = parseFrame('{"bed":"ICU-3","ts":1,"hr":72,"spo2":97,"rr":14}', FRAME_GUARDS.vitals);
+    const frame = parseFrame(
+      '{"bed":"ICU-3","ts":1,"hr":72,"spo2":97,"rr":14}',
+      FRAME_GUARDS.vitals,
+    );
     expect(frame.hr).toBe(72);
-    expect(() => parseFrame('{"bed":"ICU-9","ts":1}', FRAME_GUARDS.vitals)).toThrow(FrameError);
-    expect(() => parseFrame('not json', FRAME_GUARDS.alarms)).toThrow(FrameError);
+    expect(() =>
+      parseFrame('{"bed":"ICU-9","ts":1}', FRAME_GUARDS.vitals),
+    ).toThrow(FrameError);
+    expect(() => parseFrame('not json', FRAME_GUARDS.alarms)).toThrow(
+      FrameError,
+    );
   });
 
   it('knows the illustrative thresholds', () => {

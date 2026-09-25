@@ -8,7 +8,8 @@ import type { BedId } from '../messaging/contract';
 
 export type ReportKind = 'lab' | 'discharge';
 export const REPORT_KINDS: readonly ReportKind[] = ['lab', 'discharge'];
-export const isReportKind = (v: string): v is ReportKind => (REPORT_KINDS as readonly string[]).includes(v);
+export const isReportKind = (v: string): v is ReportKind =>
+  (REPORT_KINDS as readonly string[]).includes(v);
 
 export interface DownloadState {
   /** 0…1 */
@@ -39,9 +40,17 @@ export class Reports {
 
   download(kind: ReportKind, bed: BedId): Observable<DownloadState> {
     return this.http
-      .get(this.url(kind, bed), { responseType: 'blob', observe: 'events', reportProgress: true })
+      .get(this.url(kind, bed), {
+        responseType: 'blob',
+        observe: 'events',
+        reportProgress: true,
+      })
       .pipe(
-        filter((e) => e.type === HttpEventType.DownloadProgress || e.type === HttpEventType.Response),
+        filter(
+          (e) =>
+            e.type === HttpEventType.DownloadProgress ||
+            e.type === HttpEventType.Response,
+        ),
         map((e) =>
           e.type === HttpEventType.Response
             ? { progress: 1, file: e.body ?? undefined }

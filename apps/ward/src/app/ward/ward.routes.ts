@@ -1,20 +1,41 @@
-import { ActivatedRouteSnapshot, ResolveFn, Routes, nonBlocking } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  ResolveFn,
+  Routes,
+  nonBlocking,
+} from '@angular/router';
 
 import { hasRole } from '@core/auth/guards';
 import { bedFromSlug } from '@core/messaging/contract';
-import { manualReadingsResource, medicationResource, patientResource, vitalsResource } from './bed-detail/bed-resources';
+import {
+  manualReadingsResource,
+  medicationResource,
+  patientResource,
+  vitalsResource,
+} from './bed-detail/bed-resources';
 import { unsentValueGuard, validBed } from './guards';
 import { stepCompleted, unsavedDraftGuard } from './med-order/guards';
 import { MedOrderDraftStore } from './med-order/med-order-draft-store';
 
 /** 'icu-3' → 'ICU-3'; with provideAppSeo() the tab reads "Drug and dose · ICU-3 · Ward Monitor". */
-const bedName = (route: ActivatedRouteSnapshot) => bedFromSlug(route.params['bed'] ?? '') ?? 'Bed';
+const bedName = (route: ActivatedRouteSnapshot) =>
+  bedFromSlug(route.params['bed'] ?? '') ?? 'Bed';
 const bedTitle: ResolveFn<string> = (route) => bedName(route);
 
 export default [
   // same URL, different screen and different bundle per role
-  { path: '', title: 'Nurse station', canMatch: [hasRole('nurse')], loadComponent: () => import('./nurse-station/nurse-station') },
-  { path: '', title: 'Ward rounds', canMatch: [hasRole('doctor')], loadComponent: () => import('./ward-rounds/ward-rounds') },
+  {
+    path: '',
+    title: 'Nurse station',
+    canMatch: [hasRole('nurse')],
+    loadComponent: () => import('./nurse-station/nurse-station'),
+  },
+  {
+    path: '',
+    title: 'Ward rounds',
+    canMatch: [hasRole('doctor')],
+    loadComponent: () => import('./ward-rounds/ward-rounds'),
+  },
 
   // medication order wizard – doctors only, one draft per wizard
   {
@@ -27,9 +48,23 @@ export default [
     loadComponent: () => import('./med-order/med-order-wizard'), // header + stepper + <router-outlet>
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'patient' },
-      { path: 'patient', title: 'Pick patient', loadComponent: () => import('./med-order/patient-step') },
-      { path: 'drug', title: 'Drug and dose', canActivate: [stepCompleted('patient')], loadComponent: () => import('./med-order/drug-step') },
-      { path: 'review', title: 'Review', canActivate: [stepCompleted('drug')], loadComponent: () => import('./med-order/review-step') },
+      {
+        path: 'patient',
+        title: 'Pick patient',
+        loadComponent: () => import('./med-order/patient-step'),
+      },
+      {
+        path: 'drug',
+        title: 'Drug and dose',
+        canActivate: [stepCompleted('patient')],
+        loadComponent: () => import('./med-order/drug-step'),
+      },
+      {
+        path: 'review',
+        title: 'Review',
+        canActivate: [stepCompleted('drug')],
+        loadComponent: () => import('./med-order/review-step'),
+      },
     ],
   },
   { path: ':bed/meds/new', redirectTo: '/forbidden' }, // nurses fall through to here

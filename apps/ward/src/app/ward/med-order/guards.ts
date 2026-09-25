@@ -1,5 +1,10 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, CanDeactivateFn, RedirectCommand, Router } from '@angular/router';
+import {
+  CanActivateFn,
+  CanDeactivateFn,
+  RedirectCommand,
+  Router,
+} from '@angular/router';
 
 import { link } from '@core/messaging/contract';
 import { MedOrderDraftStore } from './med-order-draft-store';
@@ -12,7 +17,10 @@ export const stepCompleted =
     inject(MedOrderDraftStore).isDone(step) ||
     new RedirectCommand(
       // paramsInheritanceStrategy 'always' (v22 default): the child sees the parent's :bed
-      inject(Router).parseUrl('/' + link('ward/:bed/meds/new/:step', { bed: route.params['bed'], step })),
+      inject(Router).parseUrl(
+        '/' +
+          link('ward/:bed/meds/new/:step', { bed: route.params['bed'], step }),
+      ),
       //                                 ↑ forget a param and it doesn't compile
     );
 

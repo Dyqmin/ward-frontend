@@ -7,13 +7,27 @@ import { provideStomp, withMockBroker } from '@core/messaging/provide-stomp';
 import { createWardFixtures, MockWard } from '../../testing/ward-fixtures';
 import { AlarmsStore, reduceAlarms, type AlarmView } from './alarms-store';
 
-const raised: AlarmEvent = { status: 'raised', alarmId: 'alarm_1', bed: 'ICU-3', code: 'hr.high', value: 140 };
+const raised: AlarmEvent = {
+  status: 'raised',
+  alarmId: 'alarm_1',
+  bed: 'ICU-3',
+  code: 'hr.high',
+  value: 140,
+};
 
 describe('AlarmsStore', () => {
   it('lets the newest event per alarm win', () => {
-    const acked: AlarmEvent = { status: 'acknowledged', alarmId: 'alarm_1', bed: 'ICU-3', by: 'nurse_ann', at: 'now' };
+    const acked: AlarmEvent = {
+      status: 'acknowledged',
+      alarmId: 'alarm_1',
+      bed: 'ICU-3',
+      by: 'nurse_ann',
+      at: 'now',
+    };
     const state = [raised, acked].reduce(reduceAlarms, new Map());
-    expect([...state.values()]).toEqual([{ event: acked, code: 'hr.high', value: 140 }]);
+    expect([...state.values()]).toEqual([
+      { event: acked, code: 'hr.high', value: 140 },
+    ]);
   });
 
   describe('snapshot, then stream', () => {
@@ -24,9 +38,19 @@ describe('AlarmsStore', () => {
     beforeEach(() => {
       vi.useFakeTimers();
       ward = new MockWard();
-      ward.alarms.set('alarm_1', { alarmId: 'alarm_1', bed: 'ICU-3', code: 'hr.high', latest: raised, raisedAt: Date.now(), inRangeSince: null });
+      ward.alarms.set('alarm_1', {
+        alarmId: 'alarm_1',
+        bed: 'ICU-3',
+        code: 'hr.high',
+        latest: raised,
+        raisedAt: Date.now(),
+        inRangeSince: null,
+      });
       TestBed.configureTestingModule({
-        providers: [provideHttpClient(), provideStomp({}, withMockBroker(createWardFixtures(ward)))],
+        providers: [
+          provideHttpClient(),
+          provideStomp({}, withMockBroker(createWardFixtures(ward))),
+        ],
       });
       bus = TestBed.inject(MessageBus) as FakeMessageBus;
       seen = [];
@@ -44,9 +68,17 @@ describe('AlarmsStore', () => {
 
     it('applies live events on top of the snapshot', async () => {
       await vi.advanceTimersByTimeAsync(300);
-      const snoozed: AlarmEvent = { status: 'snoozed', alarmId: 'alarm_1', bed: 'ICU-3', by: 'nurse_bo', until: 'later' };
+      const snoozed: AlarmEvent = {
+        status: 'snoozed',
+        alarmId: 'alarm_1',
+        bed: 'ICU-3',
+        by: 'nurse_bo',
+        until: 'later',
+      };
       bus.emit('/topic/alarms.ICU', snoozed);
-      expect(seen.at(-1)).toEqual([{ event: snoozed, code: 'hr.high', value: 140 }]);
+      expect(seen.at(-1)).toEqual([
+        { event: snoozed, code: 'hr.high', value: 140 },
+      ]);
     });
 
     it('re-fetches the snapshot after a reconnect, dropping alarms that ended meanwhile', async () => {

@@ -1,4 +1,10 @@
-import { EnvironmentProviders, InjectionToken, Service, inject, makeEnvironmentProviders } from '@angular/core';
+import {
+  EnvironmentProviders,
+  InjectionToken,
+  Service,
+  inject,
+  makeEnvironmentProviders,
+} from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 
@@ -18,7 +24,11 @@ class WardTitleStrategy extends TitleStrategy {
   override updateTitle(snapshot: RouterStateSnapshot): void {
     const parts: string[] = [];
     // every titled route on the active branch, deepest first: "Drug and dose · ICU-3 · Ward Monitor"
-    for (let route: RouterStateSnapshot['root'] | null = snapshot.root; route; route = route.firstChild) {
+    for (
+      let route: RouterStateSnapshot['root'] | null = snapshot.root;
+      route;
+      route = route.firstChild
+    ) {
       const t = this.getResolvedTitleForRoute(route) as string | undefined;
       if (t && parts[0] !== t) parts.unshift(t);
     }

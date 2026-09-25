@@ -5,17 +5,26 @@
   <header class="head">
     <div>
       <h1>{{ patient().name }} · {{ patient().bed }}</h1>
-      <p class="muted">Patient {{ patient().id }} · admitted {{ admitted() }}</p>
+      <p class="muted">
+        Patient {{ patient().id }} · admitted {{ admitted() }}
+      </p>
     </div>
     <div class="row actions">
       @if (role() === 'nurse') {
-        <a class="button primary" [routerLink]="['temperature']">Record temperature</a>
+      <a class="button primary" [routerLink]="['temperature']"
+        >Record temperature</a
+      >
+      } @if (role() === 'doctor') {
+      <a class="button primary" [routerLink]="['meds', 'new']"
+        >Order medication</a
+      >
       }
-      @if (role() === 'doctor') {
-        <a class="button primary" [routerLink]="['meds', 'new']">Order medication</a>
-      }
-      <a class="button" [routerLink]="['/reports', 'lab', slug()]">Lab report (PDF)</a>
-      <a class="button" [routerLink]="['/reports', 'discharge', slug()]">Discharge summary</a>
+      <a class="button" [routerLink]="['/reports', 'lab', slug()]"
+        >Lab report (PDF)</a
+      >
+      <a class="button" [routerLink]="['/reports', 'discharge', slug()]"
+        >Discharge summary</a
+      >
       <button type="button" (click)="refreshRecord()">Refresh record</button>
     </div>
   </header>
@@ -25,29 +34,46 @@
       <h2 class="row">
         Vitals
         <span class="spacer"></span>
-        @if (latest()) {
-          @if (stale()) {
-            <span class="chip warn">no data for {{ ageSec() }} s</span>
-          } @else {
-            <span class="chip ok">live</span>
-          }
-        }
+        @if (latest()) { @if (stale()) {
+        <span class="chip warn">no data for {{ ageSec() }} s</span>
+        } @else {
+        <span class="chip ok">live</span>
+        } }
       </h2>
 
       <!-- non-blocking: the page is already here; the resource says how far the data is -->
-      @if (vitals().hasValue()) {
-        @if (latest(); as f) {
-          <div class="now">
-            <app-vital-value label="HR" vital="hr" [value]="f.hr" unit="bpm" [stale]="stale()" />
-            <app-vital-value label="SpO₂" vital="spo2" [value]="f.spo2" unit="%" [stale]="stale()" />
-            <app-vital-value label="RR" vital="rr" [value]="f.rr" unit="/min" [stale]="stale()" />
-          </div>
-        }
-        <app-vitals-chart [frames]="vitals().value() ?? []" />
+      @if (vitals().hasValue()) { @if (latest(); as f) {
+      <div class="now">
+        <app-vital-value
+          label="HR"
+          vital="hr"
+          [value]="f.hr"
+          unit="bpm"
+          [stale]="stale()"
+        />
+        <app-vital-value
+          label="SpO₂"
+          vital="spo2"
+          [value]="f.spo2"
+          unit="%"
+          [stale]="stale()"
+        />
+        <app-vital-value
+          label="RR"
+          vital="rr"
+          [value]="f.rr"
+          unit="/min"
+          [stale]="stale()"
+        />
+      </div>
+      }
+      <app-vitals-chart [frames]="vitals().value() ?? []" />
       } @else if (vitals().error()) {
-        <p class="warn">Live vitals unavailable – no data is shown rather than old data.</p>
+      <p class="warn">
+        Live vitals unavailable – no data is shown rather than old data.
+      </p>
       } @else {
-        <ngx-skeleton-loader count="4" />
+      <ngx-skeleton-loader count="4" />
       }
     </section>
 
@@ -55,38 +81,40 @@
       <section class="card stack">
         <h2>Alarms</h2>
         @for (a of alarms(); track a.event.alarmId) {
-          <app-alarm-actions [alarm]="a" />
+        <app-alarm-actions [alarm]="a" />
         } @empty {
-          <p class="muted">No active alarms for this bed.</p>
+        <p class="muted">No active alarms for this bed.</p>
         }
       </section>
 
       <section class="card stack">
         <h2>Temperature</h2>
-        @if (readings().hasValue()) {
-          @for (r of readings().value(); track r.at) {
-            <div class="row">
-              <strong>{{ r.value.toFixed(1) }} °C</strong>
-              <span class="muted">{{ who(r.by) }}, {{ clock(r.at) }}</span>
-            </div>
-          } @empty {
-            <p class="muted">No temperature recorded yet.</p>
-          }
-        } @else if (readings().error()) {
-          <p class="warn">Recorded temperatures unavailable.</p>
+        @if (readings().hasValue()) { @for (r of readings().value(); track r.at)
+        {
+        <div class="row">
+          <strong>{{ r.value.toFixed(1) }} °C</strong>
+          <span class="muted">{{ who(r.by) }}, {{ clock(r.at) }}</span>
+        </div>
+        } @empty {
+        <p class="muted">No temperature recorded yet.</p>
+        } } @else if (readings().error()) {
+        <p class="warn">Recorded temperatures unavailable.</p>
         } @else {
-          <ngx-skeleton-loader count="1" />
+        <ngx-skeleton-loader count="1" />
         }
       </section>
 
       <section class="card stack">
         <h2>Medication</h2>
         @if (meds().hasValue()) {
-          <app-medication-list [orders]="meds().value() ?? []" (changed)="reloadMeds()" />
+        <app-medication-list
+          [orders]="meds().value() ?? []"
+          (changed)="reloadMeds()"
+        />
         } @else if (meds().error()) {
-          <p class="warn">Medication orders unavailable.</p>
+        <p class="warn">Medication orders unavailable.</p>
         } @else {
-          <ngx-skeleton-loader count="2" />
+        <ngx-skeleton-loader count="2" />
         }
       </section>
     </aside>

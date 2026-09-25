@@ -1,7 +1,13 @@
 import { Component, computed, effect, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { bedFromSlug, bedsOf, link, wardOf, type Patient } from '@core/messaging/contract';
+import {
+  bedFromSlug,
+  bedsOf,
+  link,
+  wardOf,
+  type Patient,
+} from '@core/messaging/contract';
 import { PatientsStore } from '../data/patients-store';
 import { MedOrderDraftStore } from './med-order-draft-store';
 
@@ -12,8 +18,16 @@ import { MedOrderDraftStore } from './med-order-draft-store';
     @if (candidates(); as list) {
       <div class="list" role="radiogroup">
         @for (p of list; track p.id) {
-          <label class="option" [class.selected]="store.draft().patientId === p.id">
-            <input type="radio" name="patient" [checked]="store.draft().patientId === p.id" (change)="store.patch({ patientId: p.id })" />
+          <label
+            class="option"
+            [class.selected]="store.draft().patientId === p.id"
+          >
+            <input
+              type="radio"
+              name="patient"
+              [checked]="store.draft().patientId === p.id"
+              (change)="store.patch({ patientId: p.id })"
+            />
             <strong>{{ p.bed }}</strong> {{ p.name }}
           </label>
         }
@@ -23,7 +37,14 @@ import { MedOrderDraftStore } from './med-order-draft-store';
     }
     <div class="row nav">
       <span class="spacer"></span>
-      <button type="button" class="primary" [disabled]="!store.isDone('patient')" (click)="next()">Next</button>
+      <button
+        type="button"
+        class="primary"
+        [disabled]="!store.isDone('patient')"
+        (click)="next()"
+      >
+        Next
+      </button>
     </div>
   `,
   styles: `
@@ -68,12 +89,17 @@ export default class PatientStep {
   constructor() {
     // preselect the patient in the bed the doctor came from
     effect(() => {
-      const own = this.candidates()?.find((p) => p.bed === bedFromSlug(this.bed()));
-      if (own && !this.store.draft().patientId) this.store.patch({ patientId: own.id });
+      const own = this.candidates()?.find(
+        (p) => p.bed === bedFromSlug(this.bed()),
+      );
+      if (own && !this.store.draft().patientId)
+        this.store.patch({ patientId: own.id });
     });
   }
 
   protected next(): void {
-    void this.router.navigateByUrl('/' + link('ward/:bed/meds/new/:step', { bed: this.bed(), step: 'drug' }));
+    void this.router.navigateByUrl(
+      '/' + link('ward/:bed/meds/new/:step', { bed: this.bed(), step: 'drug' }),
+    );
   }
 }

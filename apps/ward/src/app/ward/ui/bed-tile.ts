@@ -5,7 +5,12 @@ import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { map } from 'rxjs';
 
 import { Clock } from '@core/clock';
-import { MessageBus, toSlug, type BedId, type Patient } from '@core/messaging/contract';
+import {
+  MessageBus,
+  toSlug,
+  type BedId,
+  type Patient,
+} from '@core/messaging/contract';
 import type { AlarmView } from '../data/alarms-store';
 import { alarmTitle, isUrgent } from './format';
 import { VitalValue } from './vital-value';
@@ -17,7 +22,13 @@ export const STALE_AFTER_SEC = 3;
   selector: 'app-bed-tile',
   imports: [RouterLink, VitalValue, NgxSkeletonLoaderComponent],
   template: `
-    <a class="tile" [routerLink]="['/ward', slug()]" [class.alarm]="urgent()" [class.stale]="stale()" [class.empty]="patient() === null">
+    <a
+      class="tile"
+      [routerLink]="['/ward', slug()]"
+      [class.alarm]="urgent()"
+      [class.stale]="stale()"
+      [class.empty]="patient() === null"
+    >
       <header>
         <h3>{{ bed() }}</h3>
         <span class="name">
@@ -38,9 +49,27 @@ export const STALE_AFTER_SEC = 3;
       @if (vitals.hasValue()) {
         @let v = vitals.value().frame;
         <div class="vitals">
-          <app-vital-value label="HR" vital="hr" [value]="v.hr" unit="bpm" [stale]="stale()" />
-          <app-vital-value label="SpO₂" vital="spo2" [value]="v.spo2" unit="%" [stale]="stale()" />
-          <app-vital-value label="RR" vital="rr" [value]="v.rr" unit="/min" [stale]="stale()" />
+          <app-vital-value
+            label="HR"
+            vital="hr"
+            [value]="v.hr"
+            unit="bpm"
+            [stale]="stale()"
+          />
+          <app-vital-value
+            label="SpO₂"
+            vital="spo2"
+            [value]="v.spo2"
+            unit="%"
+            [stale]="stale()"
+          />
+          <app-vital-value
+            label="RR"
+            vital="rr"
+            [value]="v.rr"
+            unit="/min"
+            [stale]="stale()"
+          />
         </div>
         <footer class="row">
           @if (stale()) {
@@ -49,7 +78,9 @@ export const STALE_AFTER_SEC = 3;
             <span class="chip ok">live</span>
           }
           @for (a of alarms(); track a.event.alarmId) {
-            <span class="chip" [class.bad]="isUrgent(a)">{{ alarmTitle(a) }} · {{ a.event.status }}</span>
+            <span class="chip" [class.bad]="isUrgent(a)"
+              >{{ alarmTitle(a) }} · {{ a.event.status }}</span
+            >
           }
         </footer>
       } @else {
@@ -126,12 +157,19 @@ export class BedTile {
    */
   readonly vitals = rxResource({
     params: () => this.bed(),
-    stream: ({ params: bed }) => this.bus.watch(`/topic/vitals.${bed}`).pipe(map((frame) => ({ frame, at: Date.now() }))),
+    stream: ({ params: bed }) =>
+      this.bus
+        .watch(`/topic/vitals.${bed}`)
+        .pipe(map((frame) => ({ frame, at: Date.now() }))),
   });
 
   readonly ageSec = computed(() =>
-    this.vitals.hasValue() ? Math.max(0, Math.round((this.now() - this.vitals.value().at) / 1000)) : null,
+    this.vitals.hasValue()
+      ? Math.max(0, Math.round((this.now() - this.vitals.value().at) / 1000))
+      : null,
   );
   /** Stale data that looks live is the most dangerous thing this screen could do. */
-  readonly stale = computed(() => !this.bus.connected() || (this.ageSec() ?? 0) > STALE_AFTER_SEC);
+  readonly stale = computed(
+    () => !this.bus.connected() || (this.ageSec() ?? 0) > STALE_AFTER_SEC,
+  );
 }

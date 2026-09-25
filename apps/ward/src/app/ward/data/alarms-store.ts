@@ -17,7 +17,14 @@ import {
 } from 'rxjs';
 
 import { Logger } from '@core/logger';
-import { MessageBus, WARDS, type AlarmCode, type AlarmEvent, type AlarmId, type Ward } from '@core/messaging/contract';
+import {
+  MessageBus,
+  WARDS,
+  type AlarmCode,
+  type AlarmEvent,
+  type AlarmId,
+  type Ward,
+} from '@core/messaging/contract';
 
 /** The latest event of an alarm, plus what only its `raised` event carried. */
 export interface AlarmView {
@@ -62,7 +69,9 @@ export class AlarmsStore {
   alarms$(ward: Ward): Observable<AlarmView[]> {
     let cached = this.cache.get(ward);
     if (!cached) {
-      cached = this.load(ward).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+      cached = this.load(ward).pipe(
+        shareReplay({ bufferSize: 1, refCount: true }),
+      );
       this.cache.set(ward, cached);
     }
     return cached;
@@ -70,9 +79,16 @@ export class AlarmsStore {
 
   /** All three wards, for the overview screens. */
   all$(): Observable<AlarmView[]> {
-    const perWard = WARDS.map((w) => this.alarms$(w).pipe(startWith([] as AlarmView[])));
-    return merge(...perWard.map((a$, i) => a$.pipe(map((alarms) => [i, alarms] as const)))).pipe(
-      scan((acc, [i, alarms]) => acc.map((prev, j) => (j === i ? alarms : prev)), WARDS.map(() => [] as AlarmView[])),
+    const perWard = WARDS.map((w) =>
+      this.alarms$(w).pipe(startWith([] as AlarmView[])),
+    );
+    return merge(
+      ...perWard.map((a$, i) => a$.pipe(map((alarms) => [i, alarms] as const))),
+    ).pipe(
+      scan(
+        (acc, [i, alarms]) => acc.map((prev, j) => (j === i ? alarms : prev)),
+        WARDS.map(() => [] as AlarmView[]),
+      ),
       map((lists) => lists.flat()),
     );
   }
@@ -84,11 +100,16 @@ export class AlarmsStore {
     );
     return resync$.pipe(
       switchMap(() => {
-        const live$ = this.bus.watch(`/topic/alarms.${ward}`).pipe(shareReplay()); // replays what arrives before the snapshot
+        const live$ = this.bus
+          .watch(`/topic/alarms.${ward}`)
+          .pipe(shareReplay()); // replays what arrives before the snapshot
         const buffered = live$.subscribe(); // start listening before asking for the snapshot
         return this.bus.request('/app/alarms.active', { ward }).pipe(
           switchMap((snapshot) => {
-            const initial = snapshot.reduce(reduceAlarms, new Map() as AlarmState);
+            const initial = snapshot.reduce(
+              reduceAlarms,
+              new Map() as AlarmState,
+            );
             return live$.pipe(scan(reduceAlarms, initial), startWith(initial));
           }),
           catchError((e) => {

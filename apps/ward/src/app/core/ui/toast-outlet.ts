@@ -6,7 +6,14 @@ import { Toasts } from './toasts';
   template: `
     <div class="toasts" aria-live="polite">
       @for (t of toasts.items(); track t.id) {
-        <button type="button" class="toast" [class]="t.kind" (click)="toasts.dismiss(t.id)">{{ t.text }}</button>
+        <button
+          type="button"
+          class="toast"
+          [class]="t.kind"
+          (click)="toasts.dismiss(t.id)"
+        >
+          {{ t.text }}
+        </button>
       }
     </div>
   `,
@@ -31,9 +38,15 @@ import { Toasts } from './toasts';
       box-shadow: 0 6px 18px rgb(0 0 0 / 0.35);
       cursor: pointer;
     }
-    .success { border-left-color: var(--ok); }
-    .warn { border-left-color: var(--warn); }
-    .error { border-left-color: var(--bad); }
+    .success {
+      border-left-color: var(--ok);
+    }
+    .warn {
+      border-left-color: var(--warn);
+    }
+    .error {
+      border-left-color: var(--bad);
+    }
   `,
 })
 export class ToastOutlet {

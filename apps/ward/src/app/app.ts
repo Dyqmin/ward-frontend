@@ -1,5 +1,11 @@
 import { Component, computed, effect, inject } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import {
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 
@@ -11,7 +17,14 @@ import { DevToolbar } from './dev/dev-toolbar';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, ConnectionBadge, ToastOutlet, DevToolbar],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    ConnectionBadge,
+    ToastOutlet,
+    DevToolbar,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -41,7 +54,9 @@ export class App {
     effect(() => {
       const signedIn = this.auth.signedIn();
       if (wasSignedIn && !signedIn) {
-        void this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+        void this.router.navigate(['/login'], {
+          queryParams: { returnUrl: this.router.url },
+        });
       }
       wasSignedIn = signedIn;
     });

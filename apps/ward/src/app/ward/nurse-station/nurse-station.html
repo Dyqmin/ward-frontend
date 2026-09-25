@@ -3,37 +3,54 @@
     <h1>Nurse station</h1>
     <span class="spacer"></span>
     <nav class="row" aria-label="Ward filter">
-      <a class="button small" routerLink="/ward" [class.primary]="!selected()">All wards</a>
+      <a class="button small" routerLink="/ward" [class.primary]="!selected()"
+        >All wards</a
+      >
       @for (w of wards; track w) {
-        <a class="button small" routerLink="/ward" [queryParams]="{ ward: w }" [class.primary]="selected() === w">{{ w }}</a>
+      <a
+        class="button small"
+        routerLink="/ward"
+        [queryParams]="{ ward: w }"
+        [class.primary]="selected() === w"
+        >{{ w }}</a
+      >
       }
     </nav>
   </header>
 
   @if (empty(); as bed) {
-    <p class="card notice">Bed {{ bed }} is empty — there is no patient record to open.</p>
+  <p class="card notice">
+    Bed {{ bed }} is empty — there is no patient record to open.
+  </p>
   }
 
-  <section class="alarms card" [class.hot]="urgentCount() > 0" aria-live="polite">
+  <section
+    class="alarms card"
+    [class.hot]="urgentCount() > 0"
+    aria-live="polite"
+  >
     <h2>
-      Active alarms
-      @if (urgentCount()) {
-        <span class="chip bad">{{ urgentCount() }} need action</span>
+      Active alarms @if (urgentCount()) {
+      <span class="chip bad">{{ urgentCount() }} need action</span>
       }
     </h2>
     @for (a of alarms(); track a.event.alarmId) {
-      <app-alarm-actions [alarm]="a" />
+    <app-alarm-actions [alarm]="a" />
     } @empty {
-      <p class="muted">No active alarms.</p>
+    <p class="muted">No active alarms.</p>
     }
   </section>
 
   @for (w of visibleWards(); track w) {
-    <h2 class="ward-title">{{ w }}</h2>
-    <div class="grid">
-      @for (bed of bedsOf(w); track bed) {
-        <app-bed-tile [bed]="bed" [patient]="patients.patient(bed)" [alarms]="alarmsFor()(bed)" />
-      }
-    </div>
+  <h2 class="ward-title">{{ w }}</h2>
+  <div class="grid">
+    @for (bed of bedsOf(w); track bed) {
+    <app-bed-tile
+      [bed]="bed"
+      [patient]="patients.patient(bed)"
+      [alarms]="alarmsFor()(bed)"
+    />
+    }
+  </div>
   }
 </section>

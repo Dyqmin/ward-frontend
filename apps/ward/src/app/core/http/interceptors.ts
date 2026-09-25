@@ -9,13 +9,29 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 import { LOCALE_ID, inject } from '@angular/core';
-import { Observable, catchError, concat, filter, from, interval, map, mergeMap, retry, switchMap, take, tap, throwError, timer } from 'rxjs';
+import {
+  Observable,
+  catchError,
+  concat,
+  filter,
+  from,
+  interval,
+  map,
+  mergeMap,
+  retry,
+  switchMap,
+  take,
+  tap,
+  throwError,
+  timer,
+} from 'rxjs';
 
 import { AuthStore } from '../auth/auth-store';
 import { Logger } from '../logger';
 import { STOMP_MODE } from '../messaging/stomp-mode';
 
-const isReportRequest = (req: HttpRequest<unknown>) => req.url.includes('/api/reports/');
+const isReportRequest = (req: HttpRequest<unknown>) =>
+  req.url.includes('/api/reports/');
 
 /** Per-request flag: how many times retryInterceptor may retry this GET (0 turns it off). */
 export const RETRY_COUNT = new HttpContextToken<number>(() => 4);
@@ -27,18 +43,29 @@ export const RETRY_COUNT = new HttpContextToken<number>(() => 4);
  */
 export const mockInterceptor: HttpInterceptorFn = (req, next) => {
   if (inject(STOMP_MODE) !== 'mock' || !isReportRequest(req)) return next(req);
-  const sample = new HttpRequest('GET', '/assets/sample-report.pdf', { responseType: 'blob' });
+  const sample = new HttpRequest('GET', '/assets/sample-report.pdf', {
+    responseType: 'blob',
+  });
   const response$ = inject(HttpBackend)
     .handle(sample)
-    .pipe(filter((e): e is HttpResponse<Blob> => e.type === HttpEventType.Response));
-  if (!req.url.includes('slow=1')) return response$ as Observable<HttpEvent<unknown>>;
+    .pipe(
+      filter((e): e is HttpResponse<Blob> => e.type === HttpEventType.Response),
+    );
+  if (!req.url.includes('slow=1'))
+    return response$ as Observable<HttpEvent<unknown>>;
   // ?slow=1: fake 20 progress events over ~2 s, like the backend's chunked stream
   return response$.pipe(
     mergeMap((res) => {
       const total = res.body?.size ?? 1;
       const progress$ = interval(100).pipe(
         take(20),
-        map((i): HttpEvent<unknown> => ({ type: HttpEventType.DownloadProgress, loaded: Math.round(((i + 1) / 20) * total), total })),
+        map(
+          (i): HttpEvent<unknown> => ({
+            type: HttpEventType.DownloadProgress,
+            loaded: Math.round(((i + 1) / 20) * total),
+            total,
+          }),
+        ),
       );
       return concat(progress$, [res as HttpEvent<unknown>]);
     }),
@@ -53,11 +80,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (!isReportRequest(req)) return next(req);
   const auth = inject(AuthStore);
   const token = auth.token();
-  const withToken = (t: string) => req.clone({ setHeaders: { Authorization: `Bearer ${t}` } });
+  const withToken = (t: string) =>
+    req.clone({ setHeaders: { Authorization: `Bearer ${t}` } });
   return next(token ? withToken(token) : req).pipe(
     catchError((e: unknown) =>
       e instanceof HttpErrorResponse && e.status === 401
-        ? from(auth.freshToken()).pipe(switchMap((fresh) => next(withToken(fresh))))
+        ? from(auth.freshToken()).pipe(
+            switchMap((fresh) => next(withToken(fresh))),
+          )
         : throwError(() => e),
     ),
   );
@@ -78,7 +108,9 @@ export const retryInterceptor: HttpInterceptorFn = (req, next) =>
       delay: (error: unknown, attempt) => {
         const status = error instanceof HttpErrorResponse ? error.status : 0;
         if (req.method !== 'GET' || (status && status < 500)) throw error;
-        return timer(Math.min(500 * 2 ** (attempt - 1), 8_000) + Math.random() * 250);
+        return timer(
+          Math.min(500 * 2 ** (attempt - 1), 8_000) + Math.random() * 250,
+        );
       },
     }),
   );
@@ -87,7 +119,10 @@ export const retryInterceptor: HttpInterceptorFn = (req, next) =>
 export const errorLogInterceptor: HttpInterceptorFn = (req, next) => {
   const logger = inject(Logger);
   return next(req).pipe(
-    tap({ error: (e: HttpErrorResponse) => logger.error(`${req.method} ${req.url} → ${e.status}`, e.message) }),
+    tap({
+      error: (e: HttpErrorResponse) =>
+        logger.error(`${req.method} ${req.url} → ${e.status}`, e.message),
+    }),
   );
 };
 
@@ -97,7 +132,10 @@ export const auditInterceptor: HttpInterceptorFn = (req, next) => {
   const who = inject(AuthStore).participantId();
   return next(req).pipe(
     tap((e) => {
-      if (e.type === HttpEventType.Response) logger.info(`AUDIT ${who ?? 'anonymous'} downloaded ${req.urlWithParams}`);
+      if (e.type === HttpEventType.Response)
+        logger.info(
+          `AUDIT ${who ?? 'anonymous'} downloaded ${req.urlWithParams}`,
+        );
     }),
   );
 };

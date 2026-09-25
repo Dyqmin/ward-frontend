@@ -29,7 +29,14 @@ import { VitalsChart } from './vitals-chart';
 
 @Component({
   selector: 'app-bed-detail',
-  imports: [RouterLink, NgxSkeletonLoaderComponent, VitalValue, VitalsChart, AlarmActions, MedicationList],
+  imports: [
+    RouterLink,
+    NgxSkeletonLoaderComponent,
+    VitalValue,
+    VitalsChart,
+    AlarmActions,
+    MedicationList,
+  ],
   templateUrl: './bed-detail.html',
   styleUrl: './bed-detail.scss',
 })
@@ -51,14 +58,21 @@ export default class BedDetail {
   protected readonly clock = clock;
   protected readonly who = who;
   protected readonly slug = computed(() => toSlug(this.patient().bed));
-  protected readonly admitted = computed(() => `${new Date(this.patient().admittedAt).toLocaleDateString()} ${clock(this.patient().admittedAt)}`);
+  protected readonly admitted = computed(
+    () =>
+      `${new Date(this.patient().admittedAt).toLocaleDateString()} ${clock(this.patient().admittedAt)}`,
+  );
 
-  protected readonly latest = computed(() => (this.vitals().hasValue() ? this.vitals().value()?.at(-1) : undefined));
+  protected readonly latest = computed(() =>
+    this.vitals().hasValue() ? this.vitals().value()?.at(-1) : undefined,
+  );
   protected readonly ageSec = computed(() => {
     const f = this.latest();
     return f ? Math.max(0, Math.round((this.now() - f.ts) / 1000)) : null;
   });
-  protected readonly stale = computed(() => !this.bus.connected() || (this.ageSec() ?? 0) > STALE_AFTER_SEC);
+  protected readonly stale = computed(
+    () => !this.bus.connected() || (this.ageSec() ?? 0) > STALE_AFTER_SEC,
+  );
 
   private readonly wardAlarms = toSignal(
     // from the URL, not from `patient`: blocking-resource inputs are bound by a router effect, after construction
@@ -71,7 +85,9 @@ export default class BedDetail {
     ),
     { initialValue: [] },
   );
-  protected readonly alarms = computed(() => this.wardAlarms().filter((a) => a.event.bed === this.patient().bed));
+  protected readonly alarms = computed(() =>
+    this.wardAlarms().filter((a) => a.event.bed === this.patient().bed),
+  );
 
   /** Re-fetch without re-running guards or navigation. */
   protected refreshRecord(): void {

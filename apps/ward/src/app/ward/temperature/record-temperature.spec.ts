@@ -18,7 +18,10 @@ describe('lab: record a temperature', () => {
     vi.useFakeTimers();
     ward = new MockWard();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideStomp({}, withMockBroker(createWardFixtures(ward)))],
+      providers: [
+        provideHttpClient(),
+        provideStomp({}, withMockBroker(createWardFixtures(ward))),
+      ],
     });
     await TestBed.inject(AuthStore).join('Ann', 'nurse', 'ward-demo');
     bus = TestBed.inject(MessageBus) as FakeMessageBus;
@@ -27,14 +30,21 @@ describe('lab: record a temperature', () => {
   afterEach(() => vi.useRealTimers());
 
   const record = (value: number) =>
-    firstValueFrom(bus.send('/app/vitals.record', { bed: 'ICU-3', vital: 'temp', value }).pipe(commandRetry(bus)));
+    firstValueFrom(
+      bus
+        .send('/app/vitals.record', { bed: 'ICU-3', vital: 'temp', value })
+        .pipe(commandRetry(bus)),
+    );
 
   it('accepts 37.2 and refuses 51 as implausible', async () => {
     const ok = record(37.2);
     const bad = record(51);
     await vi.advanceTimersByTimeAsync(300);
     expect(await ok).toEqual({ status: 'accepted', value: null });
-    expect(await bad).toEqual({ status: 'forbidden', reason: 'Implausible value' });
+    expect(await bad).toEqual({
+      status: 'forbidden',
+      reason: 'Implausible value',
+    });
   });
 
   it('records exactly one reading through an 8 s outage, retrying with the same commandId', async () => {
@@ -43,8 +53,12 @@ describe('lab: record a temperature', () => {
     await vi.advanceTimersByTimeAsync(10_000);
 
     expect(await result).toEqual({ status: 'accepted', value: null });
-    const attempts = bus.log().filter((e) => e.destination === '/app/vitals.record');
-    expect(attempts.filter((e) => e.outcome === 'offline').length).toBeGreaterThanOrEqual(2);
+    const attempts = bus
+      .log()
+      .filter((e) => e.destination === '/app/vitals.record');
+    expect(
+      attempts.filter((e) => e.outcome === 'offline').length,
+    ).toBeGreaterThanOrEqual(2);
     expect(new Set(attempts.map((e) => e.commandId)).size).toBe(1);
     expect(ward.readings.get('ICU-3')).toHaveLength(1);
   });
@@ -58,7 +72,11 @@ describe('lab: record a temperature', () => {
   });
 
   it('sends the same command twice and still records one reading', async () => {
-    const once$ = bus.send('/app/vitals.record', { bed: 'ICU-4', vital: 'temp', value: 36.9 });
+    const once$ = bus.send('/app/vitals.record', {
+      bed: 'ICU-4',
+      vital: 'temp',
+      value: 36.9,
+    });
     const a = firstValueFrom(once$);
     const b = firstValueFrom(once$);
     await vi.advanceTimersByTimeAsync(300);

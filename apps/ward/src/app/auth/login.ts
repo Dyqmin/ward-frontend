@@ -21,14 +21,27 @@ import { STOMP_MODE } from '@core/messaging/stomp-mode';
 
       <label>
         Name
-        <input name="name" required maxlength="40" autocomplete="nickname" [value]="name()" (input)="name.set(value($event))" />
+        <input
+          name="name"
+          required
+          maxlength="40"
+          autocomplete="nickname"
+          [value]="name()"
+          (input)="name.set(value($event))"
+        />
       </label>
 
       <fieldset class="roles">
         <legend class="muted">Role</legend>
         @for (r of roles; track r) {
           <label class="role" [class.selected]="role() === r">
-            <input type="radio" name="role" [value]="r" [checked]="role() === r" (change)="role.set(r)" />
+            <input
+              type="radio"
+              name="role"
+              [value]="r"
+              [checked]="role() === r"
+              (change)="role.set(r)"
+            />
             {{ r === 'nurse' ? 'Nurse' : 'Doctor' }}
           </label>
         }
@@ -36,11 +49,20 @@ import { STOMP_MODE } from '@core/messaging/stomp-mode';
 
       <label>
         Room code
-        <input name="room" required [value]="roomCode()" (input)="roomCode.set(value($event))" />
+        <input
+          name="room"
+          required
+          [value]="roomCode()"
+          (input)="roomCode.set(value($event))"
+        />
       </label>
 
       <label class="inline">
-        <input type="checkbox" [checked]="useSandbox()" (change)="useSandbox.set(!useSandbox())" />
+        <input
+          type="checkbox"
+          [checked]="useSandbox()"
+          (change)="useSandbox.set(!useSandbox())"
+        />
         Use my private sandbox room (for the lab)
       </label>
 
@@ -48,10 +70,16 @@ import { STOMP_MODE } from '@core/messaging/stomp-mode';
         <p class="error-text">{{ e }}</p>
       }
 
-      <button class="primary" type="submit" [disabled]="busy() || !name().trim()">
+      <button
+        class="primary"
+        type="submit"
+        [disabled]="busy() || !name().trim()"
+      >
         {{ busy() ? 'Joining…' : 'Join ward' }}
       </button>
-      <p class="muted small">All patients and values are fictional and illustrative, not clinical.</p>
+      <p class="muted small">
+        All patients and values are fictional and illustrative, not clinical.
+      </p>
     </form>
   `,
   styles: `
@@ -122,7 +150,12 @@ export default class Login {
     this.busy.set(true);
     this.error.set(null);
     try {
-      await this.auth.join(this.name().trim(), this.role(), this.roomCode().trim(), this.useSandbox());
+      await this.auth.join(
+        this.name().trim(),
+        this.role(),
+        this.roomCode().trim(),
+        this.useSandbox(),
+      );
       await this.router.navigateByUrl(this.returnUrl() || '/ward');
     } catch (e) {
       this.error.set(describe(e));
@@ -134,9 +167,16 @@ export default class Login {
 
 function describe(e: unknown): string {
   if (e instanceof HttpErrorResponse) {
-    if (e.status === 0) return `Backend unreachable at ${environment.apiUrl}. Start ward-worker, or add ?mock to the URL.`;
+    if (e.status === 0)
+      return `Backend unreachable at ${environment.apiUrl}. Start ward-worker, or add ?mock to the URL.`;
     const body: unknown = e.error;
-    if (body && typeof body === 'object' && 'error' in body && typeof body.error === 'string') return body.error;
+    if (
+      body &&
+      typeof body === 'object' &&
+      'error' in body &&
+      typeof body.error === 'string'
+    )
+      return body.error;
     return `${e.status} ${e.statusText}`;
   }
   return e instanceof Error ? e.message : String(e);
