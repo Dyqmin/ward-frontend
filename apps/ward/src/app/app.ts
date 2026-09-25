@@ -4,18 +4,21 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 
 import { AuthStore } from '@core/auth/auth-store';
+import { STOMP_MODE } from '@core/messaging/stomp-mode';
 import { ConnectionBadge } from '@core/ui/connection-badge';
 import { ToastOutlet } from '@core/ui/toast-outlet';
+import { DevToolbar } from './dev/dev-toolbar';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, ConnectionBadge, ToastOutlet],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, ConnectionBadge, ToastOutlet, DevToolbar],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class App {
   protected readonly auth = inject(AuthStore);
   private readonly router = inject(Router);
+  protected readonly mock = inject(STOMP_MODE) === 'mock';
 
   private readonly url = toSignal(
     this.router.events.pipe(

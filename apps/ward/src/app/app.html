@@ -24,4 +24,8 @@
   <router-outlet />
 </main>
 
+@if (mock && auth.signedIn() && !bare()) {
+  <app-dev-toolbar />
+}
+
 <app-toast-outlet />
