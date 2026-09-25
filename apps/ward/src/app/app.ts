@@ -32,11 +32,15 @@ export class App {
   });
 
   constructor() {
-    // session ended (logout, or a refresh answered 401): back to the join page
+    // session ended (logout, or a refresh answered 401): back to the join page.
+    // Only on the transition — at startup the authGuard already handles a missing session.
+    let wasSignedIn = this.auth.signedIn();
     effect(() => {
-      if (!this.auth.signedIn() && !this.router.url.startsWith('/login')) {
+      const signedIn = this.auth.signedIn();
+      if (wasSignedIn && !signedIn) {
         void this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
       }
+      wasSignedIn = signedIn;
     });
   }
 
