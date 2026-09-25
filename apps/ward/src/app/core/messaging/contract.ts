@@ -144,12 +144,12 @@ export interface MockContext {
 
 /**
  * What the fake broker serves. A stream is either a list of frames replayed once per second
- * (timestamps are refreshed) or a function of the tick. A wrong payload for a destination, or a
- * wrong reply shape for an RPC, does not compile.
+ * (timestamps are refreshed) or a function of the tick (epoch seconds). A wrong payload for a
+ * destination, or a wrong reply shape for an RPC, does not compile.
  */
 export type MockFixtures = {
   streams: {
-    [D in StreamDestination]?: readonly PayloadOf<D>[] | ((tick: number, now: number) => PayloadOf<D> | null);
+    [D in StreamDestination]?: readonly PayloadOf<D>[] | ((tick: number, ctx: MockContext) => PayloadOf<D> | null);
   };
   replies: {
     [K in WardRpcName as `/app/${K}`]?: (req: WardRpcContract[K]['req'], ctx: MockContext) => WardRpcContract[K]['res'];
