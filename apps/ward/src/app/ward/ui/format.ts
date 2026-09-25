@@ -1,4 +1,4 @@
-import { assertNever, type AlarmCode, type ParticipantId } from '@core/messaging/contract';
+import { assertNever, type AlarmCode, type BedId, type ParticipantId } from '@core/messaging/contract';
 import type { AlarmView } from '../data/alarms-store';
 
 export const ALARM_LABELS: Record<AlarmCode, string> = {
@@ -42,3 +42,12 @@ export function alarmStatus(a: AlarmView): string {
 }
 
 export const isUrgent = (a: AlarmView): boolean => a.event.status === 'raised' || a.event.status === 'escalated';
+
+const NONE: readonly AlarmView[] = [];
+
+/** Alarms grouped by bed, so each tile gets a stable array instead of a new one per change detection. */
+export function alarmsByBed(alarms: readonly AlarmView[]): (bed: BedId) => readonly AlarmView[] {
+  const map = new Map<BedId, AlarmView[]>();
+  for (const a of alarms) map.set(a.event.bed, [...(map.get(a.event.bed) ?? []), a]);
+  return (bed) => map.get(bed) ?? NONE;
+}
