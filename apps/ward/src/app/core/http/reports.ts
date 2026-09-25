@@ -19,8 +19,11 @@ export interface DownloadState {
 /**
  * The app's only HTTP feature: PDF reports. ward-worker serves `lab.pdf`; the discharge summary is
  * served by the mock interceptor only (the backend answers 404, which the page explains).
+ *
+ * `autoProvided: false`: provided on the lazy `reports` route, so it injects THAT route's HttpClient
+ * (audit interceptor first, then the root chain via withRequestsMadeViaParent()).
  */
-@Service()
+@Service({ autoProvided: false })
 export class Reports {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthStore);
