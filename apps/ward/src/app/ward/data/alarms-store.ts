@@ -17,14 +17,27 @@ import {
 } from 'rxjs';
 
 import { Logger } from '@core/logger';
-import { MessageBus, WARDS, type AlarmEvent, type AlarmId, type Ward } from '@core/messaging/contract';
+import { MessageBus, WARDS, type AlarmCode, type AlarmEvent, type AlarmId, type Ward } from '@core/messaging/contract';
 
-type AlarmState = ReadonlyMap<AlarmId, AlarmEvent>;
+/** The latest event of an alarm, plus what only its `raised` event carried. */
+export interface AlarmView {
+  event: AlarmEvent;
+  code: AlarmCode | null;
+  value: number | null;
+}
 
-/** The newest event per alarmId wins. */
+type AlarmState = ReadonlyMap<AlarmId, AlarmView>;
+
+/** The newest event per alarmId wins; code and value survive from the last `raised` event. */
 export function reduceAlarms(state: AlarmState, e: AlarmEvent): AlarmState {
+  const prev = state.get(e.alarmId);
   const next = new Map(state);
-  next.set(e.alarmId, e);
+  next.set(
+    e.alarmId,
+    e.status === 'raised'
+      ? { event: e, code: e.code, value: e.value }
+      : { event: e, code: prev?.code ?? null, value: prev?.value ?? null },
+  );
   return next;
 }
 
@@ -44,9 +57,9 @@ export class AlarmsStore {
   private readonly bus = inject(MessageBus);
   private readonly logger = inject(Logger);
   private readonly connected$ = toObservable(this.bus.connected);
-  private readonly cache = new Map<Ward, Observable<AlarmEvent[]>>();
+  private readonly cache = new Map<Ward, Observable<AlarmView[]>>();
 
-  alarms$(ward: Ward): Observable<AlarmEvent[]> {
+  alarms$(ward: Ward): Observable<AlarmView[]> {
     let cached = this.cache.get(ward);
     if (!cached) {
       cached = this.load(ward).pipe(shareReplay({ bufferSize: 1, refCount: true }));
@@ -56,15 +69,15 @@ export class AlarmsStore {
   }
 
   /** All three wards, for the overview screens. */
-  all$(): Observable<AlarmEvent[]> {
-    const perWard = WARDS.map((w) => this.alarms$(w).pipe(startWith([] as AlarmEvent[])));
+  all$(): Observable<AlarmView[]> {
+    const perWard = WARDS.map((w) => this.alarms$(w).pipe(startWith([] as AlarmView[])));
     return merge(...perWard.map((a$, i) => a$.pipe(map((alarms) => [i, alarms] as const)))).pipe(
-      scan((acc, [i, alarms]) => acc.map((prev, j) => (j === i ? alarms : prev)), WARDS.map(() => [] as AlarmEvent[])),
+      scan((acc, [i, alarms]) => acc.map((prev, j) => (j === i ? alarms : prev)), WARDS.map(() => [] as AlarmView[])),
       map((lists) => lists.flat()),
     );
   }
 
-  private load(ward: Ward): Observable<AlarmEvent[]> {
+  private load(ward: Ward): Observable<AlarmView[]> {
     const resync$ = merge(
       this.connected$.pipe(distinctUntilChanged(), filter(Boolean)), // every (re)connect
       interval(ALARM_RESYNC_MS).pipe(filter(() => this.bus.connected())),
@@ -75,7 +88,7 @@ export class AlarmsStore {
         const buffered = live$.subscribe(); // start listening before asking for the snapshot
         return this.bus.request('/app/alarms.active', { ward }).pipe(
           switchMap((snapshot) => {
-            const initial: AlarmState = new Map(snapshot.map((a) => [a.alarmId, a]));
+            const initial = snapshot.reduce(reduceAlarms, new Map() as AlarmState);
             return live$.pipe(scan(reduceAlarms, initial), startWith(initial));
           }),
           catchError((e) => {
