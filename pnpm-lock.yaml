@@ -39,6 +39,9 @@ importers:
         specifier: ~7.8.0
         version: 7.8.2
     devDependencies:
+      '@angular-devkit/architect':
+        specifier: 0.2202.0
+        version: 0.2202.0(chokidar@5.0.0)
       '@angular-devkit/core':
         specifier: ~22.2.0
         version: 22.2.0(chokidar@5.0.0)
