@@ -27,7 +27,6 @@ import { clock, who } from '../ui/format';
             step="0.1"
             min="30"
             max="43"
-            autofocus
             [value]="value()"
             (input)="value.set(text($event))"
           />

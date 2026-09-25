@@ -23,7 +23,7 @@ import { ConnectionBadge } from '@core/ui/connection-badge';
         <app-connection-badge />
       </header>
 
-      @if (bed(); as b) {
+      @if (monitored(); as b) {
         <h1>{{ b }}</h1>
         <div class="live" [class.alarm]="alarming()">
           <span class="label">live HR</span>
@@ -47,9 +47,9 @@ import { ConnectionBadge } from '@core/ui/connection-badge';
         <label>
           Bed (mock mode)
           <select (change)="pick($event)">
-            <option value="" [selected]="!bed()">–</option>
+            <option value="" [selected]="!monitored()">–</option>
             @for (b of beds; track b) {
-              <option [value]="b" [selected]="bed() === b">{{ b }}</option>
+              <option [value]="b" [selected]="monitored() === b">{{ b }}</option>
             }
           </select>
         </label>
@@ -101,7 +101,7 @@ import { ConnectionBadge } from '@core/ui/connection-badge';
 })
 export default class MonitorSimulator {
   /** `/monitor/icu-3`: the bed from the QR code (always used in mock mode, a hint otherwise). */
-  readonly bedSlug = input<string>(undefined, { alias: 'bed' });
+  readonly bed = input<string>();
 
   private readonly bus = inject(MessageBus);
   private readonly auth = inject(AuthStore);
@@ -112,17 +112,17 @@ export default class MonitorSimulator {
   /** Room-game notices: "your phone is now the monitor for ICU-3" / "round over". */
   private readonly notice = toSignal(this.noticesForMe());
 
-  protected readonly bed = linkedSignal<BedId | null>(() => {
+  protected readonly monitored = linkedSignal<BedId | null>(() => {
     const n = this.notice();
     if (n) return n.kind === 'patient' ? n.bed : null;
-    return bedFromSlug(this.bedSlug() ?? '');
+    return bedFromSlug(this.bed() ?? '');
   });
 
-  protected readonly target = linkedSignal({ source: this.bed, computation: () => 72 });
-  protected readonly refusal = linkedSignal<BedId | null, string | null>({ source: this.bed, computation: () => null });
+  protected readonly target = linkedSignal({ source: this.monitored, computation: () => 72 });
+  protected readonly refusal = linkedSignal<BedId | null, string | null>({ source: this.monitored, computation: () => null });
 
   private readonly vitals = rxResource({
-    params: () => this.bed() ?? undefined,
+    params: () => this.monitored() ?? undefined,
     stream: ({ params: bed }) => this.bus.watch(`/topic/vitals.${bed}`),
   });
   protected readonly liveHr = computed(() => (this.vitals.hasValue() ? this.vitals.value()?.hr : undefined));
@@ -139,7 +139,7 @@ export default class MonitorSimulator {
       .pipe(
         throttleTime(250, undefined, { leading: true, trailing: true }),
         switchMap((hr) => {
-          const bed = this.bed();
+          const bed = this.monitored();
           return bed ? this.bus.send('/app/monitor.set', { bed, hr }) : of(null);
         }),
         map((r) => (r && r.status === 'forbidden' ? r.reason : null)),
@@ -149,8 +149,8 @@ export default class MonitorSimulator {
 
     // keep the URL in step with the assigned bed, so a reload lands on the same monitor
     effect(() => {
-      const bed = this.bed();
-      if (bed && bedFromSlug(this.bedSlug() ?? '') !== bed) void this.router.navigate(['/monitor', toSlug(bed)], { replaceUrl: true });
+      const bed = this.monitored();
+      if (bed && bedFromSlug(this.bed() ?? '') !== bed) void this.router.navigate(['/monitor', toSlug(bed)], { replaceUrl: true });
     });
   }
 
@@ -166,6 +166,6 @@ export default class MonitorSimulator {
   }
 
   protected pick(e: Event): void {
-    this.bed.set(bedFromSlug((e.target as HTMLSelectElement).value));
+    this.monitored.set(bedFromSlug((e.target as HTMLSelectElement).value));
   }
 }

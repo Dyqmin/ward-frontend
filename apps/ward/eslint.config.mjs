@@ -10,6 +10,8 @@ export default [
             "**/*.ts"
         ],
         rules: {
+            // unused parameters are kept when they document a signature (e.g. v22's CanMatchFn)
+            "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
             "@angular-eslint/directive-selector": [
                 "error",
                 {
