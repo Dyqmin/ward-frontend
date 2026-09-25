@@ -4,6 +4,7 @@ import {
   provideRouter,
   withAutoCleanupInjectors,
   withComponentInputBinding,
+  withNavigationErrorHandler,
   withPreloading,
   withRouterResources,
 } from '@angular/router';
@@ -16,6 +17,7 @@ import {
   mockInterceptor,
   retryInterceptor,
 } from '@core/http/interceptors';
+import { handleNavigationError } from '@core/navigation-errors';
 import { provideStomp, withAuthToken, withErrorLogging, withExponentialReconnect } from '@core/messaging/provide-stomp';
 import { provideAppSeo } from '@core/providers/seo';
 import { provideSkeletonConfig } from '@core/providers/skeleton';
@@ -32,6 +34,7 @@ export const appConfig: ApplicationConfig = {
       withRouterResources(), // developer preview (22.2): `resources` on routes
       withAutoCleanupInjectors(), // route injectors (and their providers) are destroyed when left
       withPreloading(WifiAwarePreloading),
+      withNavigationErrorHandler(handleNavigationError), // unwraps RedirectCommand thrown by resource loaders
     ),
     // PDF reports only; mock first so it can short-circuit the chain
     provideHttpClient(

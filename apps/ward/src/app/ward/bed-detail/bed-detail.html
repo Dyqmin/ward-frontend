@@ -1,0 +1,76 @@
+<section class="page">
+  <a class="back" routerLink="/ward">← Ward</a>
+
+  <!-- blocking: always there, no @if -->
+  <header class="head">
+    <div>
+      <h1>{{ patient().name }} · {{ patient().bed }}</h1>
+      <p class="muted">Patient {{ patient().id }} · admitted {{ admitted() }}</p>
+    </div>
+    <div class="row actions">
+      @if (role() === 'nurse') {
+        <!-- the lab adds "Record temperature" here -->
+      }
+      @if (role() === 'doctor') {
+        <a class="button primary" [routerLink]="['meds', 'new']">Order medication</a>
+      }
+      <a class="button" [routerLink]="['/reports', 'lab', slug()]">Lab report (PDF)</a>
+      <a class="button" [routerLink]="['/reports', 'discharge', slug()]">Discharge summary</a>
+      <button type="button" (click)="refreshRecord()">Refresh record</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <section class="card vitals">
+      <h2 class="row">
+        Vitals
+        <span class="spacer"></span>
+        @if (latest()) {
+          @if (stale()) {
+            <span class="chip warn">no data for {{ ageSec() }} s</span>
+          } @else {
+            <span class="chip ok">live</span>
+          }
+        }
+      </h2>
+
+      <!-- non-blocking: the page is already here; the resource says how far the data is -->
+      @if (vitals().hasValue()) {
+        @if (latest(); as f) {
+          <div class="now">
+            <app-vital-value label="HR" vital="hr" [value]="f.hr" unit="bpm" [stale]="stale()" />
+            <app-vital-value label="SpO₂" vital="spo2" [value]="f.spo2" unit="%" [stale]="stale()" />
+            <app-vital-value label="RR" vital="rr" [value]="f.rr" unit="/min" [stale]="stale()" />
+          </div>
+        }
+        <app-vitals-chart [frames]="vitals().value() ?? []" />
+      } @else if (vitals().error()) {
+        <p class="warn">Live vitals unavailable – no data is shown rather than old data.</p>
+      } @else {
+        <ngx-skeleton-loader count="4" />
+      }
+    </section>
+
+    <aside class="side">
+      <section class="card stack">
+        <h2>Alarms</h2>
+        @for (a of alarms(); track a.event.alarmId) {
+          <app-alarm-actions [alarm]="a" />
+        } @empty {
+          <p class="muted">No active alarms for this bed.</p>
+        }
+      </section>
+
+      <section class="card stack">
+        <h2>Medication</h2>
+        @if (meds().hasValue()) {
+          <app-medication-list [orders]="meds().value() ?? []" (changed)="reloadMeds()" />
+        } @else if (meds().error()) {
+          <p class="warn">Medication orders unavailable.</p>
+        } @else {
+          <ngx-skeleton-loader count="2" />
+        }
+      </section>
+    </aside>
+  </div>
+</section>
