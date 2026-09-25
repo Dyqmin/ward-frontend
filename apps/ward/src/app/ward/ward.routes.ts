@@ -2,7 +2,7 @@ import { ActivatedRouteSnapshot, ResolveFn, Routes, nonBlocking } from '@angular
 
 import { hasRole } from '@core/auth/guards';
 import { bedFromSlug } from '@core/messaging/contract';
-import { medicationResource, patientResource, vitalsResource } from './bed-detail/bed-resources';
+import { manualReadingsResource, medicationResource, patientResource, vitalsResource } from './bed-detail/bed-resources';
 import { unsentValueGuard, validBed } from './guards';
 import { stepCompleted, unsavedDraftGuard } from './med-order/guards';
 import { MedOrderDraftStore } from './med-order/med-order-draft-store';
@@ -56,6 +56,7 @@ export default [
       patient: patientResource(ctx), // blocking: the record must exist before the page shows
       vitals: nonBlocking(vitalsResource(ctx)), // non-blocking: snapshot first, then the live stream
       meds: nonBlocking(medicationResource(ctx)),
+      readings: nonBlocking(manualReadingsResource(ctx)),
     }),
   },
 ] satisfies Routes;

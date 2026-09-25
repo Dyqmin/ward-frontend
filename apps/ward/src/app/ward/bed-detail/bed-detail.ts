@@ -14,6 +14,7 @@ import {
   bedFromSlug,
   toSlug,
   wardOf,
+  type ManualReading,
   type MedOrder,
   type RpcResult,
   type VitalsFrame,
@@ -21,7 +22,7 @@ import {
 import { AlarmsStore } from '../data/alarms-store';
 import { AlarmActions } from '../ui/alarm-actions';
 import { STALE_AFTER_SEC } from '../ui/bed-tile';
-import { clock } from '../ui/format';
+import { clock, who } from '../ui/format';
 import { VitalValue } from '../ui/vital-value';
 import { MedicationList } from './medication-list';
 import { VitalsChart } from './vitals-chart';
@@ -38,6 +39,7 @@ export default class BedDetail {
   /** Non-blocking resources → the whole Resource, with its loading and error signals. */
   readonly vitals = input.required<Resource<VitalsFrame[] | undefined>>();
   readonly meds = input.required<RouteResource<MedOrder[] | undefined>>();
+  readonly readings = input.required<Resource<ManualReading[] | undefined>>();
 
   private readonly route = inject(ActivatedRoute);
   private readonly bus = inject(MessageBus);
@@ -46,6 +48,8 @@ export default class BedDetail {
   private readonly alarmsStore = inject(AlarmsStore);
 
   protected readonly role = this.auth.role;
+  protected readonly clock = clock;
+  protected readonly who = who;
   protected readonly slug = computed(() => toSlug(this.patient().bed));
   protected readonly admitted = computed(() => `${new Date(this.patient().admittedAt).toLocaleDateString()} ${clock(this.patient().admittedAt)}`);
 

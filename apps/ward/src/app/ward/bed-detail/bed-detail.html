@@ -9,7 +9,7 @@
     </div>
     <div class="row actions">
       @if (role() === 'nurse') {
-        <!-- the lab adds "Record temperature" here -->
+        <a class="button primary" [routerLink]="['temperature']">Record temperature</a>
       }
       @if (role() === 'doctor') {
         <a class="button primary" [routerLink]="['meds', 'new']">Order medication</a>
@@ -58,6 +58,24 @@
           <app-alarm-actions [alarm]="a" />
         } @empty {
           <p class="muted">No active alarms for this bed.</p>
+        }
+      </section>
+
+      <section class="card stack">
+        <h2>Temperature</h2>
+        @if (readings().hasValue()) {
+          @for (r of readings().value(); track r.at) {
+            <div class="row">
+              <strong>{{ r.value.toFixed(1) }} °C</strong>
+              <span class="muted">{{ who(r.by) }}, {{ clock(r.at) }}</span>
+            </div>
+          } @empty {
+            <p class="muted">No temperature recorded yet.</p>
+          }
+        } @else if (readings().error()) {
+          <p class="warn">Recorded temperatures unavailable.</p>
+        } @else {
+          <ngx-skeleton-loader count="1" />
         }
       </section>
 

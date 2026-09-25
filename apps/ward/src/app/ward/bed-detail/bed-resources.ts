@@ -43,3 +43,12 @@ export function medicationResource(ctx: ResourceContext) {
     stream: ({ params: bed }) => bus.request('/app/medication.list', { bed }),
   });
 }
+
+/** Non-blocking candidate: manually recorded temperatures, newest first. */
+export function manualReadingsResource(ctx: ResourceContext) {
+  const bus = inject(MessageBus);
+  return rxResource({
+    params: bedOf(ctx),
+    stream: ({ params: bed }) => bus.request('/app/vitals.manual', { bed }),
+  });
+}
