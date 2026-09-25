@@ -212,6 +212,8 @@ export function createWardFixtures(ward = new MockWard()) {
 
       '/app/alarms.active': ({ ward: w }) => ward.activeAlarms(w),
 
+      '/app/vitals.manual': ({ bed }) => [...(ward.readings.get(bed) ?? [])].reverse(), // newest first
+
       // ---------- commands ----------
       '/app/alarms.ack': ({ alarmId, performedAt }, ctx) => {
         if (!isNurse(ctx.actor)) return forbidden('Only nurses can acknowledge alarms');
@@ -251,6 +253,21 @@ export function createWardFixtures(ward = new MockWard()) {
         if (order.given) return { status: 'conflict', by: order.given.by, at: order.given.at };
         order.status = 'given';
         order.given = { by: ctx.actor, at: performedAt };
+        return accepted(null);
+      },
+
+      // Lab task 1: 'vitals.record' already exists in the RpcContract; this is its fixture.
+      // Try `vital: 'hr'` in the form and watch it fail to compile (ManualVital is 'temp' only).
+      '/app/vitals.record': ({ bed, vital, value, performedAt }, ctx) => {
+        if (!isNurse(ctx.actor)) return forbidden('Only nurses can record vitals');
+        if (!ward.patients.has(bed)) return forbidden(`Bed ${bed} is empty`);
+        if (value < 30 || value > 43) return forbidden('Implausible value');
+        // stretch: another nurse recorded this bed less than 60 s ago
+        const last = ward.readings.get(bed)?.at(-1);
+        if (last && last.by !== ctx.actor && ctx.now - Date.parse(last.at) < 60_000) {
+          return { status: 'conflict', by: last.by, at: last.at };
+        }
+        ward.readings.set(bed, [...(ward.readings.get(bed) ?? []), { bed, vital, value, by: ctx.actor, at: performedAt }]);
         return accepted(null);
       },
 
