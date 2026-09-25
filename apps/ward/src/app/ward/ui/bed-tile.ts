@@ -130,6 +130,14 @@ export const STALE_AFTER_SEC = 3;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    footer {
+      min-width: 0;
+    }
+    footer .chip {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .vitals {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
