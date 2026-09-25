@@ -8,7 +8,9 @@
   "targets": {
     "build": {
       "executor": "@angular/build:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/ward",
@@ -21,7 +23,12 @@
             "input": "apps/ward/public"
           }
         ],
-        "styles": ["apps/ward/src/styles.scss"]
+        "styles": [
+          "apps/ward/src/styles.scss"
+        ],
+        "allowedCommonJsDependencies": [
+          "@stomp/stompjs"
+        ]
       },
       "configurations": {
         "production": {
@@ -68,7 +75,9 @@
         "{workspaceRoot}/eslint.config.mjs",
         "{workspaceRoot}/tools/eslint-rules/**/*",
         {
-          "externalDependencies": ["eslint"]
+          "externalDependencies": [
+            "eslint"
+          ]
         }
       ]
     },

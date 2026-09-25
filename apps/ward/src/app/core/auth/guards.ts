@@ -1,13 +1,19 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, CanMatchFn, RedirectCommand, Router } from '@angular/router';
+import { CanMatchFn, RedirectCommand, Router } from '@angular/router';
 
 import type { Role } from '../messaging/contract';
 import { AuthStore } from './auth-store';
 
-/** Not signed in → `/login`, remembering where the user wanted to go. */
-export const authGuard: CanActivateFn = (_route, state) =>
+/**
+ * Not signed in → `/login`, remembering where the user wanted to go. A `canMatch` guard, so it runs
+ * before the role-based `canMatch` guards of the children — otherwise a signed-out user would match
+ * no child and fall through to the wildcard route.
+ */
+export const authGuard: CanMatchFn = (_route, segments) =>
   inject(AuthStore).signedIn() ||
-  new RedirectCommand(inject(Router).createUrlTree(['/login'], { queryParams: { returnUrl: state.url } }));
+  new RedirectCommand(
+    inject(Router).createUrlTree(['/login'], { queryParams: { returnUrl: '/' + segments.map((s) => s.path).join('/') } }),
+  );
 
 /**
  * `canMatch`, not `canActivate`: for the wrong role the route does not exist, so the router tries
