@@ -1,15 +1,12 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
-import { Observable, finalize, retry, timer } from 'rxjs';
+import { Observable, finalize } from 'rxjs';
 
+import { commandRetry } from '@core/messaging/command-retry';
 import { AuthStore } from '@core/auth/auth-store';
 import { MessageBus, assertNever, type CommandResult, type SnoozeMinutes, SNOOZE_MINUTES } from '@core/messaging/contract';
 import { Toasts } from '@core/ui/toasts';
 import type { AlarmView } from '../data/alarms-store';
 import { alarmStatus, alarmTitle, clock, isUrgent, who } from './format';
-
-/** Up to 5 retries, 500 ms → 8 s. Safe only because every retry carries the same commandId. */
-export const commandRetry = <T>() =>
-  retry<T>({ count: 5, delay: (_, n) => timer(Math.min(500 * 2 ** (n - 1), 8_000)) });
 
 @Component({
   selector: 'app-alarm-actions',
@@ -91,7 +88,7 @@ export class AlarmActions {
     this.pending.set(true);
     command$
       .pipe(
-        commandRetry(),
+        commandRetry(this.bus),
         finalize(() => this.pending.set(false)),
       )
       .subscribe({

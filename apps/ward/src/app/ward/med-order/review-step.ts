@@ -5,7 +5,7 @@ import { finalize } from 'rxjs';
 import { MessageBus, assertNever, link } from '@core/messaging/contract';
 import { Toasts } from '@core/ui/toasts';
 import { PatientsStore } from '../data/patients-store';
-import { commandRetry } from '../ui/alarm-actions';
+import { commandRetry } from '@core/messaging/command-retry';
 import { who } from '../ui/format';
 import { MedOrderDraftStore } from './med-order-draft-store';
 
@@ -81,7 +81,7 @@ export default class ReviewStep {
     this.bus
       .send('/app/medication.order', draft) // doctors only — the server rejects it for anyone else
       .pipe(
-        commandRetry(),
+        commandRetry(this.bus),
         finalize(() => this.pending.set(false)),
       )
       .subscribe({

@@ -4,7 +4,7 @@ import { finalize } from 'rxjs';
 import { AuthStore } from '@core/auth/auth-store';
 import { MessageBus, assertNever, type MedOrder, type MedOrderId } from '@core/messaging/contract';
 import { Toasts } from '@core/ui/toasts';
-import { commandRetry } from '../ui/alarm-actions';
+import { commandRetry } from '@core/messaging/command-retry';
 import { clock, who } from '../ui/format';
 
 @Component({
@@ -67,7 +67,7 @@ export class MedicationList {
     this.bus
       .send('/app/medication.given', { id })
       .pipe(
-        commandRetry(),
+        commandRetry(this.bus),
         finalize(() =>
           this.pending.update((s) => {
             const next = new Set(s);

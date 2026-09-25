@@ -4,7 +4,7 @@ import { finalize } from 'rxjs';
 
 import { MessageBus, assertNever, link, toSlug, type RpcResult } from '@core/messaging/contract';
 import { Toasts } from '@core/ui/toasts';
-import { commandRetry } from '../ui/alarm-actions';
+import { commandRetry } from '@core/messaging/command-retry';
 import { clock, who } from '../ui/format';
 
 @Component({
@@ -93,7 +93,7 @@ export default class TemperatureForm {
     this.bus
       .send('/app/vitals.record', { bed: this.patient().bed, vital: 'temp', value })
       .pipe(
-        commandRetry(),
+        commandRetry(this.bus),
         finalize(() => this.pending.set(false)),
       )
       .subscribe({
