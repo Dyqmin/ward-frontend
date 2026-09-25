@@ -1,14 +1,15 @@
-import { ResolveFn, Routes, nonBlocking } from '@angular/router';
+import { ActivatedRouteSnapshot, ResolveFn, Routes, nonBlocking } from '@angular/router';
 
 import { hasRole } from '@core/auth/guards';
 import { bedFromSlug } from '@core/messaging/contract';
 import { medicationResource, patientResource, vitalsResource } from './bed-detail/bed-resources';
-import { validBed } from './guards';
+import { unsentValueGuard, validBed } from './guards';
 import { stepCompleted, unsavedDraftGuard } from './med-order/guards';
 import { MedOrderDraftStore } from './med-order/med-order-draft-store';
 
 /** 'icu-3' → 'ICU-3'; with provideAppSeo() the tab reads "Drug and dose · ICU-3 · Ward Monitor". */
-const bedTitle: ResolveFn<string> = (route) => bedFromSlug(route.params['bed'] ?? '') ?? 'Bed';
+const bedName = (route: ActivatedRouteSnapshot) => bedFromSlug(route.params['bed'] ?? '') ?? 'Bed';
+const bedTitle: ResolveFn<string> = (route) => bedName(route);
 
 export default [
   // same URL, different screen and different bundle per role
@@ -32,6 +33,18 @@ export default [
     ],
   },
   { path: ':bed/meds/new', redirectTo: '/forbidden' }, // nurses fall through to here
+
+  // lab: record a temperature – nurses only, one blocking resource shared with the bed detail
+  {
+    path: ':bed/temperature',
+    title: (route) => `Record temperature · ${bedName(route)}`, // "… · ICU-3 · Ward Monitor"
+    canMatch: [hasRole('nurse')],
+    canActivate: [validBed],
+    canDeactivate: [unsentValueGuard],
+    loadComponent: () => import('./temperature/temperature-form'),
+    resources: (ctx) => ({ patient: patientResource(ctx) }),
+  },
+  { path: ':bed/temperature', redirectTo: '/forbidden' }, // doctors fall through; the chunk is never requested
 
   // bed detail – the route says WHAT data the screen needs; the component only renders it
   {
