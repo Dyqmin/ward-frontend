@@ -4,7 +4,9 @@
 import { WARDS, type AlarmId, type AlarmLevel, type BedId, type BedSlug, type DoctorId,
   type MedOrderId, type NurseId, type PatientId, type SnoozeMinutes, type Vital } from './contract';
 
-// ---------- Exercise 1: literal types ----------
+// ---------- Step 1 · Exercise 1: literal types ----------
+// Every line without a directive must compile; every line under @ts-expect-error must NOT.
+// Instructions: the STEP 1 block at the top of shared/contract.ts.
 export const step1 = () => {
   const bed: BedId = 'ICU-3';
   // @ts-expect-error there is no bed 9
@@ -15,7 +17,7 @@ export const step1 = () => {
 
   const vital: Vital = 'spo2';
   // @ts-expect-error no such vital
-  const noSuchVital: Vital = 'bp';
+  const noSuchVital: Vital = 'glucose';
 
   const nurse: NurseId = 'nurse_anna';
   // @ts-expect-error missing prefix

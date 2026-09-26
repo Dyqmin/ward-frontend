@@ -1,7 +1,46 @@
 // src/shared/contract.ts — pure TypeScript. Shared by the Angular app and the backend.
+//
+// ============================================================================================
+//  DAY 1 · TYPESCRIPT BLOCK — ROADMAP
+// ============================================================================================
+//  The steps build on each other; work through them in order. Each step starts in THIS file and
+//  continues in core/messaging/contract.ts, where the Angular app builds on these types (look
+//  for the "Step N · app layer" headings there).
+//
+//  Step 1  Literal types                  ← EXERCISE 1: your task today
+//  Step 2  Type guards                    ┐
+//  Step 3  Derived & mapped types         ├ already implemented: read them
+//  Step 4  Conditional types & infer      ┘
+//
+//  Check your work at any time:
+//    npx tsc -p apps/ward/tsconfig.app.json --noEmit
+//  The expectations live in shared/contract.checks.ts. On this branch only Step 1 is left for
+//  you; Steps 2–4 are already implemented, so read them as a walkthrough of where Step 1 leads.
+// ============================================================================================
 
-// ---------- Step 1: literal types ----------
-// EXERCISE 1: replace the wide types with exact ones, derived from the arrays and template literals.
+
+// ============================================================================================
+//  STEP 1 · LITERAL TYPES                                                         EXERCISE 1
+// ============================================================================================
+//  Goal: `string` and `number` accept anything, so today 'ICU-9', 'icu-3' or 'glucose' all compile
+//  and bugs reach the ward at runtime. Make every identifier in the domain an EXACT type, so a
+//  typo becomes a compile error instead of a missing alarm.
+//
+//  Rules:
+//   • Derive, don't repeat. Each union must come from its array, so adding 'NEURO' to WARDS
+//     updates every type below with no other edit.
+//   • Keep the arrays usable at runtime: guards in Step 2 iterate over them.
+//   • Don't touch anything below Step 1 and don't edit contract.checks.ts.
+//
+//  Done when `npx tsc -p apps/ward/tsconfig.app.json --noEmit` reports 0 errors. Right now it
+//  reports 10: seven "Unused '@ts-expect-error'" in contract.checks.ts (a bad value compiled)
+//  and three knock-on errors in the app that disappear once the types are exact.
+//
+//  Tools: `as const`, indexed access `(typeof X)[number]`, template literal types, `Lowercase<>`.
+// --------------------------------------------------------------------------------------------
+
+// ---------- Step 1a · Unions from runtime arrays ----------
+// TODO: make the arrays readonly tuples, then derive Ward, BedNo and Vital from them.
 export const WARDS = ['ICU', 'ER', 'CARD'];
 export const BED_NUMBERS = [1, 2, 3, 4, 5, 6];
 export const VITALS = ['hr', 'spo2', 'rr', 'temp'];
@@ -10,6 +49,8 @@ export type Ward = string;       // 'ICU' | 'ER' | 'CARD', from WARDS
 export type BedNo = number;      // 1 … 6, from BED_NUMBERS
 export type Vital = string;      // from VITALS
 
+// ---------- Step 1b · Template literal types ----------
+// TODO: build BedId from Ward and BedNo, BedSlug from BedId, and each id from its prefix.
 export type BedId = string;      // 'ICU-1' … 'CARD-6'
 export type BedSlug = string;    // 'icu-1' … 'card-6'
 export type NurseId = string;    // 'nurse_…'
@@ -18,83 +59,31 @@ export type AlarmId = string;    // 'alarm_…'
 export type MedOrderId = string; // 'med_…'
 export type PatientId = string;  // 'pat_…'
 
+// ---------- Step 1c · Plain literal unions ----------
+// TODO: only the listed values may compile.
 export type AlarmLevel = string;    // low or high
 export type SnoozeMinutes = number; // 5, 10 or 15
 
-// ---------- Step 3: derived vitals and alarm codes ----------
-export type StreamedVital = Exclude<Vital, 'temp'>;
-export type ManualVital = Extract<Vital, 'temp'>;
-export type AlarmCode = Exclude<`${Vital}.${AlarmLevel}`, `temp.${string}` | 'spo2.high'>;
-export const STREAMED_VITALS = VITALS.filter((v): v is StreamedVital => v !== 'temp');
+// App layer (core/messaging/contract.ts): ALL_BEDS, wardOf(), toSlug() — runtime helpers typed
+// with the literal types above.
 
-// ---------- Payloads ----------
-export type VitalsFrame = { bed: BedId; ts: number } & Record<StreamedVital, number>;
 
-export type AlarmEvent =
-  | { status: 'raised';       alarmId: AlarmId; bed: BedId; code: AlarmCode; value: number }
-  | { status: 'acknowledged'; alarmId: AlarmId; bed: BedId; by: NurseId; at: string }
-  | { status: 'snoozed';      alarmId: AlarmId; bed: BedId; by: NurseId; until: string }
-  | { status: 'escalated';    alarmId: AlarmId; bed: BedId; to: 'doctor' };
+// ============================================================================================
+//  STEP 2 · TYPE GUARDS
+// ============================================================================================
+//  Goal: data from the URL, the socket or a request body is `unknown` or `string`. A guard is
+//  the only honest way to turn it into a Step 1 type: it checks at runtime and narrows at
+//  compile time, so no `as BedId` is ever needed.
+//
+//  Look for: `v is BedId` return types; guards built on the Step 1 arrays (one source of truth);
+//  `in` narrowing for objects; `switch` on a discriminant (`status`) inside isAlarmEvent;
+//  `assertNever`, which the app puts in the `default` of every switch over a union.
+//  Try: add `| { status: 'queued' }` to CommandResult (Step 3c). Every switch that ends in
+//  assertNever (medication-list, review-step, temperature-form, alarm-actions) stops compiling until
+//  the new status is handled. Undo it afterwards.
+// --------------------------------------------------------------------------------------------
 
-export interface Patient { id: PatientId; name: string; bed: BedId; admittedAt: string }
-
-export interface MedOrder {
-  id: MedOrderId; patientId: PatientId; drug: string; doseMg: number; route: 'oral' | 'iv';
-  status: 'ordered' | 'given' | 'cancelled'; orderedBy: DoctorId; createdAt: string;
-}
-export type MedOrderDraft = Omit<MedOrder, 'id' | 'status' | 'orderedBy' | 'createdAt'>;
-
-export interface ManualReading { bed: BedId; vital: ManualVital; value: number; by: NurseId; at: string }
-
-// ---------- Commands ----------
-export interface Command { commandId: string; performedAt: string }
-
-export type CommandResult<T = null> =
-  | { status: 'accepted'; value: T }
-  | { status: 'conflict'; by: NurseId; at: string }
-  | { status: 'forbidden'; reason: string };
-
-// ---------- The contract ----------
-export interface StreamContract {
-  vitals: { channel: 'topic'; key: BedId; payload: VitalsFrame };
-  alarms: { channel: 'topic'; key: Ward;  payload: AlarmEvent };
-}
-
-export interface RpcContract {
-  // queries
-  'patients.get':     { req: { bed: BedId };                                             res: Patient | null };
-  'vitals.history':   { req: { bed: BedId; minutes: 10 | 30 | 60 };                      res: VitalsFrame[] };
-  'vitals.manual':    { req: { bed: BedId };                                             res: ManualReading[] };
-  'medication.list':  { req: { bed: BedId };                                             res: MedOrder[] };
-  'alarms.active':    { req: { ward: Ward };                                             res: AlarmEvent[] };
-  // commands
-  'alarms.ack':       { req: Command & { alarmId: AlarmId };                             res: CommandResult };
-  'alarms.snooze':    { req: Command & { alarmId: AlarmId; minutes: SnoozeMinutes };     res: CommandResult<{ until: string }> };
-  'vitals.record':    { req: Command & { bed: BedId; vital: ManualVital; value: number }; res: CommandResult };
-  'medication.given': { req: Command & Pick<MedOrder, 'id'>;                             res: CommandResult };
-  'medication.order': { req: Command & MedOrderDraft;                                    res: CommandResult<Pick<MedOrder, 'id'>> };
-}
-
-export type StreamName = keyof StreamContract;
-export type RpcName = keyof RpcContract;
-
-export type StreamDestination = {
-  [K in StreamName]: `/${StreamContract[K]['channel']}/${K}.${StreamContract[K]['key']}`;
-}[StreamName];
-export type RpcDestination = `/app/${RpcName}`;
-
-export type CommandName = {
-  [K in RpcName]: RpcContract[K]['req'] extends Command ? K : never;
-}[RpcName];
-
-// ---------- Step 4: infer ----------
-export type StreamNameOf<D> =
-  D extends `/${string}/${infer K extends StreamName}.${string}` ? K : never;
-export type PayloadOf<D extends StreamDestination> = StreamContract[StreamNameOf<D>]['payload'];
-export type AcceptedValue<R> = R extends { status: 'accepted'; value: infer V } ? V : never;
-export type RpcResult<K extends RpcName> = NonNullable<RpcContract[K]['res']>;
-
-// ---------- Step 2: guards ----------
+// ---------- Step 2a · Primitive guards: string → literal type ----------
 const isWard = (v: string): v is Ward => (WARDS as readonly string[]).includes(v);
 
 export const isBedId = (v: string): v is BedId => {
@@ -108,11 +97,13 @@ export const isMedOrderId = (v: string): v is MedOrderId => v.startsWith('med_')
 export const isPatientId = (v: string): v is PatientId => v.startsWith('pat_') && v.length > 4;
 export const isAlarmCode = (v: string): v is AlarmCode => /^(hr\.(low|high)|spo2\.low|rr\.(low|high))$/.test(v);
 
+// ---------- Step 2b · Guards at the boundary: route slug → BedId | null ----------
 export const bedFromSlug = (slug: string): BedId | null => {
   const id = slug.toUpperCase();
   return isBedId(id) ? id : null;
 };
 
+// ---------- Step 2c · Object guards and exhaustiveness ----------
 export const isVitalsFrame = (x: unknown): x is VitalsFrame =>
   typeof x === 'object' && x !== null &&
   'bed' in x && typeof x.bed === 'string' && isBedId(x.bed) &&
@@ -137,6 +128,116 @@ export function isAlarmEvent(x: unknown): x is AlarmEvent {
 }
 
 export const assertNever = (x: never): never => { throw new Error(`Unhandled: ${JSON.stringify(x)}`); };
+
+// App layer (core/messaging/contract.ts): parseFrame() + FRAME_GUARDS — every socket frame goes
+// through a guard.
+
+
+// ============================================================================================
+//  STEP 3 · DERIVED & MAPPED TYPES
+// ============================================================================================
+//  Goal: write each fact once and compute the rest. Vitals split into streamed and manual,
+//  alarm codes are generated from vitals × levels, payloads reuse the ids, and the whole
+//  messaging surface is one interface that destinations and command names are derived from.
+//
+//  Look for: `Exclude` / `Extract` on unions; template literal types over unions (every
+//  combination at once); `Record`, `Omit`, `Pick` and intersections; discriminated unions;
+//  generic defaults (`CommandResult<T = null>`); mapped types with `[K in …]` and key filtering.
+//  Try: add 'bp' to VITALS (after Step 1) and follow the compile errors — that is the point.
+// --------------------------------------------------------------------------------------------
+
+// ---------- Step 3a · Utility types on unions: Exclude, Extract, template literals ----------
+export type StreamedVital = Exclude<Vital, 'temp'>;
+export type ManualVital = Extract<Vital, 'temp'>;
+export type AlarmCode = Exclude<`${Vital}.${AlarmLevel}`, `temp.${string}` | 'spo2.high'>;
+export const STREAMED_VITALS = VITALS.filter((v): v is StreamedVital => v !== 'temp');
+
+// ---------- Step 3b · Payloads: intersections, discriminated unions, Omit ----------
+export type VitalsFrame = { bed: BedId; ts: number } & Record<StreamedVital, number>;
+
+export type AlarmEvent =
+  | { status: 'raised';       alarmId: AlarmId; bed: BedId; code: AlarmCode; value: number }
+  | { status: 'acknowledged'; alarmId: AlarmId; bed: BedId; by: NurseId; at: string }
+  | { status: 'snoozed';      alarmId: AlarmId; bed: BedId; by: NurseId; until: string }
+  | { status: 'escalated';    alarmId: AlarmId; bed: BedId; to: 'doctor' };
+
+export interface Patient { id: PatientId; name: string; bed: BedId; admittedAt: string }
+
+export interface MedOrder {
+  id: MedOrderId; patientId: PatientId; drug: string; doseMg: number; route: 'oral' | 'iv';
+  status: 'ordered' | 'given' | 'cancelled'; orderedBy: DoctorId; createdAt: string;
+}
+export type MedOrderDraft = Omit<MedOrder, 'id' | 'status' | 'orderedBy' | 'createdAt'>;
+
+export interface ManualReading { bed: BedId; vital: ManualVital; value: number; by: NurseId; at: string }
+
+// ---------- Step 3c · Commands: a generic result union ----------
+export interface Command { commandId: string; performedAt: string }
+
+export type CommandResult<T = null> =
+  | { status: 'accepted'; value: T }
+  | { status: 'conflict'; by: NurseId; at: string }
+  | { status: 'forbidden'; reason: string };
+
+// ---------- Step 3d · The contract: one interface per messaging pattern ----------
+export interface StreamContract {
+  vitals: { channel: 'topic'; key: BedId; payload: VitalsFrame };
+  alarms: { channel: 'topic'; key: Ward;  payload: AlarmEvent };
+}
+
+export interface RpcContract {
+  // queries
+  'patients.get':     { req: { bed: BedId };                                             res: Patient | null };
+  'vitals.history':   { req: { bed: BedId; minutes: 10 | 30 | 60 };                      res: VitalsFrame[] };
+  'vitals.manual':    { req: { bed: BedId };                                             res: ManualReading[] };
+  'medication.list':  { req: { bed: BedId };                                             res: MedOrder[] };
+  'alarms.active':    { req: { ward: Ward };                                             res: AlarmEvent[] };
+  // commands
+  'alarms.ack':       { req: Command & { alarmId: AlarmId };                             res: CommandResult };
+  'alarms.snooze':    { req: Command & { alarmId: AlarmId; minutes: SnoozeMinutes };     res: CommandResult<{ until: string }> };
+  'vitals.record':    { req: Command & { bed: BedId; vital: ManualVital; value: number }; res: CommandResult };
+  'medication.given': { req: Command & Pick<MedOrder, 'id'>;                             res: CommandResult };
+  'medication.order': { req: Command & MedOrderDraft;                                    res: CommandResult<Pick<MedOrder, 'id'>> };
+}
+
+// ---------- Step 3e · Mapped types: destinations and command names from the contract ----------
+export type StreamName = keyof StreamContract;
+export type RpcName = keyof RpcContract;
+
+export type StreamDestination = {
+  [K in StreamName]: `/${StreamContract[K]['channel']}/${K}.${StreamContract[K]['key']}`;
+}[StreamName];
+export type RpcDestination = `/app/${RpcName}`;
+
+export type CommandName = {
+  [K in RpcName]: RpcContract[K]['req'] extends Command ? K : never;
+}[RpcName];
+
+// App layer (core/messaging/contract.ts): WardRpcContract and CommandBody — the app's own RPC
+// surface, built the same way.
+
+
+// ============================================================================================
+//  STEP 4 · CONDITIONAL TYPES, INFER & GENERIC APIS
+// ============================================================================================
+//  Goal: let the compiler read types back out of values. From '/topic/vitals.ICU-3' TS infers
+//  the stream name and therefore the payload, so `bus.watch(destination)` needs no type
+//  argument and a wrong destination does not compile.
+//
+//  Look for: `extends … ? … : never`; `infer K extends StreamName` inside a template literal;
+//  pulling a field out of a union member with `infer V`; `NonNullable`.
+//  App layer (core/messaging/contract.ts): MessageBus.watch/request/send, type-checked mock
+//  fixtures and link().
+// --------------------------------------------------------------------------------------------
+
+// ---------- Step 4a · Infer from a destination string ----------
+export type StreamNameOf<D> =
+  D extends `/${string}/${infer K extends StreamName}.${string}` ? K : never;
+export type PayloadOf<D extends StreamDestination> = StreamContract[StreamNameOf<D>]['payload'];
+// ---------- Step 4b · Infer from a result ----------
+export type AcceptedValue<R> = R extends { status: 'accepted'; value: infer V } ? V : never;
+export type RpcResult<K extends RpcName> = NonNullable<RpcContract[K]['res']>;
+
 
 // ---------- Request guards (backend addition) ----------
 // One guard per RPC. The mapped type makes a new entry in RpcContract a compile

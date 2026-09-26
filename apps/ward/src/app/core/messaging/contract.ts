@@ -1,8 +1,10 @@
 // core/messaging/contract.ts — the Day 1 (TypeScript block) layer on top of the shared contract.
 //
-// `shared/contract.ts` is copied unchanged from the backend (ward-worker) and stays framework-free.
+// `shared/contract.ts` is copied from the backend (ward-worker) and stays framework-free.
 // This file adds what the Angular app builds on: the `MessageBus` abstraction, frame guards,
 // mock-fixture types and type-safe links. Every act of the workshop imports from here.
+//
+// Each Day 1 step (roadmap at the top of shared/contract.ts) continues here in its "app layer" section.
 
 import { Signal, computed } from '@angular/core';
 import { Observable, defer } from 'rxjs';
@@ -40,7 +42,7 @@ export type {
   Role,
 } from '../../shared/game-contract';
 
-// ---------- Step 1: literal helpers ----------
+// ---------- Step 1 · app layer: literal helpers ----------
 
 export const ALL_BEDS: readonly BedId[] = WARDS.flatMap((w) =>
   BED_NUMBERS.map((n): BedId => `${w}-${n}`),
@@ -68,20 +70,7 @@ export const isOutOfRange = (vital: StreamedVital, value: number): boolean => {
   );
 };
 
-// ---------- Step 3c: the full RPC surface of this app (ward + room game) ----------
-
-export type WardRpcContract = RpcContract & GameRpcContract;
-export type WardRpcName = keyof WardRpcContract;
-export type WardCommandName = {
-  [K in WardRpcName]: WardRpcContract[K]['req'] extends Command ? K : never;
-}[WardRpcName];
-/** The fields `send()` adds itself: callers never invent a commandId. */
-export type CommandBody<K extends WardCommandName> = Omit<
-  WardRpcContract[K]['req'],
-  keyof Command
->;
-
-// ---------- Step 2d / 3f: frame guards ----------
+// ---------- Step 2 · app layer: frame guards ----------
 
 export class FrameError extends Error {
   override readonly name = 'FrameError';
@@ -124,7 +113,20 @@ export const streamNameOf = <D extends StreamDestination>(
 ): StreamNameOf<D> =>
   destination.split('/')[2]?.split('.')[0] as StreamNameOf<D>;
 
-// ---------- Step 4c: the MessageBus ----------
+// ---------- Step 3 · app layer: the full RPC surface of this app (ward + room game) ----------
+
+export type WardRpcContract = RpcContract & GameRpcContract;
+export type WardRpcName = keyof WardRpcContract;
+export type WardCommandName = {
+  [K in WardRpcName]: WardRpcContract[K]['req'] extends Command ? K : never;
+}[WardRpcName];
+/** The fields `send()` adds itself: callers never invent a commandId. */
+export type CommandBody<K extends WardCommandName> = Omit<
+  WardRpcContract[K]['req'],
+  keyof Command
+>;
+
+// ---------- Step 4 · app layer: the MessageBus ----------
 
 export type ConnectionState = 'connecting' | 'open' | 'closed';
 
@@ -168,7 +170,7 @@ export abstract class MessageBus {
   }
 }
 
-// ---------- Step 4d: mock fixtures ----------
+// ---------- Step 4 · app layer: mock fixtures ----------
 
 export interface MockContext {
   /** Broadcast on a topic, as the server would after a command. */
@@ -200,7 +202,7 @@ export type MockFixtures = {
   };
 };
 
-// ---------- Step 4e: type-safe links ----------
+// ---------- Step 4 · app layer: type-safe links ----------
 
 export type AppPath =
   | 'login'
