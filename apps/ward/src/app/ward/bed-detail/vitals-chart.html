@@ -1,0 +1,41 @@
+@for (p of panels(); track p.vital) {
+<figure class="panel">
+  <figcaption>
+    <span>{{ p.label }}</span>
+    <span class="latest">
+      @if (hoverFrame(); as f) { {{ f[p.vital] }} {{ p.unit }}
+      <span class="muted">at {{ time(f.ts) }}</span>
+      } @else { {{ p.latest ?? '–' }} {{ p.unit }} }
+    </span>
+  </figcaption>
+  <svg
+    [attr.viewBox]="'0 0 ' + width + ' ' + height"
+    preserveAspectRatio="none"
+    role="img"
+    [attr.aria-label]="p.label + ', last 10 minutes'"
+    (pointermove)="hover($event)"
+    (pointerleave)="hoverIndex.set(null)"
+  >
+    @for (t of p.thresholds; track t) {
+    <line
+      class="threshold"
+      x1="0"
+      [attr.x2]="width"
+      [attr.y1]="t"
+      [attr.y2]="t"
+    />
+    }
+    <polyline class="line" [attr.points]="p.points" />
+    @if (hoverX() !== null) {
+    <line
+      class="crosshair"
+      [attr.x1]="hoverX()"
+      [attr.x2]="hoverX()"
+      y1="0"
+      [attr.y2]="height"
+    />
+    }
+  </svg>
+</figure>
+}
+<p class="muted axis"><span>−10 min</span><span>now</span></p>

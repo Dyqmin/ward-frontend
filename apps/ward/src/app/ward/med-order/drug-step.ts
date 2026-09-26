@@ -6,73 +6,8 @@ import { MedOrderDraftStore } from './med-order-draft-store';
 
 @Component({
   selector: 'app-drug-step',
-  template: `
-    <h2>Drug and dose</h2>
-    <div class="form">
-      <label>
-        Drug
-        <input
-          name="drug"
-          list="drugs"
-          [value]="store.draft().drug ?? ''"
-          (input)="store.patch({ drug: text($event) })"
-        />
-        <datalist id="drugs">
-          @for (d of commonDrugs; track d) {
-            <option [value]="d"></option>
-          }
-        </datalist>
-      </label>
-      <label>
-        Dose (mg)
-        <input
-          name="dose"
-          type="number"
-          min="0"
-          step="any"
-          [value]="store.draft().doseMg ?? ''"
-          (input)="store.patch({ doseMg: dose($event) })"
-        />
-      </label>
-      <label>
-        Route
-        <select
-          name="route"
-          [value]="store.draft().route ?? ''"
-          (change)="store.patch({ route: route($event) })"
-        >
-          <option value="" disabled>Choose…</option>
-          @for (r of routes; track r) {
-            <option [value]="r">
-              {{ r === 'iv' ? 'Intravenous (iv)' : 'Oral' }}
-            </option>
-          }
-        </select>
-      </label>
-    </div>
-    <div class="row nav">
-      <button type="button" (click)="go('patient')">Back</button>
-      <span class="spacer"></span>
-      <button
-        type="button"
-        class="primary"
-        [disabled]="!store.isDone('drug')"
-        (click)="go('review')"
-      >
-        Next
-      </button>
-    </div>
-  `,
-  styles: `
-    .form {
-      display: grid;
-      gap: 0.8rem;
-      max-width: 22rem;
-    }
-    .nav {
-      margin-top: 1rem;
-    }
-  `,
+  templateUrl: './drug-step.html',
+  styleUrl: './drug-step.scss',
 })
 export default class DrugStep {
   readonly bed = input.required<string>();

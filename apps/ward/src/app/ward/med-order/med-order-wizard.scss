@@ -1,0 +1,30 @@
+.wizard {
+  max-width: 44rem;
+}
+.back {
+  text-decoration: none;
+}
+.steps {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  flex-wrap: wrap;
+}
+.steps a {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  text-decoration: none;
+}
+.steps a.done {
+  border-color: var(--ok);
+  color: var(--text);
+}
+.steps a.active {
+  border-color: var(--accent);
+  color: var(--text);
+  background: var(--card-2);
+}

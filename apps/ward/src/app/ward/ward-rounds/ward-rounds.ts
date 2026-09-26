@@ -13,66 +13,8 @@ import { alarmsByBed } from '../ui/format';
 @Component({
   selector: 'app-ward-rounds',
   imports: [RouterLink, BedTile, AlarmActions],
-  template: `
-    <section class="page">
-      <h1>Ward rounds</h1>
-
-      <section class="card escalations">
-        <h2>Escalated to doctor</h2>
-        @for (a of escalated(); track a.event.alarmId) {
-          <app-alarm-actions [alarm]="a" />
-        } @empty {
-          <p class="muted">
-            Nothing escalated. Nurses acknowledge alarms within 20 s, or they
-            come here.
-          </p>
-        }
-      </section>
-
-      @for (w of wards; track w) {
-        <h2 class="ward-title">{{ w }}</h2>
-        <div class="grid">
-          @for (bed of bedsOf(w); track bed) {
-            @let patient = patients.patient(bed);
-            <div class="slot">
-              <app-bed-tile
-                [bed]="bed"
-                [patient]="patient"
-                [alarms]="alarmsFor()(bed)"
-              />
-              @if (patient) {
-                <a
-                  class="button small"
-                  [routerLink]="['/ward', slug(bed), 'meds', 'new']"
-                  >Order medication</a
-                >
-              }
-            </div>
-          }
-        </div>
-      }
-    </section>
-  `,
-  styles: `
-    .escalations {
-      display: grid;
-      gap: 0.5rem;
-      margin-bottom: 1.25rem;
-    }
-    .ward-title {
-      margin-top: 1.25rem;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
-      gap: 0.75rem;
-    }
-    .slot {
-      display: grid;
-      gap: 0.4rem;
-      align-content: start;
-    }
-  `,
+  templateUrl: './ward-rounds.html',
+  styleUrl: './ward-rounds.scss',
 })
 export default class WardRounds {
   protected readonly patients = inject(PatientsStore);

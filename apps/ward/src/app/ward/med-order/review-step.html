@@ -1,0 +1,30 @@
+<h2>Review</h2>
+@if (store.complete(); as d) {
+<dl>
+  <dt>Patient</dt>
+  <dd>{{ patientName() }} ({{ d.patientId }})</dd>
+  <dt>Drug</dt>
+  <dd>{{ d.drug }}</dd>
+  <dt>Dose</dt>
+  <dd>{{ d.doseMg }} mg</dd>
+  <dt>Route</dt>
+  <dd>{{ d.route }}</dd>
+</dl>
+} @if (error(); as e) {
+<p class="error-text">{{ e }}</p>
+}
+<div class="row nav">
+  <button type="button" [disabled]="pending()" (click)="back()">Back</button>
+  <span class="spacer"></span>
+  @if (pending()) {
+  <span class="chip warn">pending sync…</span>
+  }
+  <button
+    type="button"
+    class="primary"
+    [disabled]="pending() || !store.complete()"
+    (click)="submit()"
+  >
+    Order medication
+  </button>
+</div>

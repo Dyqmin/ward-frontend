@@ -1,0 +1,29 @@
+<h2>Pick the patient</h2>
+@if (candidates(); as list) {
+<div class="list" role="radiogroup">
+  @for (p of list; track p.id) {
+  <label class="option" [class.selected]="store.draft().patientId === p.id">
+    <input
+      type="radio"
+      name="patient"
+      [checked]="store.draft().patientId === p.id"
+      (change)="store.patch({ patientId: p.id })"
+    />
+    <strong>{{ p.bed }}</strong> {{ p.name }}
+  </label>
+  }
+</div>
+} @else {
+<p class="muted">Loading patients…</p>
+}
+<div class="row nav">
+  <span class="spacer"></span>
+  <button
+    type="button"
+    class="primary"
+    [disabled]="!store.isDone('patient')"
+    (click)="next()"
+  >
+    Next
+  </button>
+</div>

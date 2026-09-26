@@ -1,0 +1,14 @@
+dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1rem;
+}
+dt {
+  color: var(--muted);
+}
+dd {
+  margin: 0;
+}
+.nav {
+  margin-top: 1rem;
+}

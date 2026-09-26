@@ -16,60 +16,8 @@ import { alarmStatus, alarmTitle, clock, isUrgent, who } from './format';
 
 @Component({
   selector: 'app-alarm-actions',
-  template: `
-    <div class="alarm" [class.urgent]="urgent()">
-      <div>
-        <strong>{{ alarm().event.bed }} · {{ title() }}</strong>
-        <div class="muted">{{ status() }}</div>
-      </div>
-      <div class="row actions">
-        @if (pending()) {
-          <span class="chip warn">pending sync…</span>
-        }
-        @if (isNurse()) {
-          @if (canAck()) {
-            <button
-              type="button"
-              class="primary small"
-              [disabled]="pending()"
-              (click)="ack()"
-            >
-              Acknowledge
-            </button>
-          }
-          @if (canSnooze()) {
-            @for (m of snoozeOptions; track m) {
-              <button
-                type="button"
-                class="small"
-                [disabled]="pending()"
-                (click)="snooze(m)"
-              >
-                Snooze {{ m }}′
-              </button>
-            }
-          }
-        }
-      </div>
-    </div>
-  `,
-  styles: `
-    .alarm {
-      display: flex;
-      justify-content: space-between;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      align-items: center;
-      padding: 0.6rem 0.75rem;
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--warn);
-      border-radius: 8px;
-      background: var(--card-2);
-    }
-    .alarm.urgent {
-      border-left-color: var(--bad);
-    }
-  `,
+  templateUrl: './alarm-actions.html',
+  styleUrl: './alarm-actions.scss',
 })
 export class AlarmActions {
   readonly alarm = input.required<AlarmView>();

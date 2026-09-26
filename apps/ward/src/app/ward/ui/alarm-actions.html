@@ -1,0 +1,29 @@
+<div class="alarm" [class.urgent]="urgent()">
+  <div>
+    <strong>{{ alarm().event.bed }} · {{ title() }}</strong>
+    <div class="muted">{{ status() }}</div>
+  </div>
+  <div class="row actions">
+    @if (pending()) {
+    <span class="chip warn">pending sync…</span>
+    } @if (isNurse()) { @if (canAck()) {
+    <button
+      type="button"
+      class="primary small"
+      [disabled]="pending()"
+      (click)="ack()"
+    >
+      Acknowledge
+    </button>
+    } @if (canSnooze()) { @for (m of snoozeOptions; track m) {
+    <button
+      type="button"
+      class="small"
+      [disabled]="pending()"
+      (click)="snooze(m)"
+    >
+      Snooze {{ m }}′
+    </button>
+    } } }
+  </div>
+</div>

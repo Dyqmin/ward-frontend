@@ -1,0 +1,25 @@
+<section class="page narrow">
+  <a class="back" [routerLink]="['/ward', bed()]">← {{ bedId() }}</a>
+  <h1>{{ label() }} · {{ bedId() }}</h1>
+  <p class="muted">
+    A fictional PDF, streamed in chunks so the download progress is visible.
+  </p>
+
+  <div class="card stack">
+    <progress [value]="progress()" max="1"></progress>
+    <div class="row">
+      <span>{{ percent() }} %</span>
+      <span class="spacer"></span>
+      @if (busy()) {
+      <button type="button" (click)="cancel()">Cancel</button>
+      } @else {
+      <button type="button" class="primary" (click)="download()">
+        Download PDF
+      </button>
+      }
+    </div>
+    @if (error(); as e) {
+    <p class="error-text">{{ e }}</p>
+    }
+  </div>
+</section>

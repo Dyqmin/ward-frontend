@@ -1,0 +1,7 @@
+@if (mock) {
+<span class="chip warn" title="In-memory fake broker (?mock)">MOCK</span>
+}
+<span class="chip badge" [class]="bus.state()" role="status">
+  <span class="dot"></span>
+  {{ text() }}
+</span>

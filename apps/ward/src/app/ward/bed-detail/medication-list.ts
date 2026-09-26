@@ -21,48 +21,8 @@ import { clock, who } from '../ui/format';
 
 @Component({
   selector: 'app-medication-list',
-  template: `
-    <table>
-      <thead>
-        <tr>
-          <th>Drug</th>
-          <th>Dose</th>
-          <th>Route</th>
-          <th>Ordered</th>
-          <th>Status</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (o of orders(); track o.id) {
-          <tr>
-            <td>{{ o.drug }}</td>
-            <td>{{ o.doseMg }} mg</td>
-            <td>{{ o.route }}</td>
-            <td>{{ who(o.orderedBy) }}, {{ clock(o.createdAt) }}</td>
-            <td>
-              <span class="chip" [class.ok]="o.status === 'given'">{{
-                o.status
-              }}</span>
-            </td>
-            <td>
-              @if (pending().has(o.id)) {
-                <span class="chip warn">pending sync…</span>
-              } @else if (isNurse() && o.status === 'ordered') {
-                <button type="button" class="small" (click)="give(o.id)">
-                  Confirm given
-                </button>
-              }
-            </td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="6" class="muted">No medication orders.</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  `,
+  templateUrl: './medication-list.html',
+  styleUrl: './medication-list.scss',
 })
 export class MedicationList {
   readonly orders = input.required<readonly MedOrder[]>();

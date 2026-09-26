@@ -11,57 +11,8 @@ import { MedOrderDraftStore } from './med-order-draft-store';
 
 @Component({
   selector: 'app-review-step',
-  template: `
-    <h2>Review</h2>
-    @if (store.complete(); as d) {
-      <dl>
-        <dt>Patient</dt>
-        <dd>{{ patientName() }} ({{ d.patientId }})</dd>
-        <dt>Drug</dt>
-        <dd>{{ d.drug }}</dd>
-        <dt>Dose</dt>
-        <dd>{{ d.doseMg }} mg</dd>
-        <dt>Route</dt>
-        <dd>{{ d.route }}</dd>
-      </dl>
-    }
-    @if (error(); as e) {
-      <p class="error-text">{{ e }}</p>
-    }
-    <div class="row nav">
-      <button type="button" [disabled]="pending()" (click)="back()">
-        Back
-      </button>
-      <span class="spacer"></span>
-      @if (pending()) {
-        <span class="chip warn">pending sync…</span>
-      }
-      <button
-        type="button"
-        class="primary"
-        [disabled]="pending() || !store.complete()"
-        (click)="submit()"
-      >
-        Order medication
-      </button>
-    </div>
-  `,
-  styles: `
-    dl {
-      display: grid;
-      grid-template-columns: max-content 1fr;
-      gap: 0.4rem 1rem;
-    }
-    dt {
-      color: var(--muted);
-    }
-    dd {
-      margin: 0;
-    }
-    .nav {
-      margin-top: 1rem;
-    }
-  `,
+  templateUrl: './review-step.html',
+  styleUrl: './review-step.scss',
 })
 export default class ReviewStep {
   readonly bed = input.required<string>();

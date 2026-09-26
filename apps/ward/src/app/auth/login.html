@@ -1,0 +1,66 @@
+<form class="card login" (submit)="$event.preventDefault(); join()">
+  <h1>Ward Monitor</h1>
+  <p class="muted">
+    Join the ward as a nurse or a doctor. @if (mock) {
+    <span class="chip warn">mock broker — no backend needed</span>
+    }
+  </p>
+
+  <label>
+    Name
+    <input
+      name="name"
+      required
+      maxlength="40"
+      autocomplete="nickname"
+      [value]="name()"
+      (input)="name.set(value($event))"
+    />
+  </label>
+
+  <fieldset class="roles">
+    <legend class="muted">Role</legend>
+    @for (r of roles; track r) {
+    <label class="role" [class.selected]="role() === r">
+      <input
+        type="radio"
+        name="role"
+        [value]="r"
+        [checked]="role() === r"
+        (change)="role.set(r)"
+      />
+      {{ r === 'nurse' ? 'Nurse' : 'Doctor' }}
+    </label>
+    }
+  </fieldset>
+
+  <label>
+    Room code
+    <input
+      name="room"
+      required
+      [value]="roomCode()"
+      (input)="roomCode.set(value($event))"
+    />
+  </label>
+
+  <label class="inline">
+    <input
+      type="checkbox"
+      [checked]="useSandbox()"
+      (change)="useSandbox.set(!useSandbox())"
+    />
+    Use my private sandbox room (for the lab)
+  </label>
+
+  @if (error(); as e) {
+  <p class="error-text">{{ e }}</p>
+  }
+
+  <button class="primary" type="submit" [disabled]="busy() || !name().trim()">
+    {{ busy() ? 'Joining…' : 'Join ward' }}
+  </button>
+  <p class="muted small">
+    All patients and values are fictional and illustrative, not clinical.
+  </p>
+</form>

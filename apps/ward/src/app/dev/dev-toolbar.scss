@@ -1,0 +1,28 @@
+.toolbar {
+  position: fixed;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 15;
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+}
+.toolbar.open {
+  background: var(--card);
+  border: 1px solid var(--warn);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  width: min(34rem, calc(100vw - 2rem));
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.45);
+}
+.toggle {
+  border-color: var(--warn);
+}
+.log {
+  font-size: 0.78rem;
+  font-family: ui-monospace, monospace;
+}
+.log td,
+.log th {
+  padding: 0.2rem 0.35rem;
+}

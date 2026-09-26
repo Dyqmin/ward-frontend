@@ -1,0 +1,12 @@
+<div class="toasts" aria-live="polite">
+  @for (t of toasts.items(); track t.id) {
+  <button
+    type="button"
+    class="toast"
+    [class]="t.kind"
+    (click)="toasts.dismiss(t.id)"
+  >
+    {{ t.text }}
+  </button>
+  }
+</div>

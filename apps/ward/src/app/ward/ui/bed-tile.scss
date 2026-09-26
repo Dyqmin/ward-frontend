@@ -1,0 +1,54 @@
+.tile {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: inherit;
+  text-decoration: none;
+  min-height: 9.5rem;
+  transition: border-color 0.2s;
+}
+.tile:hover {
+  border-color: var(--accent);
+}
+.tile.alarm {
+  border-color: var(--bad);
+  box-shadow: 0 0 0 1px var(--bad) inset;
+}
+.tile.stale {
+  border-style: dashed;
+}
+.tile.empty {
+  opacity: 0.6;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+h3 {
+  margin: 0;
+}
+.name {
+  color: var(--muted);
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+footer {
+  min-width: 0;
+}
+footer .chip {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.vitals {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}

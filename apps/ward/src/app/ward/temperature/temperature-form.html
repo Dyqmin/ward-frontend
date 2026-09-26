@@ -1,0 +1,34 @@
+<section class="page narrow">
+  <a class="back" [routerLink]="['/ward', slug()]">← {{ patient().bed }}</a>
+  <!-- blocking resource: the name is there on first paint -->
+  <h1>Record temperature</h1>
+  <p class="muted">{{ patient().name }} · {{ patient().bed }}</p>
+
+  <form class="card form" novalidate (submit)="$event.preventDefault(); save()">
+    <label>
+      Temperature (°C)
+      <input
+        name="temp"
+        type="number"
+        inputmode="decimal"
+        step="0.1"
+        min="30"
+        max="43"
+        [value]="value()"
+        (input)="value.set(text($event))"
+      />
+    </label>
+    @if (error(); as e) {
+    <p class="error-text">{{ e }}</p>
+    }
+    <div class="row">
+      @if (pending()) {
+      <span class="chip warn">pending sync…</span>
+      }
+      <span class="spacer"></span>
+      <button type="submit" class="primary" [disabled]="pending() || !value()">
+        Save
+      </button>
+    </div>
+  </form>
+</section>

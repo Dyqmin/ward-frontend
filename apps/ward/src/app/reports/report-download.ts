@@ -9,50 +9,8 @@ import { bedFromSlug } from '@core/messaging/contract';
 @Component({
   selector: 'app-report-download',
   imports: [RouterLink],
-  template: `
-    <section class="page narrow">
-      <a class="back" [routerLink]="['/ward', bed()]">← {{ bedId() }}</a>
-      <h1>{{ label() }} · {{ bedId() }}</h1>
-      <p class="muted">
-        A fictional PDF, streamed in chunks so the download progress is visible.
-      </p>
-
-      <div class="card stack">
-        <progress [value]="progress()" max="1"></progress>
-        <div class="row">
-          <span>{{ percent() }} %</span>
-          <span class="spacer"></span>
-          @if (busy()) {
-            <button type="button" (click)="cancel()">Cancel</button>
-          } @else {
-            <button type="button" class="primary" (click)="download()">
-              Download PDF
-            </button>
-          }
-        </div>
-        @if (error(); as e) {
-          <p class="error-text">{{ e }}</p>
-        }
-      </div>
-    </section>
-  `,
-  styles: `
-    .narrow {
-      max-width: 36rem;
-    }
-    .back {
-      text-decoration: none;
-    }
-    .stack {
-      display: grid;
-      gap: 0.75rem;
-    }
-    progress {
-      width: 100%;
-      height: 0.8rem;
-      accent-color: var(--accent);
-    }
-  `,
+  templateUrl: './report-download.html',
+  styleUrl: './report-download.scss',
 })
 export default class ReportDownload {
   readonly kind = input.required<string>();

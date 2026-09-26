@@ -13,62 +13,8 @@ import { MedOrderDraftStore } from './med-order-draft-store';
 
 @Component({
   selector: 'app-patient-step',
-  template: `
-    <h2>Pick the patient</h2>
-    @if (candidates(); as list) {
-      <div class="list" role="radiogroup">
-        @for (p of list; track p.id) {
-          <label
-            class="option"
-            [class.selected]="store.draft().patientId === p.id"
-          >
-            <input
-              type="radio"
-              name="patient"
-              [checked]="store.draft().patientId === p.id"
-              (change)="store.patch({ patientId: p.id })"
-            />
-            <strong>{{ p.bed }}</strong> {{ p.name }}
-          </label>
-        }
-      </div>
-    } @else {
-      <p class="muted">Loading patients…</p>
-    }
-    <div class="row nav">
-      <span class="spacer"></span>
-      <button
-        type="button"
-        class="primary"
-        [disabled]="!store.isDone('patient')"
-        (click)="next()"
-      >
-        Next
-      </button>
-    </div>
-  `,
-  styles: `
-    .list {
-      display: grid;
-      gap: 0.4rem;
-    }
-    .option {
-      display: flex;
-      gap: 0.6rem;
-      align-items: center;
-      color: var(--text);
-      padding: 0.5rem 0.7rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .option.selected {
-      border-color: var(--accent);
-    }
-    .nav {
-      margin-top: 1rem;
-    }
-  `,
+  templateUrl: './patient-step.html',
+  styleUrl: './patient-step.scss',
 })
 export default class PatientStep {
   /** The parent's :bed, visible here because params are inherited (v22 default 'always'). */
