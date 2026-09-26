@@ -1,24 +1,25 @@
 // src/shared/contract.ts — pure TypeScript. Shared by the Angular app and the backend.
 
 // ---------- Step 1: literal types ----------
-export const WARDS = ['ICU', 'ER', 'CARD'] as const;
-export const BED_NUMBERS = [1, 2, 3, 4, 5, 6] as const;
-export const VITALS = ['hr', 'spo2', 'rr', 'temp'] as const;
+// EXERCISE 1: replace the wide types with exact ones, derived from the arrays and template literals.
+export const WARDS = ['ICU', 'ER', 'CARD'];
+export const BED_NUMBERS = [1, 2, 3, 4, 5, 6];
+export const VITALS = ['hr', 'spo2', 'rr', 'temp'];
 
-export type Ward = (typeof WARDS)[number];
-export type BedNo = (typeof BED_NUMBERS)[number];
-export type Vital = (typeof VITALS)[number];
+export type Ward = string;       // 'ICU' | 'ER' | 'CARD', from WARDS
+export type BedNo = number;      // 1 … 6, from BED_NUMBERS
+export type Vital = string;      // from VITALS
 
-export type BedId = `${Ward}-${BedNo}`;
-export type BedSlug = Lowercase<BedId>;
-export type NurseId = `nurse_${string}`;
-export type DoctorId = `dr_${string}`;
-export type AlarmId = `alarm_${string}`;
-export type MedOrderId = `med_${string}`;
-export type PatientId = `pat_${string}`;
+export type BedId = string;      // 'ICU-1' … 'CARD-6'
+export type BedSlug = string;    // 'icu-1' … 'card-6'
+export type NurseId = string;    // 'nurse_…'
+export type DoctorId = string;   // 'dr_…'
+export type AlarmId = string;    // 'alarm_…'
+export type MedOrderId = string; // 'med_…'
+export type PatientId = string;  // 'pat_…'
 
-export type AlarmLevel = 'low' | 'high';
-export type SnoozeMinutes = 5 | 10 | 15;
+export type AlarmLevel = string;    // low or high
+export type SnoozeMinutes = number; // 5, 10 or 15
 
 // ---------- Step 3: derived vitals and alarm codes ----------
 export type StreamedVital = Exclude<Vital, 'temp'>;
