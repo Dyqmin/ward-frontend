@@ -46,29 +46,26 @@
 // --------------------------------------------------------------------------------------------
 
 // ---------- Step 1a · Unions from runtime arrays ----------
-// TODO: make the arrays readonly tuples, then derive Ward, BedNo and Vital from them.
-export const WARDS = ['ICU', 'ER', 'CARD'];
-export const BED_NUMBERS = [1, 2, 3, 4, 5, 6];
-export const VITALS = ['hr', 'spo2', 'rr', 'temp'];
+export const WARDS = ['ICU', 'ER', 'CARD'] as const;
+export const BED_NUMBERS = [1, 2, 3, 4, 5, 6] as const;
+export const VITALS = ['hr', 'spo2', 'rr', 'temp'] as const;
 
-export type Ward = string;       // 'ICU' | 'ER' | 'CARD', from WARDS
-export type BedNo = number;      // 1 … 6, from BED_NUMBERS
-export type Vital = string;      // from VITALS
+export type Ward = (typeof WARDS)[number];
+export type BedNo = (typeof BED_NUMBERS)[number];
+export type Vital = (typeof VITALS)[number];
 
 // ---------- Step 1b · Template literal types ----------
-// TODO: build BedId from Ward and BedNo, BedSlug from BedId, and each id from its prefix.
-export type BedId = string;      // 'ICU-1' … 'CARD-6'
-export type BedSlug = string;    // 'icu-1' … 'card-6'
-export type NurseId = string;    // 'nurse_…'
-export type DoctorId = string;   // 'dr_…'
-export type AlarmId = string;    // 'alarm_…'
-export type MedOrderId = string; // 'med_…'
-export type PatientId = string;  // 'pat_…'
+export type BedId = `${Ward}-${BedNo}`;
+export type BedSlug = Lowercase<BedId>;
+export type NurseId = `nurse_${string}`;
+export type DoctorId = `dr_${string}`;
+export type AlarmId = `alarm_${string}`;
+export type MedOrderId = `med_${string}`;
+export type PatientId = `pat_${string}`;
 
 // ---------- Step 1c · Plain literal unions ----------
-// TODO: only the listed values may compile.
-export type AlarmLevel = string;    // low or high
-export type SnoozeMinutes = number; // 5, 10 or 15
+export type AlarmLevel = 'low' | 'high';
+export type SnoozeMinutes = 5 | 10 | 15;
 
 // App layer (core/messaging/contract.ts): ALL_BEDS, wardOf(), toSlug() — runtime helpers typed
 // with the literal types above.
@@ -109,9 +106,13 @@ export type SnoozeMinutes = number; // 5, 10 or 15
 // ---------- Step 2a · Primitive guards: string → literal type ----------
 const isWard = (v: string): v is Ward => (WARDS as readonly string[]).includes(v);
 
-// EXERCISE 2: replace the body. Rules and test cases are in the STEP 2 block above.
 export const isBedId = (v: string): v is BedId => {
-  return false;
+  const [ward, no, ...rest] = v.split('-');
+  return (
+    rest.length === 0 &&                      // exactly "WARD-N": 'ICU-3-1' is not a bed
+    !!ward && isWard(ward) &&                 // from WARDS
+    BED_NUMBERS.some((n) => String(n) === no) // from BED_NUMBERS; String() also rejects 'ICU-03'
+  );
 };
 export const isNurseId = (v: string): v is NurseId => v.startsWith('nurse_') && v.length > 6;
 export const isDoctorId = (v: string): v is DoctorId => v.startsWith('dr_') && v.length > 3;
@@ -184,16 +185,13 @@ export const assertNever = (x: never): never => { throw new Error(`Unhandled: ${
 // --------------------------------------------------------------------------------------------
 
 // ---------- Step 3a · Utility types on unions, template literals ----------
-// EXERCISE 3.1 – from Vital, remove 'temp'
-export type StreamedVital = 'hr' | 'spo2' | 'rr' | 'temp';
-// EXERCISE 3.2 – from Vital, keep only 'temp'
-export type ManualVital = 'temp';
+export type StreamedVital = Exclude<Vital, 'temp'>;
+export type ManualVital = Extract<Vital, 'temp'>;
 export type AlarmCode = Exclude<`${Vital}.${AlarmLevel}`, `temp.${string}` | 'spo2.high'>;
 export const STREAMED_VITALS = VITALS.filter((v): v is StreamedVital => v !== 'temp');
 
 // ---------- Step 3b · Payloads: intersections, discriminated unions ----------
-// EXERCISE 3.3 – bed and ts, plus a number field for every StreamedVital
-export type VitalsFrame = { bed: BedId; ts: number; hr: number; spo2: number };
+export type VitalsFrame = { bed: BedId; ts: number } & Record<StreamedVital, number>;
 
 export type AlarmEvent =
   | { status: 'raised';       alarmId: AlarmId; bed: BedId; code: AlarmCode; value: number }
@@ -207,10 +205,7 @@ export interface MedOrder {
   id: MedOrderId; patientId: PatientId; drug: string; doseMg: number; route: 'oral' | 'iv';
   status: 'ordered' | 'given' | 'cancelled'; orderedBy: DoctorId; createdAt: string;
 }
-// EXERCISE 3.4 – from MedOrder, remove id, status, orderedBy, createdAt
-export interface MedOrderDraft {
-  id?: MedOrderId; patientId: PatientId; drug: string; doseMg: number; route: string;
-}
+export type MedOrderDraft = Omit<MedOrder, 'id' | 'status' | 'orderedBy' | 'createdAt'>;
 
 export interface ManualReading { bed: BedId; vital: ManualVital; value: number; by: NurseId; at: string }
 
@@ -239,8 +234,7 @@ export interface RpcContract {
   'alarms.ack':       { req: Command & { alarmId: AlarmId };                             res: CommandResult };
   'alarms.snooze':    { req: Command & { alarmId: AlarmId; minutes: SnoozeMinutes };     res: CommandResult<{ until: string }> };
   'vitals.record':    { req: Command & { bed: BedId; vital: ManualVital; value: number }; res: CommandResult };
-  // EXERCISE 3.5 – Command plus only the id field of MedOrder
-  'medication.given': { req: Command & { id: string };                                   res: CommandResult };
+  'medication.given': { req: Command & Pick<MedOrder, 'id'>;                             res: CommandResult };
   'medication.order': { req: Command & MedOrderDraft;                                    res: CommandResult<Pick<MedOrder, 'id'>> };
 }
 
