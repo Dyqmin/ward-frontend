@@ -4,6 +4,7 @@
 
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 
 import {
   MessageBus,
@@ -41,7 +42,7 @@ export default class TemperatureForm {
   private readonly saved = signal(false);
 
   // LAB TASK 2: true while something is typed (value() is not '') and not saved() yet.
-  readonly dirty = computed(() => false);
+  readonly dirty = computed(() => this.value() !== '' && !this.saved());
 
   protected text(e: Event): string {
     return (e.target as HTMLInputElement).value;
@@ -52,18 +53,44 @@ export default class TemperatureForm {
     if (!Number.isFinite(value)) return this.error.set('Enter a number');
     this.error.set(null);
 
-    // LAB TASK 3: send the command and handle every reply.
-    //   this.bus.send('/app/vitals.record', { bed: …, vital: …, value }), then subscribe and
-    //   switch on the reply's status (ward/ui/alarm-actions.ts has the same shape):
-    //     'accepted'  → this.saved.set(true), a toast (this.toasts.show(…, 'success')), then
-    //                   this.router.navigateByUrl('/' + link('ward/:bed', { bed: this.slug() }))
-    //     'forbidden' → this.error.set(r.reason)
-    //     'conflict'  → this.error.set(`Recorded by ${who(r.by)} at ${clock(r.at)}`)
-    //     default     → assertNever(r)
-    //
-    // LAB TASK 4: survive an outage.
-    //   Before sending: this.pending.set(true).
-    //   Between send() and subscribe(): .pipe(commandRetry(this.bus), finalize(() => this.pending.set(false)))
-    //   In subscribe, next to `next`: error: () => this.error.set('Broker unreachable — not saved. Try again.')
+    // LAB TASK 3: send the command and handle every reply. LAB TASK 4: retry, pending.
+    this.pending.set(true);
+    // send() stamps ONE commandId; commandRetry resends that same command, so an outage never records twice
+    this.bus
+      .send('/app/vitals.record', {
+        bed: this.patient().bed,
+        vital: 'temp',
+        value,
+      })
+      .pipe(
+        commandRetry(this.bus),
+        finalize(() => this.pending.set(false)),
+      )
+      .subscribe({
+        next: (r) => {
+          switch (r.status) {
+            case 'accepted':
+              this.saved.set(true); // lets unsentValueGuard pass
+              this.toasts.show(
+                `${value.toFixed(1)} °C recorded for ${this.patient().bed}`,
+                'success',
+              );
+              void this.router.navigateByUrl(
+                '/' + link('ward/:bed', { bed: this.slug() }),
+              );
+              return;
+            case 'forbidden':
+              return this.error.set(r.reason); // e.g. "Implausible value"
+            case 'conflict':
+              return this.error.set(
+                `Recorded by ${who(r.by)} at ${clock(r.at)}`,
+              );
+            default:
+              return assertNever(r);
+          }
+        },
+        error: () =>
+          this.error.set('Broker unreachable — not saved. Try again.'),
+      });
   }
 }

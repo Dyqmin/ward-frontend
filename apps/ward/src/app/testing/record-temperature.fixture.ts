@@ -12,12 +12,23 @@ type VitalsRecordReply = NonNullable<
 export const recordTemperature =
   (ward: MockWard): VitalsRecordReply =>
   ({ bed, vital, value, performedAt }, ctx) => {
-    // 1. Only nurses. ctx.actor is who sent the command (or null). Check it with isNurseId, this
-    //    morning's Step 2a guard, so TypeScript knows it is a NurseId afterwards. Anyone else:
-    //    return { status: 'forbidden', reason: 'Only nurses can record vitals' }.
-    // 2. An empty bed (ward.patients has no entry for `bed`) is forbidden too.
-    // 3. value below 30 or above 43 → { status: 'forbidden', reason: 'Implausible value' }.
-    // 4. Otherwise add { bed, vital, value, by: ctx.actor, at: performedAt } to the bed's list in
-    //    ward.readings, and return { status: 'accepted', value: null }.
-    return { status: 'forbidden', reason: 'LAB TASK 1: not implemented yet' };
+    // 1. only nurses – isNurseId narrows ctx.actor to NurseId for `by` below
+    if (!ctx.actor || !isNurseId(ctx.actor))
+      return { status: 'forbidden', reason: 'Only nurses can record vitals' };
+    // 2. an occupied bed
+    if (!ward.patients.has(bed))
+      return { status: 'forbidden', reason: `Bed ${bed} is empty` };
+    // 3. a plausible value
+    if (value < 30 || value > 43)
+      return { status: 'forbidden', reason: 'Implausible value' };
+    // stretch: another nurse recorded this bed less than 60 s ago
+    const last = ward.readings.get(bed)?.at(-1);
+    if (last && last.by !== ctx.actor && ctx.now - Date.parse(last.at) < 60_000)
+      return { status: 'conflict', by: last.by, at: last.at };
+    // 4. store it
+    ward.readings.set(bed, [
+      ...(ward.readings.get(bed) ?? []),
+      { bed, vital, value, by: ctx.actor, at: performedAt },
+    ]);
+    return { status: 'accepted', value: null };
   };

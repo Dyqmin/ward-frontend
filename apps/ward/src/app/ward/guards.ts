@@ -20,4 +20,4 @@ export const validBed: CanActivateFn = (route) =>
  * Typed structurally ({ dirty(): boolean }), so this file never imports the form component.
  */
 export const unsentValueGuard: CanDeactivateFn<{ dirty(): boolean }> = (form) =>
-  true;
+  !form.dirty() || confirm('Discard the value you typed but did not save?');
