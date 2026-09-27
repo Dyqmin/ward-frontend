@@ -97,8 +97,8 @@ export type RpcResult<K extends RpcName> = NonNullable<RpcContract[K]['res']>;
 const isWard = (v: string): v is Ward => (WARDS as readonly string[]).includes(v);
 
 export const isBedId = (v: string): v is BedId => {
-  const [ward, no] = v.split('-');
-  return !!ward && isWard(ward) && BED_NUMBERS.some((n) => String(n) === no);
+  const [ward, no, ...rest] = v.split('-');
+  return rest.length === 0 && !!ward && isWard(ward) && BED_NUMBERS.some((n) => String(n) === no);
 };
 export const isNurseId = (v: string): v is NurseId => v.startsWith('nurse_') && v.length > 6;
 export const isDoctorId = (v: string): v is DoctorId => v.startsWith('dr_') && v.length > 3;

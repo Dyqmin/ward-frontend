@@ -19,6 +19,7 @@ describe('contract (Day 1 layer)', () => {
   it('turns route slugs into bed ids, and rejects unknown beds', () => {
     expect(bedFromSlug('icu-3')).toBe('ICU-3');
     expect(bedFromSlug('icu-9')).toBeNull();
+    expect(bedFromSlug('icu-3-1')).toBeNull();
   });
 
   it('builds links from typed params', () => {
