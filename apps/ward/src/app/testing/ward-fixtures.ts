@@ -26,6 +26,7 @@ import {
   type VitalsFrame,
   type Ward,
 } from '../core/messaging/contract';
+import { recordTemperature } from './record-temperature.fixture';
 
 /** The same three beds the backend keeps empty, for the "redirect on empty bed" demo. */
 export const MOCK_EMPTY_BEDS: readonly BedId[] = ['ICU-6', 'ER-4', 'CARD-3'];
@@ -394,28 +395,8 @@ export function createWardFixtures(ward = new MockWard()) {
         return accepted(null);
       },
 
-      // Lab task 1: 'vitals.record' already exists in the RpcContract; this is its fixture.
-      // Try `vital: 'hr'` in the form and watch it fail to compile (ManualVital is 'temp' only).
-      '/app/vitals.record': ({ bed, vital, value, performedAt }, ctx) => {
-        if (!isNurse(ctx.actor))
-          return forbidden('Only nurses can record vitals');
-        if (!ward.patients.has(bed)) return forbidden(`Bed ${bed} is empty`);
-        if (value < 30 || value > 43) return forbidden('Implausible value');
-        // stretch: another nurse recorded this bed less than 60 s ago
-        const last = ward.readings.get(bed)?.at(-1);
-        if (
-          last &&
-          last.by !== ctx.actor &&
-          ctx.now - Date.parse(last.at) < 60_000
-        ) {
-          return { status: 'conflict', by: last.by, at: last.at };
-        }
-        ward.readings.set(bed, [
-          ...(ward.readings.get(bed) ?? []),
-          { bed, vital, value, by: ctx.actor, at: performedAt },
-        ]);
-        return accepted(null);
-      },
+      // LAB TASK 1 lives in its own file: record-temperature.fixture.ts
+      '/app/vitals.record': recordTemperature(ward),
 
       // ---------- room game ----------
       '/app/monitor.set': ({ bed, hr }) => {

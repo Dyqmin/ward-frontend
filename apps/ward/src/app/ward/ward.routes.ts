@@ -13,7 +13,7 @@ import {
   patientResource,
   vitalsResource,
 } from './bed-detail/bed-resources';
-import { unsentValueGuard, validBed } from './guards';
+import { validBed } from './guards';
 import { stepCompleted, unsavedDraftGuard } from './med-order/guards';
 import { MedOrderDraftStore } from './med-order/med-order-draft-store';
 
@@ -69,17 +69,18 @@ export default [
   },
   { path: ':bed/meds/new', redirectTo: '/forbidden' }, // nurses fall through to here
 
-  // lab: record a temperature – nurses only, one blocking resource shared with the bed detail
+  // LAB TASK 2 · record a temperature. Fill in the two TODOs; the medication wizard above is a model.
   {
     path: ':bed/temperature',
-    title: (route) => `Record temperature · ${bedName(route)}`, // "… · ICU-3 · Ward Monitor"
-    canMatch: [hasRole('nurse')],
-    canActivate: [validBed],
-    canDeactivate: [unsentValueGuard],
+    title: 'Record temperature',
+    canMatch: [], // TODO: nurses only (hasRole)
+    canActivate: [validBed], // 'icu-9' → back to /ward: validBed → bedFromSlug → your isBedId
+    canDeactivate: [], // TODO: ask before losing a typed value (unsentValueGuard in ./guards)
     loadComponent: () => import('./temperature/temperature-form'),
-    resources: (ctx) => ({ patient: patientResource(ctx) }),
+    resources: (ctx) => ({ patient: patientResource(ctx) }), // blocking: the same record as the bed detail
   },
-  { path: ':bed/temperature', redirectTo: '/forbidden' }, // doctors fall through; the chunk is never requested
+  // TODO: everyone else must land on /forbidden. Add a second ':bed/temperature' route that
+  // redirects there, like the wizard's second route. When canMatch says no, the router tries it.
 
   // bed detail – the route says WHAT data the screen needs; the component only renders it
   {

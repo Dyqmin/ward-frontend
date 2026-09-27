@@ -14,8 +14,10 @@ export const validBed: CanActivateFn = (route) =>
   new RedirectCommand(inject(Router).parseUrl('/ward'));
 
 /**
- * A typed but unsent value asks before leaving. Typed structurally, so ward.routes.ts does not
- * import the form component — its chunk stays lazy (and is never requested by doctors).
+ * LAB TASK 2 · ask before leaving the form with a typed but unsent value.
+ * `form` is the routed component. Nothing typed (form.dirty() is false) → return true, the nurse
+ * may leave. Otherwise return the answer of confirm('Discard the value you typed but did not save?').
+ * Typed structurally ({ dirty(): boolean }), so this file never imports the form component.
  */
 export const unsentValueGuard: CanDeactivateFn<{ dirty(): boolean }> = (form) =>
-  !form.dirty() || confirm('Discard the value you typed but did not save?');
+  true;
