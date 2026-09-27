@@ -1,7 +1,8 @@
 // Type checks for the TypeScript block exercises. Do not import this file.
-// Done when this passes: npx tsc -p apps/ward/tsconfig.app.json --noEmit
+// Checked by: npx tsc -p apps/ward/tsconfig.app.json --noEmit (0 errors once Exercises 1 and 3 are done)
 // "Unused '@ts-expect-error' directive" = a bad case compiled, so the type is too wide.
-import { WARDS, isBedId, type AlarmId, type AlarmLevel, type BedId, type BedSlug, type DoctorId,
+import { WARDS, isBedId, type AlarmId, type ManualVital, type MedOrderDraft, type RpcContract,
+  type StreamedVital, type VitalsFrame, type AlarmLevel, type BedId, type BedSlug, type DoctorId,
   type MedOrderId, type NurseId, type PatientId, type SnoozeMinutes, type Vital } from './contract';
 
 // ---------- Step 1 · Exercise 1: literal types ----------
@@ -45,3 +46,28 @@ export const step1 = () => {
 // The guard's logic is tested at runtime in shared/is-bed-id.spec.ts. Here we only check that it
 // still narrows: if isBedId returned a plain boolean, `input` would stay a string.
 export const step2 = (input: string): BedId | null => (isBedId(input) ? input : null);
+
+// ---------- Step 3 · Exercise 3: utility types ----------
+// Instructions: the STEP 3 block in shared/contract.ts.
+export const step3 = () => {
+  const streamed: StreamedVital = 'hr';
+  // @ts-expect-error temperature is recorded by hand, not streamed
+  const streamedTemp: StreamedVital = 'temp';
+  const manual: ManualVital = 'temp';
+
+  const frame: VitalsFrame = { bed: 'ICU-3', ts: 1, hr: 72, spo2: 97, rr: 14 };
+  // @ts-expect-error a frame carries every streamed vital
+  const noRr: VitalsFrame = { bed: 'ICU-3', ts: 1, hr: 72, spo2: 97 };
+
+  const draft: MedOrderDraft = { patientId: 'pat_7', drug: 'heparin', doseMg: 5, route: 'iv' };
+  // @ts-expect-error id is assigned by the server
+  const withId: MedOrderDraft = { ...draft, id: 'med_1' };
+  // @ts-expect-error route is 'oral' or 'iv'
+  const badRoute: MedOrderDraft = { ...draft, route: 'im' };
+
+  type Given = RpcContract['medication.given']['req'];
+  // @ts-expect-error medication.given takes a MedOrderId
+  const notAnOrderId: Given = { commandId: 'c1', performedAt: '2026-01-01', id: 'pat_7' };
+
+  return [streamed, streamedTemp, manual, frame, noRr, draft, withId, badRoute, notAnOrderId];
+};

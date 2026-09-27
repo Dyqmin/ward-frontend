@@ -9,14 +9,17 @@
 //
 //  Step 1  Literal types                  ← EXERCISE 1
 //  Step 2  Type guards                    ← EXERCISE 2: isBedId (the rest of Step 2 is done)
-//  Step 3  Derived & mapped types         ┐ already implemented: read them
-//  Step 4  Conditional types & infer      ┘
+//  Step 3  Derived & mapped types         ← EXERCISE 3: utility types (the rest of Step 3 is done)
+//  Step 4  Conditional types & infer      ← already implemented: read it
 //
 //  Check your work at any time:
-//    npx tsc -p apps/ward/tsconfig.app.json --noEmit   Exercise 1 (expectations: shared/contract.checks.ts)
-//    pnpm test                                          Exercise 2 (runtime tests: shared/is-bed-id.spec.ts)
-//  On this branch only Exercises 1 and 2 are left for you; everything else is implemented, so
-//  read it as a walkthrough of where the exercises lead.
+//    npx tsc -p apps/ward/tsconfig.app.json --noEmit
+//        Exercises 1 and 3. Expectations: shared/contract.checks.ts. Both exercises share this
+//        one run, so it reaches 0 errors only when both are done.
+//    npx vitest run --globals apps/ward/src/app/shared/is-bed-id.spec.ts
+//        Exercise 2. Runs on its own, even while tsc still reports errors.
+//  Everything that is not an exercise is implemented: read it as a walkthrough of where the
+//  exercises lead.
 // ============================================================================================
 
 
@@ -33,9 +36,11 @@
 //   • Keep the arrays usable at runtime: guards in Step 2 iterate over them.
 //   • Only edit the Step 1 block, and don't edit contract.checks.ts.
 //
-//  Done when `npx tsc -p apps/ward/tsconfig.app.json --noEmit` reports 0 errors. Right now it
-//  reports 10: seven "Unused '@ts-expect-error'" in contract.checks.ts (a bad value compiled)
-//  and three knock-on errors in the app that disappear once the types are exact.
+//  Done when `npx tsc -p apps/ward/tsconfig.app.json --noEmit` reports no errors in the step1
+//  block of contract.checks.ts. It starts at 21 errors; after Exercise 1 the 15 that remain all
+//  belong to Exercise 3 (step3 block, ward-fixtures.ts, vitals-chart.ts and
+//  core/messaging/contract.ts). Leave those for now.
+//  "Unused '@ts-expect-error'" means a bad value compiled: the type is still too wide.
 //
 //  Tools: `as const`, indexed access `(typeof X)[number]`, template literal types, `Lowercase<>`.
 // --------------------------------------------------------------------------------------------
@@ -95,8 +100,10 @@ export type SnoozeMinutes = number; // 5, 10 or 15
 //     guards rely on it to narrow.
 //  Why tests and not tsc: `v is BedId` is a promise TypeScript does not verify. A guard that lies
 //  compiles fine, so the proof is in shared/is-bed-id.spec.ts.
-//  Done when `pnpm test` is green. Until then every bed is unknown to the app: bed URLs redirect
-//  back to /ward and live vitals frames fail their guard.
+//  Done when this is green:
+//    npx vitest run --globals apps/ward/src/app/shared/is-bed-id.spec.ts
+//  Until then every bed is unknown to the app: bed URLs redirect back to /ward and live vitals
+//  frames fail their guard.
 // --------------------------------------------------------------------------------------------
 
 // ---------- Step 2a · Primitive guards: string → literal type ----------
@@ -156,20 +163,37 @@ export const assertNever = (x: never): never => { throw new Error(`Unhandled: ${
 //  alarm codes are generated from vitals × levels, payloads reuse the ids, and the whole
 //  messaging surface is one interface that destinations and command names are derived from.
 //
-//  Look for: `Exclude` / `Extract` on unions; template literal types over unions (every
-//  combination at once); `Record`, `Omit`, `Pick` and intersections; discriminated unions;
-//  generic defaults (`CommandResult<T = null>`); mapped types with `[K in …]` and key filtering.
-//  Try: add 'bp' to VITALS (after Step 1) and follow the compile errors — that is the point.
+//  Look for: template literal types over unions (every combination at once, see AlarmCode);
+//  intersections; discriminated unions; generic defaults (`CommandResult<T = null>`); mapped
+//  types with `[K in …]` and key filtering.
+//
+//  EXERCISE 3 · Utility types (Steps 3a, 3b and 3d below)
+//  The five types marked "EXERCISE 3.x" were written by hand. Replace each one with a type
+//  built from an existing type, using the proper utility type:
+//
+//   1. StreamedVital  – from Vital, remove 'temp'.
+//   2. ManualVital    – from Vital, keep only 'temp'.
+//   3. VitalsFrame    – { bed: BedId; ts: number } plus a number field for every StreamedVital.
+//   4. MedOrderDraft  – from MedOrder, remove id, status, orderedBy and createdAt
+//                       (the server sets those).
+//   5. 'medication.given' request – Command plus only the id field of MedOrder.
+//
+//  Don't write any union or field list by hand, and don't edit contract.checks.ts.
+//  Done when `npx tsc -p apps/ward/tsconfig.app.json --noEmit` reports 0 errors (with
+//  Exercise 1 done as well).
 // --------------------------------------------------------------------------------------------
 
-// ---------- Step 3a · Utility types on unions: Exclude, Extract, template literals ----------
-export type StreamedVital = Exclude<Vital, 'temp'>;
-export type ManualVital = Extract<Vital, 'temp'>;
+// ---------- Step 3a · Utility types on unions, template literals ----------
+// EXERCISE 3.1 – from Vital, remove 'temp'
+export type StreamedVital = 'hr' | 'spo2' | 'rr' | 'temp';
+// EXERCISE 3.2 – from Vital, keep only 'temp'
+export type ManualVital = 'temp';
 export type AlarmCode = Exclude<`${Vital}.${AlarmLevel}`, `temp.${string}` | 'spo2.high'>;
 export const STREAMED_VITALS = VITALS.filter((v): v is StreamedVital => v !== 'temp');
 
-// ---------- Step 3b · Payloads: intersections, discriminated unions, Omit ----------
-export type VitalsFrame = { bed: BedId; ts: number } & Record<StreamedVital, number>;
+// ---------- Step 3b · Payloads: intersections, discriminated unions ----------
+// EXERCISE 3.3 – bed and ts, plus a number field for every StreamedVital
+export type VitalsFrame = { bed: BedId; ts: number; hr: number; spo2: number };
 
 export type AlarmEvent =
   | { status: 'raised';       alarmId: AlarmId; bed: BedId; code: AlarmCode; value: number }
@@ -183,7 +207,10 @@ export interface MedOrder {
   id: MedOrderId; patientId: PatientId; drug: string; doseMg: number; route: 'oral' | 'iv';
   status: 'ordered' | 'given' | 'cancelled'; orderedBy: DoctorId; createdAt: string;
 }
-export type MedOrderDraft = Omit<MedOrder, 'id' | 'status' | 'orderedBy' | 'createdAt'>;
+// EXERCISE 3.4 – from MedOrder, remove id, status, orderedBy, createdAt
+export interface MedOrderDraft {
+  id?: MedOrderId; patientId: PatientId; drug: string; doseMg: number; route: string;
+}
 
 export interface ManualReading { bed: BedId; vital: ManualVital; value: number; by: NurseId; at: string }
 
@@ -212,7 +239,8 @@ export interface RpcContract {
   'alarms.ack':       { req: Command & { alarmId: AlarmId };                             res: CommandResult };
   'alarms.snooze':    { req: Command & { alarmId: AlarmId; minutes: SnoozeMinutes };     res: CommandResult<{ until: string }> };
   'vitals.record':    { req: Command & { bed: BedId; vital: ManualVital; value: number }; res: CommandResult };
-  'medication.given': { req: Command & Pick<MedOrder, 'id'>;                             res: CommandResult };
+  // EXERCISE 3.5 – Command plus only the id field of MedOrder
+  'medication.given': { req: Command & { id: string };                                   res: CommandResult };
   'medication.order': { req: Command & MedOrderDraft;                                    res: CommandResult<Pick<MedOrder, 'id'>> };
 }
 
