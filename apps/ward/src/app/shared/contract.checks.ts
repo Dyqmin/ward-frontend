@@ -1,7 +1,7 @@
 // Type checks for the TypeScript block exercises. Do not import this file.
 // Done when this passes: npx tsc -p apps/ward/tsconfig.app.json --noEmit
 // "Unused '@ts-expect-error' directive" = a bad case compiled, so the type is too wide.
-import { WARDS, type AlarmId, type AlarmLevel, type BedId, type BedSlug, type DoctorId,
+import { WARDS, isBedId, type AlarmId, type AlarmLevel, type BedId, type BedSlug, type DoctorId,
   type MedOrderId, type NurseId, type PatientId, type SnoozeMinutes, type Vital } from './contract';
 
 // ---------- Step 1 · Exercise 1: literal types ----------
@@ -40,3 +40,8 @@ export const step1 = () => {
   return [bed, noSuchBed, lowerBed, slug, vital, noSuchVital, nurse, noPrefix, doctor, alarm,
     patient, order, level, noSuchLevel, snooze, longSnooze];
 };
+
+// ---------- Step 2 · Exercise 2: isBedId ----------
+// The guard's logic is tested at runtime in shared/is-bed-id.spec.ts. Here we only check that it
+// still narrows: if isBedId returned a plain boolean, `input` would stay a string.
+export const step2 = (input: string): BedId | null => (isBedId(input) ? input : null);

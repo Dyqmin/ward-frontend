@@ -7,15 +7,16 @@
 //  continues in core/messaging/contract.ts, where the Angular app builds on these types (look
 //  for the "Step N · app layer" headings there).
 //
-//  Step 1  Literal types                  ← EXERCISE 1: your task today
-//  Step 2  Type guards                    ┐
-//  Step 3  Derived & mapped types         ├ already implemented: read them
+//  Step 1  Literal types                  ← EXERCISE 1
+//  Step 2  Type guards                    ← EXERCISE 2: isBedId (the rest of Step 2 is done)
+//  Step 3  Derived & mapped types         ┐ already implemented: read them
 //  Step 4  Conditional types & infer      ┘
 //
 //  Check your work at any time:
-//    npx tsc -p apps/ward/tsconfig.app.json --noEmit
-//  The expectations live in shared/contract.checks.ts. On this branch only Step 1 is left for
-//  you; Steps 2–4 are already implemented, so read them as a walkthrough of where Step 1 leads.
+//    npx tsc -p apps/ward/tsconfig.app.json --noEmit   Exercise 1 (expectations: shared/contract.checks.ts)
+//    pnpm test                                          Exercise 2 (runtime tests: shared/is-bed-id.spec.ts)
+//  On this branch only Exercises 1 and 2 are left for you; everything else is implemented, so
+//  read it as a walkthrough of where the exercises lead.
 // ============================================================================================
 
 
@@ -30,7 +31,7 @@
 //   • Derive, don't repeat. Each union must come from its array, so adding 'NEURO' to WARDS
 //     updates every type below with no other edit.
 //   • Keep the arrays usable at runtime: guards in Step 2 iterate over them.
-//   • Don't touch anything below Step 1 and don't edit contract.checks.ts.
+//   • Only edit the Step 1 block, and don't edit contract.checks.ts.
 //
 //  Done when `npx tsc -p apps/ward/tsconfig.app.json --noEmit` reports 0 errors. Right now it
 //  reports 10: seven "Unused '@ts-expect-error'" in contract.checks.ts (a bad value compiled)
@@ -81,14 +82,29 @@ export type SnoozeMinutes = number; // 5, 10 or 15
 //  Try: add `| { status: 'queued' }` to CommandResult (Step 3c). Every switch that ends in
 //  assertNever (medication-list, review-step, temperature-form, alarm-actions) stops compiling until
 //  the new status is handled. Undo it afterwards.
+//
+//  EXERCISE 2 · isBedId (Step 2a below). Do it after Exercise 1: while BedId is `string`, the
+//  guard has nothing to narrow to.
+//  Implement isBedId so it accepts exactly the 18 ids of BedId ('ICU-1' … 'CARD-6') and nothing
+//  else:
+//   • Build it on WARDS and BED_NUMBERS (isWard is already there). Never list the beds by hand:
+//     adding a ward to WARDS must update the type and the guard together.
+//   • Exact matches only. All of these are false: 'icu-3' (case), 'ICU-9' and 'ICU-0' (no such
+//     bed), 'ICU-03', 'ICU-', '' and 'ICU-3-1' (anything after the number).
+//   • Keep the signature `(v: string): v is BedId`. bedFromSlug, isVitalsFrame and the request
+//     guards rely on it to narrow.
+//  Why tests and not tsc: `v is BedId` is a promise TypeScript does not verify. A guard that lies
+//  compiles fine, so the proof is in shared/is-bed-id.spec.ts.
+//  Done when `pnpm test` is green. Until then every bed is unknown to the app: bed URLs redirect
+//  back to /ward and live vitals frames fail their guard.
 // --------------------------------------------------------------------------------------------
 
 // ---------- Step 2a · Primitive guards: string → literal type ----------
 const isWard = (v: string): v is Ward => (WARDS as readonly string[]).includes(v);
 
+// EXERCISE 2: replace the body. Rules and test cases are in the STEP 2 block above.
 export const isBedId = (v: string): v is BedId => {
-  const [ward, no] = v.split('-');
-  return !!ward && isWard(ward) && BED_NUMBERS.some((n) => String(n) === no);
+  return false;
 };
 export const isNurseId = (v: string): v is NurseId => v.startsWith('nurse_') && v.length > 6;
 export const isDoctorId = (v: string): v is DoctorId => v.startsWith('dr_') && v.length > 3;
