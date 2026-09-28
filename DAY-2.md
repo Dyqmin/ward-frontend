@@ -9,6 +9,7 @@ file: what to build, where, and how to check it. This page only tells you where 
 ## 1. Run the app
 
 ```sh
+pnpm install
 pnpm start
 ```
 
@@ -41,5 +42,7 @@ pnpm nx test ward --include='**/vital-reading.spec.ts'
 pnpm nx test ward --include='**/vitals-panel.spec.ts'
 ```
 
-Each test is named after its exercise (`Exercise 1.3: stale or live`, …), so you can see which
-exercises are done. Tests of later exercises stay red until you get there.
+Each test is named after its exercise (`Exercise 1.3: stale or live`, …; the pause test covers
+1.4a and 1.4b together), so you can see which exercises are done. Tests of later exercises stay
+red until you get there. 1.2, 3.2 and 3.3 have no test: check them in the browser and by
+reading your code, as their instructions say.

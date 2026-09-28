@@ -18,9 +18,11 @@ import { Component } from '@angular/core';
 //            ageSec   number or null, null by default
 //            alarms   list of AlarmView, empty by default
 //            paused   two-way, like the card's
-//          In the template, the numbers now come from frame instead of shown.
+//          In the template, every place that read the resource or shown now reads frame
+//          (the numbers, and the "once there is a frame" conditions of the chips).
 //   [ts]   Move into the panel what only the display needs: the imports of VitalReading and the
 //          skeleton loader, the alarm helpers, and Full screen.
+//          Styles: vitals-panel.scss already has the card's styles; leave vitals-card.scss as is.
 //   [card] The card's template now only renders the panel, passes it shown, stale, ageSec,
 //          alarms and paused (two-way), and forwards its own projected content (the chart)
 //          into it.
@@ -41,12 +43,14 @@ import { Component } from '@angular/core';
 //
 //  EXERCISE 3.3 · Stretch: reusable liveness
 //   "How old is the newest frame, and is it stale" is not specific to this card.
-//   [new file ../liveness.ts] Create a function `liveness`. It takes a signal with the arrival
-//          time of the newest frame (milliseconds, or undefined) and returns ageSec and stale as
-//          signals, with the same rules as in the card. It gets Clock and MessageBus itself, so
+//   [new file apps/ward/src/app/ward/bed-detail/vitals/liveness.ts] Create a function
+//          `liveness`. It takes a Signal with the arrival time of the newest frame (milliseconds,
+//          or undefined) and returns ageSec and stale as signals, with the same rules as in the
+//          card (ageSec never below 0). It gets Clock and MessageBus itself, so
 //          it can only be called while the card is being created (e.g. in a field).
-//   [card] Use it instead of your own ageSec and stale.
-//   Check: the card no longer injects Clock; all three specs stay green.
+//   [card] Use it instead of your own ageSec and stale. The arrival time you pass in must be a
+//          Signal: make it a computed from the resource.
+//   Check: the card no longer injects Clock; all three specs stay green. (No spec test for 3.3.)
 // ============================================================================================
 
 @Component({

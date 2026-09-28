@@ -37,9 +37,12 @@ import type { BedId } from '@core/messaging/contract';
 //  EXERCISE 1.2 · How old is the data
 //   [ts]   Inject Clock (from @core/clock). Its `now` is a signal with the current time that
 //          updates every second. Don't start your own timer.
-//   [ts]   Create a computed `ageSec`: the whole seconds between now and the time the latest
-//          frame arrived; null while there is no frame.
-//   Check: show ageSec in the template for a moment; it stays at 0–1 while data flows.
+//   [ts]   Create a computed `ageSec`: the whole seconds (rounded) since the latest frame
+//          arrived, never below 0; null while there is no frame. "Never below 0" matters: the
+//          clock only ticks once a second, so right after a frame arrives `now` can be slightly
+//          EARLIER than the frame's arrival time.
+//   Check: show ageSec in the template for a moment; it stays at 0–1 while data flows and is
+//   never negative. (No spec test for 1.2: 1.3 builds on it.)
 //
 //  EXERCISE 1.3 · Stale or live
 //   [ts]   Create a computed `stale`: true when the bus is not connected (the bus has a
@@ -55,18 +58,20 @@ import type { BedId } from '@core/messaging/contract';
 //   [html] In the heading, after the chip, add one button (type "button"):
 //            its text is "Pause" while paused is false and "Resume" while it is true;
 //            a click switches paused to the other value.
-//   Check: the button switches between Pause and Resume. The numbers don't stop yet.
+//   Check: in the browser only: the button switches between Pause and Resume, the numbers
+//   don't stop yet. The spec test for pause turns green after 1.4b.
 //
 //  EXERCISE 1.4b · Freeze the numbers
 //   [ts]   Create `shown`: the frame whose numbers are on screen.
 //            - running (paused is false): the latest frame;
 //            - paused: the frame that was on screen at the moment Pause was clicked.
 //          It depends on two things, the latest frame and paused, and has to remember its own
-//          previous value. Use the signal type made for exactly that. The click handler from
-//          1.4a stays as it is: it only switches paused.
+//          previous value. Use the signal type made for exactly that. If paused is true but
+//          there is no remembered frame yet, show the latest one. The click handler from 1.4a
+//          stays as it is: it only switches paused.
 //   [html] Show the numbers from shown instead of the latest frame.
 //   [html] While paused, show a chip with class "chip" and text "paused" instead of the
-//          live / stale chip.
+//          live / stale chip (like that chip: only once there is a frame).
 //   Check: after Pause the numbers stop (the chart keeps moving); after Resume they jump on.
 //
 //  EXERCISE 1.5 · Warn when the data goes stale
@@ -94,8 +99,11 @@ import type { BedId } from '@core/messaging/contract';
 //   [ts]   Create an input `alarms`: a list of AlarmView (from ../../../data/alarms-store),
 //          empty by default.
 //   [html] After the chip, one chip per alarm: class "chip", plus class "bad" when the alarm is
-//          urgent; text "<title> · <status>". alarmTitle() and isUrgent() are in
-//          ../../../ui/format; the status is the alarm's event.status.
+//          urgent; text "<title> · <status>", e.g. "HR high (143) · raised".
+//            - title: alarmTitle(alarm), urgent: isUrgent(alarm), both from ../../../ui/format;
+//              put them on the class as fields so the template can call them.
+//            - status: the raw event.status of the alarm (e.g. "raised"). Don't use
+//              alarmStatus() from the same file: it builds a longer sentence.
 //   [html] In ../../bed-detail.html pass the page's alarms to the card.
 //   Check: the spec's "Exercise 2.2" tests; ICU-3 shows its alarm chips.
 //
@@ -108,8 +116,9 @@ import type { BedId } from '@core/messaging/contract';
 //   [html] In ../../bed-detail.html pass that signal into the card, and update it whenever the
 //          card sends pausedChange.
 //   Check: the spec's "Exercise 2.3" test; Pause still works in the browser.
-//   Note: the "Exercise 1.4" test goes red now, because the card can't change paused by itself.
-//   That is expected: 2.4 turns it green again.
+//   Note: two tests go red now, because the card can't change paused by itself: the pause test
+//   of 1.4 and the 2.4 test "flips its own button". That is expected: 2.4 turns them green
+//   again. (The other 2.4 test, "accepts paused from the parent", already passes here.)
 //
 //  EXERCISE 2.4 · Pause, two-way
 //   [ts]   Replace the paused input AND the pausedChange output with ONE member `paused` that
