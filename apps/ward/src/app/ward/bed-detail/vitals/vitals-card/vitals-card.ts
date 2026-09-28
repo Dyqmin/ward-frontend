@@ -21,66 +21,80 @@ import type { BedId } from '@core/messaging/contract';
 // --------------------------------------------------------------------------------------------
 //
 //  EXERCISE 1.1 · Live data
-//   [ts]   Inject MessageBus (from @core/messaging/contract).
-//   [ts]   Create a resource `vitals` with the live data of `bed`:
-//            - it depends on `bed`: when the bed changes, it switches to the new bed by itself;
-//            - its stream is the bus's watch() of the topic /topic/vitals.<bed>, one frame per
-//              second;
-//            - each value holds the frame AND the time it arrived (Date.now()), as `frame`
-//              and `at`.
-//          The resource API for streams is in @angular/core/rxjs-interop.
-//   [html] While the resource has a value: show the HR, SpO₂ and RR of its frame as text.
-//          Before the first value: show a skeleton loader with 3 rows
-//          (NgxSkeletonLoaderComponent from 'ngx-skeleton-loader').
+//   Goal: the card shows the live HR, SpO₂ and RR of its bed.
+//   [ts]   Inject MessageBus (from @core/messaging/contract) into a private field `bus`.
+//   [ts]   Create an rxResource `vitals` (rxResource is in @angular/core/rxjs-interop):
+//            - params: the value of the `bed` input, so the resource restarts by itself when
+//              the bed changes;
+//            - stream: the bus's watch() of the topic "/topic/vitals.<bed>", using the bed from
+//              params. It emits one VitalsFrame per second;
+//            - map every frame (rxjs map) to an object with two fields: `frame` (the frame
+//              itself) and `at` (Date.now(): the moment it arrived).
+//   [html] If vitals has a value: a paragraph with the hr, spo2 and rr of the value's frame,
+//          e.g. "HR 72 · SpO₂ 97 · RR 14".
+//          Otherwise: an ngx-skeleton-loader with count 3. Add NgxSkeletonLoaderComponent (from
+//          'ngx-skeleton-loader') to the component's imports.
 //   Check: the three numbers change every second.
 //
 //  EXERCISE 1.2 · How old is the data
-//   [ts]   Inject Clock (from @core/clock). Its `now` is a signal with the current time that
-//          updates every second. Don't start your own timer.
-//   [ts]   Create a computed `ageSec`: the whole seconds (rounded) since the latest frame
-//          arrived, never below 0; null while there is no frame. "Never below 0" matters: the
-//          clock only ticks once a second, so right after a frame arrives `now` can be slightly
-//          EARLIER than the frame's arrival time.
-//   Check: show ageSec in the template for a moment; it stays at 0–1 while data flows and is
-//   never negative. (No spec test for 1.2: 1.3 builds on it.)
+//   Goal: the card knows how many seconds ago the last frame arrived.
+//   [ts]   Inject Clock (from @core/clock) and keep its `now` signal in a private field `now`.
+//          `now` holds the current time in milliseconds and updates every second. Don't start
+//          your own timer.
+//   [ts]   Create a computed `ageSec` (type number | null):
+//            - vitals has no value → null;
+//            - otherwise → now minus the value's `at`, divided by 1000, rounded to whole
+//              seconds, and never below 0. (The clock ticks once a second, so right after a
+//              frame arrives, now can be slightly EARLIER than `at`.)
+//   Check: show ageSec in the template for a moment; it stays at 0–1 and is never negative.
+//   (No spec test for 1.2: 1.3 builds on it.)
 //
 //  EXERCISE 1.3 · Stale or live
-//   [ts]   Create a computed `stale`: true when the bus is not connected (the bus has a
-//          `connected` signal), or when ageSec is bigger than STALE_AFTER_SEC
-//          (from ../../../ui/format). No frame yet counts as age 0.
-//   [html] In the heading, once there is a frame, show one chip:
-//            stale → class "chip warn", text "no data for N s" (N = ageSec)
-//            live  → class "chip ok",   text "live"
+//   Goal: the card says clearly when its numbers are old.
+//   [ts]   Create a computed `stale` (type boolean). It is true when:
+//            - the bus's `connected` signal is false, OR
+//            - ageSec is greater than STALE_AFTER_SEC (from ../../../ui/format).
+//          Treat an ageSec of null as 0.
+//   [html] In the heading, once vitals has a value, show exactly one chip:
+//            stale is true → a span with class "chip warn" and the text "no data for N s",
+//                            where N is ageSec;
+//            otherwise     → a span with class "chip ok" and the text "live".
 //   Check: Simulate outage → "no data for N s", counting up; "live" again after the outage.
 //
 //  EXERCISE 1.4a · The Pause button
-//   [ts]   Create a writable signal `paused`, false at the start.
-//   [html] In the heading, after the chip, add one button (type "button"):
-//            its text is "Pause" while paused is false and "Resume" while it is true;
-//            a click switches paused to the other value.
+//   Goal: a nurse can pause the card to read the numbers out.
+//   [ts]   Create a signal `paused` (type boolean), initial value false.
+//   [html] In the heading, after the chip, one button with type "button":
+//            - its text is "Pause" while paused is false, "Resume" while paused is true;
+//            - a click sets paused to the opposite of its current value.
 //   Check: in the browser only: the button switches between Pause and Resume, the numbers
 //   don't stop yet. The spec test for pause turns green after 1.4b.
 //
 //  EXERCISE 1.4b · Freeze the numbers
-//   [ts]   Create `shown`: the frame whose numbers are on screen.
-//            - running (paused is false): the latest frame;
-//            - paused: the frame that was on screen at the moment Pause was clicked.
-//          It depends on two things, the latest frame and paused, and has to remember its own
-//          previous value. Use the signal type made for exactly that. If paused is true but
-//          there is no remembered frame yet, show the latest one. The click handler from 1.4a
-//          stays as it is: it only switches paused.
-//   [html] Show the numbers from shown instead of the latest frame.
-//   [html] While paused, show a chip with class "chip" and text "paused" instead of the
-//          live / stale chip (like that chip: only once there is a frame).
+//   Goal: while paused, the three numbers stay the same; the chart keeps moving.
+//   [ts]   Create a linkedSignal `shown` (type VitalsFrame | undefined): the frame whose HR, SpO₂
+//          and RR the card displays.
+//            - source: an object with two fields: the latest frame (the frame of vitals' value,
+//              or undefined while vitals has no value) and the current value of paused;
+//            - computation: gets that source and the previous state. If paused is true and there
+//              is a previous value, return the previous value (the frozen frame). In every other
+//              case, return the latest frame.
+//          Why not a computed: a computed can't see its own previous value, so it can't keep a
+//          frame while paused. The button from 1.4a stays as it is: it only flips paused.
+//   [html] Take the three numbers from shown instead of from vitals' value.
+//   [html] While paused is true, show a span with class "chip" and the text "paused" instead of
+//          the live / stale chip (like that chip: only once vitals has a value).
 //   Check: after Pause the numbers stop (the chart keeps moving); after Resume they jump on.
 //
 //  EXERCISE 1.5 · Warn when the data goes stale
-//   [ts]   Inject Toasts (from @core/ui/toasts).
-//   [ts]   Every time stale becomes true, show a warning toast with the text
-//          "<bed>: no live vitals" (e.g. "ICU-3: no live vitals"); Toasts.show(text, kind)
-//          takes the kind 'warn'. This is a side effect that reacts to a signal: set it up in
-//          the constructor.
-//          Only stale may decide when it runs: reading bed for the text must not be tracked.
+//   Goal: a nurse who looks away still hears about lost data.
+//   [ts]   Inject Toasts (from @core/ui/toasts) into a private field `toasts`.
+//   [ts]   Add a constructor and create an effect in it:
+//            - it reads stale; while stale is false it does nothing;
+//            - when stale is true it calls toasts.show with the text "<bed>: no live vitals"
+//              (e.g. "ICU-3: no live vitals") and the kind 'warn';
+//            - make that toasts.show call inside untracked, so that reading bed does not become
+//              a dependency of the effect: only a change of stale may run it again.
 //   Check: one outage → exactly one toast.
 //
 // --------------------------------------------------------------------------------------------
@@ -90,49 +104,61 @@ import type { BedId } from '@core/messaging/contract';
 //  EXERCISE 2.1 is in ../vital-reading/vital-reading.ts. Do it first, then come back here.
 //
 //  EXERCISE 2.2 · Readings and alarms
-//   [html] Replace the HR / SpO₂ / RR text with three VitalReading components
-//          (../vital-reading/vital-reading), inside a div with class "now":
-//            HR:   label "HR",   vital hr,   unit "bpm"
-//            SpO₂: label "SpO₂", vital spo2, unit "%"
-//            RR:   label "RR",   vital rr,   unit "/min"
-//          Each gets its value from shown and gets stale.
-//   [ts]   Create an input `alarms`: a list of AlarmView (from ../../../data/alarms-store),
-//          empty by default.
-//   [html] After the chip, one chip per alarm: class "chip", plus class "bad" when the alarm is
-//          urgent; text "<title> · <status>", e.g. "HR high (143) · raised".
-//            - title: alarmTitle(alarm), urgent: isUrgent(alarm), both from ../../../ui/format;
-//              put them on the class as fields so the template can call them.
-//            - status: the raw event.status of the alarm (e.g. "raised"). Don't use
-//              alarmStatus() from the same file: it builds a longer sentence.
-//   [html] In ../../bed-detail.html pass the page's alarms to the card.
+//   Goal: the numbers look like a monitor, and the card shows the bed's alarms.
+//   [ts]   Add VitalReading (from ../vital-reading/vital-reading) to the component's imports.
+//   [html] Replace the paragraph from 1.1 with a div with class "now" holding three
+//          app-vital-reading elements. Set their inputs:
+//            HR:   label "HR",   vital "hr",   unit "bpm",  value: hr of shown
+//            SpO₂: label "SpO₂", vital "spo2", unit "%",    value: spo2 of shown
+//            RR:   label "RR",   vital "rr",   unit "/min", value: rr of shown
+//          and give all three the card's stale.
+//   [ts]   Create an input `alarms` (type readonly AlarmView[], from
+//          ../../../data/alarms-store), default an empty array.
+//   [ts]   Add two protected fields that point to the functions alarmTitle and isUrgent (from
+//          ../../../ui/format), so the template can call them.
+//   [html] After the chip, loop with @for over alarms (track by the alarm's event.alarmId). For
+//          each alarm, a span with class "chip", plus the class "bad" when isUrgent(alarm) is
+//          true, and the text "<alarmTitle(alarm)> · <the alarm's event.status>",
+//          e.g. "HR high (143) · raised". Use the raw event.status; don't use alarmStatus()
+//          from the same file, it builds a longer sentence.
+//   [html] In ../../bed-detail.html, bind the card's alarms input to the page's alarms.
 //   Check: the spec's "Exercise 2.2" tests; ICU-3 shows its alarm chips.
 //
 //  EXERCISE 2.3 · Pause, owned by the parent
-//   [ts]   Turn paused into an input (false by default). The card can't change it anymore.
-//   [ts]   Create an output `pausedChange` that sends a boolean.
-//   [html] The button no longer changes paused: it sends the new value through pausedChange
-//          (true after Pause, false after Resume).
-//   [ts]   In ../../bed-detail.ts create the state: a signal `paused`, false at the start.
-//   [html] In ../../bed-detail.html pass that signal into the card, and update it whenever the
-//          card sends pausedChange.
+//   Goal: the bed screen, not the card, owns "paused".
+//   [ts]   Change paused from a signal into an input (type boolean, default false). The card
+//          can no longer set it.
+//   [ts]   Create an output `pausedChange` (type boolean).
+//   [html] The button's click no longer sets paused: it emits the opposite of the current
+//          paused through pausedChange (true after Pause, false after Resume).
+//   [ts]   In ../../bed-detail.ts, create a signal `paused` (type boolean), initial value false.
+//   [html] In ../../bed-detail.html, on the card: bind the paused input to that signal, and on
+//          pausedChange set the signal to the emitted value.
 //   Check: the spec's "Exercise 2.3" test; Pause still works in the browser.
 //   Note: two tests go red now, because the card can't change paused by itself: the pause test
 //   of 1.4 and the 2.4 test "flips its own button". That is expected: 2.4 turns them green
 //   again. (The other 2.4 test, "accepts paused from the parent", already passes here.)
 //
 //  EXERCISE 2.4 · Pause, two-way
-//   [ts]   Replace the paused input AND the pausedChange output with ONE member `paused` that
-//          the parent can bind in both directions and the card can also write.
-//   [html] The button switches paused directly again.
-//   [html] In ../../bed-detail.html replace the two bindings from 2.3 with one two-way binding.
+//   Goal: one member instead of an input plus an output.
+//   [ts]   Replace the paused input AND the pausedChange output with a model `paused`
+//          (type boolean, default false). A model is an input that the component can also set;
+//          setting it emits pausedChange for the parent.
+//   [html] The button's click sets paused to the opposite of its current value again.
+//   [html] In ../../bed-detail.html, replace the two bindings from 2.3 with one two-way binding
+//          of paused to the page's paused signal.
 //   Check: the spec's "Exercise 2.4" tests, and 2.3 stays green: from outside, the API is the
 //   same as before.
 //
 //  EXERCISE 2.5 · Full screen
-//   [html] Add a button "Full screen" next to Pause.
-//   [ts]   A click shows the card's <section class="card vitals"> full screen (the DOM method
-//          requestFullscreen()). Get hold of that element from the class through the template,
-//          without document.querySelector.
+//   Goal: the bedside display can show only the vitals.
+//   [html] Add a template reference variable named `card` to the <section class="card vitals">.
+//   [ts]   Create a required viewChild `card` (type ElementRef<HTMLElement>) that reads the
+//          element with that reference name.
+//   [ts]   Create a method fullscreen() that calls requestFullscreen() on that element
+//          (its nativeElement).
+//   [html] Add a second button with type "button" and the text "Full screen" next to Pause;
+//          its click calls fullscreen().
 //   Check: the spec's "Exercise 2.5" test; the button shows the card full screen.
 //
 //  PART 3 continues in ../vitals-panel/vitals-panel.ts.

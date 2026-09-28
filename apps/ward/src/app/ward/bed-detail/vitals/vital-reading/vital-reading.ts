@@ -7,16 +7,18 @@ import { Component } from '@angular/core';
 //  the card uses it three times in EXERCISE 2.2 (../vitals-card/vitals-card.ts).
 //  [ts] = this file, [html] = vital-reading.html. Styles are ready in vital-reading.scss.
 //
-//   [ts]   Create five inputs:
-//            label   text, required                       e.g. "HR"
-//            vital   StreamedVital, required              hr, spo2 or rr (@core/messaging/contract)
-//            value   number, required                     e.g. 72
-//            unit    text, empty by default               e.g. "bpm"
-//            stale   boolean, false by default
-//   [ts]   Create a computed `out`: true when the value is outside the thresholds of its vital.
-//          isOutOfRange() in @core/messaging/contract does the check.
-//   [ts]   While stale is true, the component's own element (<app-vital-reading>) has the
-//          class "stale". Set that up in the component's metadata, not in the template.
+//   [ts]   Create five signal inputs:
+//            label   required input, type string          e.g. "HR"
+//            vital   required input, type StreamedVital   "hr", "spo2" or "rr" (@core/messaging/contract)
+//            value   required input, type number          e.g. 72
+//            unit    input with default value ''          e.g. "bpm"
+//            stale   input with default value false
+//   [ts]   Create a computed `out` (type boolean): the result of isOutOfRange (from
+//          @core/messaging/contract) called with the current vital and value. It is true when
+//          the value is outside the thresholds of that vital.
+//   [ts]   While stale is true, the component's own element (<app-vital-reading>) must have the
+//          class "stale". Do it with the `host` property of @Component: bind the class "stale"
+//          to the stale input. Not in the template: the template can't reach its own host.
 //   [html] Three spans:
 //            class "label" with the label;
 //            class "value" with the value, plus class "out" while out is true;

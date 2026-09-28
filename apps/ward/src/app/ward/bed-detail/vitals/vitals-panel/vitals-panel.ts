@@ -12,20 +12,24 @@ import { Component } from '@angular/core';
 //  EXERCISE 3.1 · Extract the panel
 //   [html] Move the whole template of the card into vitals-panel.html: the section, the chips,
 //          the buttons, the readings and the content slot for the chart.
-//   [ts]   Give the panel everything the moved template reads, as inputs:
-//            frame    the frame to show (VitalsFrame or undefined), required
-//            stale    boolean, false by default
-//            ageSec   number or null, null by default
-//            alarms   list of AlarmView, empty by default
-//            paused   two-way, like the card's
+//   [ts]   Give the panel everything the moved template reads, as signal inputs:
+//            frame    required input, type VitalsFrame | undefined   the frame to show
+//            stale    input, default false
+//            ageSec   input, type number | null, default null
+//            alarms   input, type readonly AlarmView[], default an empty array
+//            paused   a model, default false (like the card's)
 //          In the template, every place that read the resource or shown now reads frame
 //          (the numbers, and the "once there is a frame" conditions of the chips).
 //   [ts]   Move into the panel what only the display needs: the imports of VitalReading and the
 //          skeleton loader, the alarm helpers, and Full screen.
 //          Styles: vitals-panel.scss already has the card's styles; leave vitals-card.scss as is.
-//   [card] The card's template now only renders the panel, passes it shown, stale, ageSec,
-//          alarms and paused (two-way), and forwards its own projected content (the chart)
-//          into it.
+//   [card] The card's template now only renders one app-vitals-panel:
+//            - bind the panel's frame to the card's shown, and stale, ageSec and alarms to the
+//              card's members of the same names;
+//            - bind paused two-way to the card's paused model;
+//            - between the panel's opening and closing tags put an ng-content, so the chart
+//              the bed screen gives the card goes on into the panel.
+//          Add VitalsPanel to the card's imports.
 //          The card keeps bed, alarms, paused, the resource, ageSec, stale, shown and the toast.
 //          Its API does not change, so ../../bed-detail.html does not change either.
 //   Check: pnpm nx test ward --include='**/vitals-panel.spec.ts' (the panel is created with no
