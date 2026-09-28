@@ -46,6 +46,13 @@
   <div class="grid">
     @for (bed of bedsOf(w); track bed) {
     <app-bed-tile [bed]="bed" />
+    <!-- DAY 2 · LIVE CODING · STEP 2.2: replace the line above with
+    <app-bed-tile
+      [bed]="bed"
+      [patient]="patients.patient(bed)"
+      [alarms]="alarmsFor()(bed)"
+    />
+    -->
     }
   </div>
   }
