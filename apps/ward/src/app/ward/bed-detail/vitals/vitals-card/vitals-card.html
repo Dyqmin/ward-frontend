@@ -1,15 +1,37 @@
-<!-- DAY 2 · THE VITALS CARD — the exercises are described in vitals-card.ts -->
+<!-- DAY 2 · THE VITALS CARD — full instructions at the top of vitals-card.ts -->
 <section class="card vitals">
   <h2 class="row">
     Vitals
     <span class="spacer"></span>
-    <!-- EXERCISE 1.3: the live / stale chip (1.4: or "paused") -->
-    <!-- EXERCISE 2.2: the alarm chips -->
-    <!-- EXERCISE 1.4: the Pause / Resume button (2.5: and Full screen) -->
+
+    <!-- EXERCISE 1.3 · the chip. Once there is data, show ONE chip:
+           stale:     <span class="chip warn">no data for {{ ageSec() }} s</span>
+           otherwise: <span class="chip ok">live</span>
+         EXERCISE 1.4 · while paused, show this one instead:
+                      <span class="chip">paused</span> -->
+
+    <!-- EXERCISE 2.2 · after the chip, one chip per alarm (loop over alarms()):
+           <span class="chip" [class.bad]="isUrgent(a)">{{ alarmTitle(a) }} · {{ a.event.status }}</span> -->
+
+    <!-- EXERCISE 1.4 · the button, always visible. A click flips paused:
+           <button type="button">Pause</button>     while running
+           <button type="button">Resume</button>    while paused
+         EXERCISE 2.3 · the click emits pausedChange instead
+         EXERCISE 2.4 · the click changes paused again (two-way)
+         EXERCISE 2.5 · next to it, a click calls requestFullscreen() on this <section>:
+           <button type="button">Full screen</button> -->
   </h2>
 
-  <!-- EXERCISE 1.1: HR · SpO₂ · RR, or a skeleton until the first frame (2.2: three <app-vital-reading>) -->
+  <!-- EXERCISE 1.1 · the numbers of the latest frame (1.4: of `shown`):
+         with data:    <p>HR {{ … }} · SpO₂ {{ … }} · RR {{ … }}</p>
+         before data:  <ngx-skeleton-loader count="3" />
+       EXERCISE 2.2 · replace the <p> with three readings in a grid:
+         <div class="now">
+           <app-vital-reading label="HR"   vital="hr"   [value]="…" unit="bpm"  [stale]="stale()" />
+           <app-vital-reading label="SpO₂" vital="spo2" [value]="…" unit="%"    [stale]="stale()" />
+           <app-vital-reading label="RR"   vital="rr"   [value]="…" unit="/min" [stale]="stale()" />
+         </div> -->
 
-  <!-- the bed screen puts the chart here -->
+  <!-- the bed screen puts the chart here: keep this line -->
   <ng-content />
 </section>
