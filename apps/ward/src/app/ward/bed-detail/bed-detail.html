@@ -30,25 +30,17 @@
   </header>
 
   <div class="layout">
-    <section class="card vitals">
-      <h2 class="row">
-        Vitals
-        <span class="spacer"></span>
-        <!-- DAY 2 · EXERCISE 1.3: the live / stale chip -->
-      </h2>
-
-      <!-- non-blocking: the page is already here; the resource says how far the data is -->
+    <!-- DAY 2: your card — open vitals/vitals-card/vitals-card.ts -->
+    <app-vitals-card [bed]="patient().bed">
+      <!-- the chart: ready-made, it gets the last ten minutes from the route -->
       @if (vitals().hasValue()) {
-      <!-- DAY 2 · EXERCISE 1.1: the latest HR, SpO₂ and RR -->
       <app-vitals-chart [frames]="vitals().value() ?? []" />
       } @else if (vitals().error()) {
-      <p class="warn">
-        Live vitals unavailable – no data is shown rather than old data.
-      </p>
+      <p class="warn">Vitals history unavailable.</p>
       } @else {
       <ngx-skeleton-loader count="4" />
       }
-    </section>
+    </app-vitals-card>
 
     <aside class="side">
       <section class="card stack">

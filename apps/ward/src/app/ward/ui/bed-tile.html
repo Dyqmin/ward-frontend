@@ -1,16 +1,8 @@
 <!-- DAY 2 · LIVE CODING — the steps are explained in bed-tile.ts. -->
 
-<!-- STEP 3.1: replace this <div class="tile"> (and its closing </div>) with:
-<a
-  class="tile"
-  [routerLink]="['/ward', slug()]"
-  [class.alarm]="urgent()"
-  [class.stale]="stale()"
-  [class.empty]="patient() === null"
->
--->
-<!-- STEP 1.3: add [class.stale]="stale()" to the <div class="tile"> -->
-<div class="tile">
+<!-- STEP 1.3: add [class.stale]="stale()" to the <a class="tile"> -->
+<!-- STEP 2.2: add [class.alarm]="urgent()" and [class.empty]="patient() === null" to it -->
+<a class="tile" [routerLink]="['/ward', slug()]">
   <header>
     <h3>{{ bed() }}</h3>
     <!-- STEP 2.2: the patient, in its three states
@@ -64,4 +56,4 @@
     <span class="chip" [class.bad]="isUrgent(a)">{{ alarmTitle(a) }} · {{ a.event.status }}</span>
   }
   -->
-</div>
+</a>

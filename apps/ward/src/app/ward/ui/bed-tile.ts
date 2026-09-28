@@ -1,6 +1,7 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
-import type { BedId } from '@core/messaging/contract';
+import { toSlug, type BedId } from '@core/messaging/contract';
 
 // ============================================================================================
 //  DAY 2 · LIVE CODING — the bed tile of the nurse station
@@ -21,7 +22,6 @@ import type { BedId } from '@core/messaging/contract';
 // import { map } from 'rxjs';
 // import { MessageBus } from '@core/messaging/contract';
 // STEP 1.2
-// import { computed } from '@angular/core';
 // import { Clock } from '@core/clock';
 // STEP 1.3
 // import { STALE_AFTER_SEC } from './format';
@@ -31,20 +31,19 @@ import type { BedId } from '@core/messaging/contract';
 // import type { Patient } from '@core/messaging/contract';
 // import type { AlarmView } from '../data/alarms-store';
 // import { alarmTitle, isUrgent } from './format';
-// STEP 3.1
-// import { RouterLink } from '@angular/router';
-// import { toSlug } from '@core/messaging/contract';
 
 @Component({
   selector: 'app-bed-tile',
-  // STEP 1.1: imports: [NgxSkeletonLoaderComponent],
-  // STEP 2.1: imports: [NgxSkeletonLoaderComponent, VitalValue],
-  // STEP 3.1: imports: [RouterLink, VitalValue, NgxSkeletonLoaderComponent],
+  imports: [RouterLink],
+  // STEP 1.1: imports: [RouterLink, NgxSkeletonLoaderComponent],
+  // STEP 2.1: imports: [RouterLink, VitalValue, NgxSkeletonLoaderComponent],
   templateUrl: './bed-tile.html',
   styleUrl: './bed-tile.scss',
 })
 export class BedTile {
   readonly bed = input.required<BedId>();
+  /** Ready from the start, so everyone can click through to the bed screen. */
+  protected readonly slug = computed(() => toSlug(this.bed()));
 
   // ------------------------------------------------------------------------------------------
   //  BLOCK 1 · SIGNALS
@@ -117,12 +116,7 @@ export class BedTile {
   //  BLOCK 3 · COMPONENT ARCHITECTURE
   // ------------------------------------------------------------------------------------------
 
-  // STEP 3.1 · The tile as a link
-  // Then in html: STEP 3.1 turns the <div class="tile"> into a link to the bed.
-  //
-  // protected readonly slug = computed(() => toSlug(this.bed()));
-
-  // STEP 3.2 · Talking points (no code)
+  // STEP 3.1 · Talking points (no code)
   // - What in this tile is smart? It injects MessageBus and Clock and decides "stale" itself.
   //   What is presentational? patient and alarms come from the parent, rendering is local.
   // - Why not let the tile fetch its patient too? The nurse station needs all 18 patients at
@@ -130,6 +124,7 @@ export class BedTile {
   // - Why not move the vitals up to the nurse station? It would juggle 18 streams and hand frames
   //   down. Here each tile owns one stream, and its lifetime is the tile's: leave the page (or
   //   filter a ward out) and the subscription ends with the tile.
-  // - The bed screen (participants' Part 3) makes the other choice: a smart BedVitals container
-  //   and a presentational VitalsCard. Compare the two splits.
+  // - The bed screen (participants' Part 3) takes the split one step further: the smart
+  //   VitalsCard keeps the data and hands plain values to a presentational VitalsPanel.
+  //   Compare: which of the two would you reuse for 18 beds on one screen?
 }

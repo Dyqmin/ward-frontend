@@ -8,10 +8,10 @@ router resources) on STOMP over WebSockets with `@stomp/rx-stomp`.
 
 ## Day 2 branch
 
-On `day-2`, participants build the Vitals card of the bed screen: the exercises are in
-[DAY-2.md](DAY-2.md). The bed tile of the nurse station is built live, on stage: `ward/ui/bed-tile.ts`
+On `day-2`, participants build the Vitals card of the bed screen: [DAY-2.md](DAY-2.md) says
+where to start, and each file in `ward/bed-detail/vitals/` carries its own exercises. The bed tile of the nurse station is built live, on stage: `ward/ui/bed-tile.ts`
 and `ward/ui/vital-value.ts` start almost empty, with every step of the live coding commented out
-in order (STEP 1.1 … 3.2, with what to show at each one).
+in order (STEP 1.1 … 3.1, with what to show at each one).
 
 ## Run it
 

@@ -22,6 +22,7 @@ import { AlarmActions } from '../ui/alarm-actions';
 import { clock, who } from '../ui/format';
 import { MedicationList } from './components/medication-list/medication-list';
 import { VitalsChart } from './components/vitals-chart/vitals-chart';
+import { VitalsCard } from './vitals/vitals-card/vitals-card';
 
 @Component({
   selector: 'app-bed-detail',
@@ -29,6 +30,7 @@ import { VitalsChart } from './components/vitals-chart/vitals-chart';
     RouterLink,
     NgxSkeletonLoaderComponent,
     VitalsChart,
+    VitalsCard,
     AlarmActions,
     MedicationList,
   ],
@@ -55,9 +57,6 @@ export default class BedDetail {
     () =>
       `${new Date(this.patient().admittedAt).toLocaleDateString()} ${clock(this.patient().admittedAt)}`,
   );
-
-  // DAY 2 · PART 1 (signals): latest, ageSec, stale, paused and the stale toast go here.
-  // Instructions: DAY-2.md at the repo root.
 
   private readonly wardAlarms = toSignal(
     // from the URL, not from `patient`: blocking-resource inputs are bound by a router effect, after construction

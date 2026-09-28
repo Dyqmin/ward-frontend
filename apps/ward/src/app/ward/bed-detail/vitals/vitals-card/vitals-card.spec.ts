@@ -1,115 +1,188 @@
-import {
-  ApplicationRef,
-  EnvironmentInjector,
-  createComponent,
-  reflectComponentType,
-  type OutputRef,
-} from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { reflectComponentType, type OutputRef } from '@angular/core';
+import { TestBed, type ComponentFixture } from '@angular/core/testing';
 
-import type { VitalsFrame } from '@core/messaging/contract';
+import { AuthStore } from '@core/auth/auth-store';
+import { MessageBus } from '@core/messaging/contract';
+import { FakeMessageBus } from '@core/messaging/fake-message-bus';
+import { provideStomp, withMockBroker } from '@core/messaging/provide-stomp';
+import { Toasts } from '@core/ui/toasts';
+import type { AlarmView } from '../../../data/alarms-store';
 import { VitalsCard } from './vitals-card';
 
-// DAY 2 · EXERCISES 2.2–2.5. Run: pnpm nx test ward --include='**/vitals-card.spec.ts'
-// The card is created WITHOUT any providers: a presentational component must not need them (3.2).
-const FRAME: VitalsFrame = { bed: 'ICU-3', ts: 1, hr: 72, spo2: 97, rr: 14 };
+// DAY 2 · THE VITALS CARD, Parts 1 and 2.
+// Run: pnpm nx test ward --include='**/vitals-card.spec.ts'
+// The card runs against the in-memory ward (?mock) with a fake clock: one frame per second.
 
-async function render(inputs: Record<string, unknown>) {
-  const fixture = TestBed.createComponent(VitalsCard);
-  for (const [name, value] of Object.entries(inputs))
-    fixture.componentRef.setInput(name, value);
+const ALARM: AlarmView = {
+  event: {
+    status: 'raised',
+    alarmId: 'alarm_1',
+    bed: 'ICU-3',
+    code: 'hr.high',
+    value: 143,
+  },
+  code: 'hr.high',
+  value: 143,
+};
+
+let fixture: ComponentFixture<VitalsCard>;
+let el: HTMLElement;
+
+const text = (e: Element | null | undefined) =>
+  e?.textContent?.replace(/\s+/g, ' ').trim() ?? '';
+const button = (label: RegExp) =>
+  [...el.querySelectorAll('button')].find((b) => label.test(text(b)));
+const chips = () => [...el.querySelectorAll('.chip')].map((c) => text(c));
+/** HR, SpO₂ and RR as shown, whether as plain text (1.1) or as <app-vital-reading> (2.2). */
+const numbers = () => {
+  const t = text(el.querySelector('section'));
+  return ['HR', 'SpO₂', 'RR'].map(
+    (l) => t.match(new RegExp(`${l}\\D*(\\d+)`))?.[1],
+  );
+};
+
+async function advance(ms: number) {
+  await vi.advanceTimersByTimeAsync(ms);
+  fixture.detectChanges();
   await fixture.whenStable();
-  return { fixture, el: fixture.nativeElement as HTMLElement };
 }
 
-const text = (el: Element | null | undefined) =>
-  el?.textContent?.replace(/\s+/g, ' ').trim() ?? '';
-/** Subscribe to an output by its public name, whether it is an output() or a model(). */
-function onOutput<T>(instance: object, name: string, fn: (v: T) => void): void {
+function onOutput<T>(name: string, fn: (v: T) => void): void {
   const out = reflectComponentType(VitalsCard)?.outputs.find(
     (o) => o.templateName === name,
   );
   if (!out) throw new Error(`VitalsCard has no output named "${name}"`);
-  (instance as Record<string, OutputRef<T>>)[out.propName]?.subscribe(fn);
+  (fixture.componentInstance as unknown as Record<string, OutputRef<T>>)[
+    out.propName
+  ]?.subscribe(fn);
 }
-const button = (el: HTMLElement, label: RegExp) =>
-  [...el.querySelectorAll('button')].find((b) => label.test(text(b)));
 
-describe('Exercise 2.2: VitalsCard inputs', () => {
-  it('shows HR, SpO₂ and RR from the frame, as three app-vital-reading', async () => {
-    const { el } = await render({ frame: FRAME });
-    const readings = el.querySelectorAll('app-vital-reading');
-    expect(readings).toHaveLength(3);
-    expect([...readings].map((r) => text(r.querySelector('.value')))).toEqual([
-      '72',
-      '97',
-      '14',
-    ]);
+beforeEach(async () => {
+  sessionStorage.clear();
+  vi.useFakeTimers();
+  TestBed.configureTestingModule({
+    providers: [provideHttpClient(), provideStomp({}, withMockBroker())],
+  });
+  await TestBed.inject(AuthStore).join('Ann', 'nurse', 'ward-demo');
+  fixture = TestBed.createComponent(VitalsCard);
+  fixture.componentRef.setInput('bed', 'ICU-3');
+  el = fixture.nativeElement as HTMLElement;
+  fixture.detectChanges();
+});
+
+afterEach(() => vi.useRealTimers());
+
+describe('Exercise 1.1: live data', () => {
+  it('shows a skeleton until the first frame', () => {
+    expect(el.querySelector('ngx-skeleton-loader')).not.toBeNull();
   });
 
-  it('says "live" when the data is fresh', async () => {
-    const { el } = await render({ frame: FRAME });
-    expect(text(el.querySelector('.chip'))).toBe('live');
-  });
-
-  it('says how old the data is when it is stale', async () => {
-    const { el } = await render({ frame: FRAME, stale: true, ageSec: 5 });
-    expect(text(el)).toContain('no data for 5 s');
-    expect(text(el)).not.toMatch(/\blive\b/);
-  });
-
-  it('shows no readings and no chip before the first frame', async () => {
-    const { el } = await render({ frame: undefined });
-    expect(el.querySelectorAll('app-vital-reading')).toHaveLength(0);
-    expect(el.querySelector('.chip')).toBeNull();
-  });
-
-  it('projects its content (the chart) with <ng-content>', async () => {
-    const projected = document.createElement('p');
-    projected.className = 'projected';
-    const ref = createComponent(VitalsCard, {
-      environmentInjector: TestBed.inject(EnvironmentInjector),
-      projectableNodes: [[projected]],
-    });
-    ref.setInput('frame', FRAME);
-    TestBed.inject(ApplicationRef).attachView(ref.hostView);
-    ref.changeDetectorRef.detectChanges();
-    expect(
-      (ref.location.nativeElement as HTMLElement).querySelector('.projected'),
-    ).not.toBeNull();
-    ref.destroy();
+  it('shows HR, SpO₂ and RR once frames arrive, and follows them', async () => {
+    await advance(1500);
+    expect(numbers().every((n) => n !== undefined)).toBe(true);
+    expect(el.querySelector('ngx-skeleton-loader')).toBeNull();
   });
 });
 
-describe('Exercise 2.3: VitalsCard output', () => {
-  it('emits pausedChange(true) when Pause is clicked', async () => {
-    const { fixture, el } = await render({ frame: FRAME });
-    const events: boolean[] = [];
-    onOutput<boolean>(fixture.componentInstance, 'pausedChange', (v) =>
-      events.push(v),
+describe('Exercise 1.3: stale or live', () => {
+  it('says "live" while frames arrive', async () => {
+    await advance(1500);
+    expect(chips()).toContain('live');
+  });
+
+  it('says how old the data is during an outage, and goes back to "live"', async () => {
+    await advance(1500);
+    (TestBed.inject(MessageBus) as FakeMessageBus).simulateOutage(8000);
+    await advance(5000);
+    expect(chips().some((c) => /^no data for \d+ s$/.test(c))).toBe(true);
+    await advance(6000);
+    expect(chips()).toContain('live');
+  });
+});
+
+describe('Exercise 1.4: pause', () => {
+  // Goes red during 2.3 (the card can no longer change `paused` itself) and green again in 2.4.
+  it('freezes the numbers and says "paused"; Resume lets them run again', async () => {
+    await advance(1500);
+    button(/^pause$/i)?.click();
+    await advance(0);
+    const frozen = numbers();
+    expect(button(/^resume$/i)).toBeDefined();
+    expect(chips()).toContain('paused');
+    await advance(5000);
+    expect(numbers()).toEqual(frozen);
+    button(/^resume$/i)?.click();
+    await advance(1500);
+    expect(chips()).toContain('live');
+  });
+});
+
+describe('Exercise 1.5: stale toast', () => {
+  it('shows exactly one warning per outage', async () => {
+    await advance(1500);
+    const toasts0 = TestBed.inject(Toasts).items().length;
+    (TestBed.inject(MessageBus) as FakeMessageBus).simulateOutage(8000);
+    await advance(3000); // a toast lives 5 s
+    const toasts = TestBed.inject(Toasts)
+      .items()
+      .filter((t) => t.text === 'ICU-3: no live vitals');
+    expect(toasts0).toBe(0); // no toast while the data is live
+    expect(toasts).toHaveLength(1);
+    expect(toasts[0]?.kind).toBe('warn');
+  });
+});
+
+describe('Exercise 2.2: readings and alarms', () => {
+  it('shows the three values as <app-vital-reading>', async () => {
+    await advance(1500);
+    const readings = el.querySelectorAll('app-vital-reading');
+    expect(readings).toHaveLength(3);
+    expect([...readings].map((r) => text(r.querySelector('.label')))).toEqual([
+      'HR',
+      'SpO₂',
+      'RR',
+    ]);
+  });
+
+  it('shows one chip per alarm, from the alarms input', async () => {
+    fixture.componentRef.setInput('alarms', [ALARM]);
+    await advance(1500);
+    const chip = [...el.querySelectorAll('.chip')].find((c) =>
+      text(c).startsWith('HR high'),
     );
-    button(el, /^pause$/i)?.click();
+    expect(text(chip)).toBe('HR high (143) · raised');
+    expect(chip?.classList).toContain('bad');
+  });
+});
+
+describe('Exercise 2.3: pause, owned by the parent', () => {
+  it('emits pausedChange(true) when Pause is clicked', async () => {
+    const events: boolean[] = [];
+    onOutput<boolean>('pausedChange', (v) => events.push(v));
+    await advance(1500);
+    button(/^pause$/i)?.click();
     expect(events).toEqual([true]);
   });
 });
 
-describe('Exercise 2.4: VitalsCard model', () => {
-  it('flips its own Pause / Resume button, with no parent to feed it back', async () => {
-    const { fixture, el } = await render({ frame: FRAME });
-    button(el, /^pause$/i)?.click();
-    await fixture.whenStable();
-    expect(button(el, /^resume$/i)).toBeDefined();
-    expect(text(el.querySelector('.chip'))).toBe('paused');
+describe('Exercise 2.4: pause, two-way', () => {
+  it('accepts paused from the parent', async () => {
+    fixture.componentRef.setInput('paused', true);
+    await advance(1500);
+    expect(button(/^resume$/i)).toBeDefined();
   });
 
-  it('accepts paused from the parent', async () => {
-    const { el } = await render({ frame: FRAME, paused: true });
-    expect(button(el, /^resume$/i)).toBeDefined();
+  it('flips its own button, with no parent to feed the value back', async () => {
+    await advance(1500);
+    button(/^pause$/i)?.click();
+    await advance(0);
+    expect(button(/^resume$/i)).toBeDefined();
   });
 });
 
-describe('Exercise 2.5: VitalsCard viewChild', () => {
-  it('Full screen asks the card element itself to go full screen', async () => {
+describe('Exercise 2.5: full screen', () => {
+  it('asks the card\'s own <section class="card vitals"> to go full screen', async () => {
     const calls: Element[] = [];
     const original = HTMLElement.prototype.requestFullscreen;
     HTMLElement.prototype.requestFullscreen = function (this: HTMLElement) {
@@ -117,10 +190,10 @@ describe('Exercise 2.5: VitalsCard viewChild', () => {
       return Promise.resolve();
     };
     try {
-      const { el } = await render({ frame: FRAME });
-      button(el, /full ?screen/i)?.click();
+      await advance(1500);
+      button(/full ?screen/i)?.click();
       expect(calls).toHaveLength(1);
-      expect(calls[0]?.classList).toContain('vitals');
+      expect(calls[0]?.matches('section.card.vitals')).toBe(true);
     } finally {
       HTMLElement.prototype.requestFullscreen = original;
     }
