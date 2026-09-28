@@ -7,21 +7,20 @@ import { Component } from '@angular/core';
 //  the card uses it three times in EXERCISE 2.2 (../vitals-card/vitals-card.ts).
 //  [ts] = this file, [html] = vital-reading.html. Styles are ready in vital-reading.scss.
 //
-//   [ts]   Create five signal inputs:
-//            readonly label = input.required<string>();          e.g. "HR"
-//            readonly vital = input.required<StreamedVital>();   'hr' | 'spo2' | 'rr'
-//            readonly value = input.required<number>();          e.g. 72
-//            readonly unit  = input('');                         e.g. "bpm"
-//            readonly stale = input(false);
-//          (StreamedVital from @core/messaging/contract)
-//   [ts]   Create an `out` computed: isOutOfRange(this.vital(), this.value())
-//          (isOutOfRange from @core/messaging/contract)
-//   [ts]   Put the class `stale` on the component's own element: in @Component add
-//            host: { '[class.stale]': 'stale()' }
+//   [ts]   Create five inputs:
+//            label   text, required                       e.g. "HR"
+//            vital   StreamedVital, required              hr, spo2 or rr (@core/messaging/contract)
+//            value   number, required                     e.g. 72
+//            unit    text, empty by default               e.g. "bpm"
+//            stale   boolean, false by default
+//   [ts]   Create a computed `out`: true when the value is outside the thresholds of its vital.
+//          isOutOfRange() in @core/messaging/contract does the check.
+//   [ts]   While stale is true, the component's own element (<app-vital-reading>) has the
+//          class "stale". Set that up in the component's metadata, not in the template.
 //   [html] Three spans:
-//            <span class="label">{{ label() }}</span>
-//            <span class="value" [class.out]="out()">{{ value() }}</span>
-//            <span class="unit">{{ unit() }}</span>        only if unit() is not empty
+//            class "label" with the label;
+//            class "value" with the value, plus class "out" while out is true;
+//            class "unit" with the unit, only when there is a unit.
 //
 //  Check: pnpm nx test ward --include='**/vital-reading.spec.ts'
 // ============================================================================================
