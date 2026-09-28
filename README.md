@@ -60,7 +60,7 @@ request the fake broker received with its `commandId`.
 | 3 – your own `provideX()` | `core/providers/skeleton.ts`, `core/providers/seo.ts`, `core/messaging/provide-stomp.ts`, `stomp-message-bus.ts`, `fake-message-bus.ts`, `testing/ward-fixtures.ts` |
 | 4 – hospital Wi-Fi | `core/http/interceptors.ts`, `withAuthToken()` / `withExponentialReconnect()` / `withErrorLogging()`, `ward/ui/bed-tile.ts` (stale data), `core/messaging/command-retry.ts`, `ward/ui/alarm-actions.ts` |
 | 5 – routing | `app.routes.ts`, `ward/ward.routes.ts`, `ward/guards.ts`, `ward/med-order/guards.ts`, `core/auth/guards.ts` (`canMatch` by role), `core/providers/wifi-aware-preloading.ts` |
-| 6 – router resources | `ward/bed-detail/bed-resources.ts`, `snapshot-then-stream.ts`, `bed-detail.ts`, `core/navigation-errors.ts` |
+| 6 – router resources | `ward/bed-detail/data/bed-resources.ts`, `data/snapshot-then-stream.ts`, `bed-detail.ts`, `core/navigation-errors.ts` |
 | Lab | `ward/temperature/temperature-form.ts`, the `vitals.record` fixture, `ward/temperature/record-temperature.spec.ts` |
 
 The lab was built in four commits (`feat(lab): step 1` … `step 4`), handy as checkpoint branches.

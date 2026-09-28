@@ -25,11 +25,30 @@ exercise talks about stale data.
 
 Styles are ready in every file you work on; you only write TypeScript and templates.
 
+## Where you work
+
+Everything is in `apps/ward/src/app/ward/bed-detail/`:
+
+```text
+bed-detail/
+├── bed-detail.ts / .html      the bed page                 ← Part 1 (and 3.1 makes it thinner)
+├── vitals/                    what you build today         ← Parts 2 and 3
+│   ├── vital-reading/         one reading: HR 72 bpm       ← 2.1
+│   ├── vitals-card/           the Vitals card              ← 2.2–2.5
+│   ├── bed-vitals/            its smart container          ← 3.1
+│   └── liveness.ts            you create it                ← 3.3 (stretch)
+├── components/                ready, don't change: the chart and the medication list
+└── data/                      ready, don't change: how the page loads its data (Day 1, act 6)
+```
+
+The three folders in `vitals/` already hold an empty component with its styles and, for Part 2,
+the spec that checks it.
+
 ---
 
 ## Part 1 · Signals
 
-Work in `ward/bed-detail/bed-detail.ts` and `bed-detail.html`. The vitals of the bed arrive as the
+Work in `bed-detail.ts` and `bed-detail.html`. The vitals of the bed arrive as the
 `vitals` input: a Resource holding the last ten minutes of frames, newest last.
 
 ### 1.1 The latest frame
@@ -90,7 +109,7 @@ current values.
 
 Turn the markup from Part 1 into two components. Names matter here: the specs use them.
 
-### 2.1 `VitalReading` (`ward/bed-detail/vital-reading.ts`)
+### 2.1 `VitalReading` (`vitals/vital-reading/`)
 
 One reading: a label, a big value and a unit.
 
@@ -105,7 +124,7 @@ One reading: a label, a big value and a unit.
 
 **Done when:** `pnpm nx test ward --include='**/vital-reading.spec.ts'` is green.
 
-### 2.2 `VitalsCard` (`ward/bed-detail/vitals-card.ts`)
+### 2.2 `VitalsCard` (`vitals/vitals-card/`)
 
 The whole card. Move the `<section class="card vitals">` from `bed-detail.html` into it.
 
@@ -155,7 +174,7 @@ browser.
 
 `BedDetail` now does two jobs: it is the bed page, and it runs the vitals logic. Split the jobs.
 
-### 3.1 A smart container: `BedVitals` (`ward/bed-detail/bed-vitals.ts`)
+### 3.1 A smart container: `BedVitals` (`vitals/bed-vitals/`)
 
 - Inputs: `bed` (`BedId`, required) and `vitals` (the same Resource type as in `BedDetail`, required).
 - Move into it everything you added in Part 1: `latest`, `ageSec`, `stale`, `paused`, `shown` and
@@ -186,7 +205,7 @@ a test fixture without any change? Why?
 
 "How old is the newest frame, and is it stale" is not specific to the bed screen.
 
-- Create `ward/bed-detail/liveness.ts` with a function `liveness(lastAt)`: it takes a signal with
+- Create `vitals/liveness.ts` with a function `liveness(lastAt)`: it takes a signal with
   the time of the newest frame (in ms, or `undefined`) and returns `{ ageSec, stale }` as signals.
   It gets `Clock` and `MessageBus` itself.
 - Use it in `BedVitals` instead of your own `ageSec` and `stale`.

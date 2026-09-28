@@ -17,7 +17,7 @@ import {
 } from '@core/messaging/contract';
 import { Toasts } from '@core/ui/toasts';
 import { commandRetry } from '@core/messaging/command-retry';
-import { clock, who } from '../ui/format';
+import { clock, who } from '../../../ui/format';
 
 @Component({
   selector: 'app-medication-list',

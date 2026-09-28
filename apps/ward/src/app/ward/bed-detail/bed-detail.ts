@@ -20,8 +20,8 @@ import {
 import { AlarmsStore } from '../data/alarms-store';
 import { AlarmActions } from '../ui/alarm-actions';
 import { clock, who } from '../ui/format';
-import { MedicationList } from './medication-list';
-import { VitalsChart } from './vitals-chart';
+import { MedicationList } from './components/medication-list/medication-list';
+import { VitalsChart } from './components/vitals-chart/vitals-chart';
 
 @Component({
   selector: 'app-bed-detail',

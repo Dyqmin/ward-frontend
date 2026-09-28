@@ -12,7 +12,7 @@ import {
   medicationResource,
   patientResource,
   vitalsResource,
-} from './bed-detail/bed-resources';
+} from './bed-detail/data/bed-resources';
 import { unsentValueGuard, validBed } from './guards';
 import { stepCompleted, unsavedDraftGuard } from './med-order/guards';
 import { MedOrderDraftStore } from './med-order/med-order-draft-store';
