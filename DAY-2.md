@@ -13,7 +13,8 @@ pnpm install
 pnpm start
 ```
 
-1. Open <http://localhost:4200/login?mock> and join as a **nurse**.
+1. Open <http://localhost:4200/login?mock>, type any name, keep the role **Nurse** and the room
+   code `ward-demo`, and click **Join ward**.
 2. On the nurse station, click a bed, e.g. **ICU-3**. This is the bed screen; the Vitals card is
    on the left, for now with only its heading and the chart.
 3. The **Dev** toolbar (bottom left) has **Simulate outage (8 s)**: use it to test stale data.
@@ -34,15 +35,20 @@ Everything else in `bed-detail/` (`components/`, `data/`) is ready-made: you don
 
 ## 3. Check your work
 
-Keep the spec of the file you work on running:
+Run the spec of the file you work on after every step (it runs once, so run it again after each
+change):
 
 ```sh
-pnpm nx test ward --include='**/vitals-card.spec.ts'
-pnpm nx test ward --include='**/vital-reading.spec.ts'
-pnpm nx test ward --include='**/vitals-panel.spec.ts'
+pnpm nx test ward --include='**/vitals-card.spec.ts' --reporters=verbose
+pnpm nx test ward --include='**/vital-reading.spec.ts' --reporters=verbose
+pnpm nx test ward --include='**/vitals-panel.spec.ts' --reporters=verbose
 ```
 
-Each test is named after its exercise (`Exercise 1.3: stale or live`, …; the pause test covers
-1.4a and 1.4b together), so you can see which exercises are done. Tests of later exercises stay
-red until you get there. 1.2, 3.2 and 3.3 have no test: check them in the browser and by
-reading your code, as their instructions say.
+- Every test is named after its exercise (`Exercise 1.3: stale or live`, …); ✓ passes, × fails.
+  The pause test covers 1.4a and 1.4b together.
+- Tests of later exercises are mostly red until you get there; a few turn green early. What
+  counts is that the tests of the exercise you just did are green.
+- If a template doesn't compile, **every** test of that file fails. Read the first error at the
+  top of the output.
+- 1.2, 3.2 and 3.3 have no test: check them in the browser and by reading your code, as their
+  instructions say.

@@ -11,8 +11,10 @@ import type { BedId } from '@core/messaging/contract';
 //  Do the steps in order. [ts] = this file, [html] = vitals-card.html (the template steps are
 //  repeated there, where the markup goes). Styles are ready in vitals-card.scss.
 //
-//  Check with the spec (keep it running while you work):
-//    pnpm nx test ward --include='**/vitals-card.spec.ts'
+//  Check with the spec after every step (it runs once; run it again after each change):
+//    pnpm nx test ward --include='**/vitals-card.spec.ts' --reporters=verbose
+//  Every test is named after its exercise; ✓ = passing, × = failing. If the template doesn't
+//  compile, ALL tests of the file fail: read the first error at the top.
 //  and in the browser: log in with ?mock, open ICU-3, use Dev → Simulate outage (8 s).
 // ============================================================================================
 
@@ -22,18 +24,23 @@ import type { BedId } from '@core/messaging/contract';
 //
 //  EXERCISE 1.1 · Live data
 //   Goal: the card shows the live HR, SpO₂ and RR of its bed.
-//   [ts]   Inject MessageBus (from @core/messaging/contract) into a private field `bus`.
-//   [ts]   Create an rxResource `vitals` (rxResource is in @angular/core/rxjs-interop):
-//            - params: the value of the `bed` input, so the resource restarts by itself when
-//              the bed changes;
-//            - stream: the bus's watch() of the topic "/topic/vitals.<bed>", using the bed from
-//              params. It emits one VitalsFrame per second;
-//            - map every frame (rxjs map) to an object with two fields: `frame` (the frame
-//              itself) and `at` (Date.now(): the moment it arrived).
-//   [html] If vitals has a value: a paragraph with the hr, spo2 and rr of the value's frame,
-//          e.g. "HR 72 · SpO₂ 97 · RR 14".
-//          Otherwise: an ngx-skeleton-loader with count 3. Add NgxSkeletonLoaderComponent (from
-//          'ngx-skeleton-loader') to the component's imports.
+//   [ts]   Inject MessageBus (from @core/messaging/contract) with the inject() function into a
+//          private field `bus`.
+//   [ts]   Create a protected field `vitals` with rxResource (from @angular/core/rxjs-interop).
+//          rxResource takes an options object with two functions:
+//            - params: a function that returns the current value of the `bed` input. Because it
+//              reads the bed signal, the resource restarts by itself when the bed changes;
+//            - stream: a function that receives an object; its `params` field holds that bed.
+//              Return the bus's watch() of the topic "/topic/vitals.<bed>" (build it with a
+//              template string, so watch() knows the payload type). It emits one VitalsFrame per
+//              second. Pipe it through rxjs map into an object with two fields: `frame` (the
+//              frame itself) and `at` (Date.now(): the moment it arrived).
+//   [html] Use an @if / @else block (as in ../../bed-detail.html) with the resource's hasValue()
+//          method. Inside the @if, vitals.value() is always defined:
+//            - @if: a paragraph with the hr, spo2 and rr of vitals.value().frame,
+//              e.g. "HR 72 · SpO₂ 97 · RR 14";
+//            - @else: an <ngx-skeleton-loader> with its count input set to 3. Add
+//              NgxSkeletonLoaderComponent (from 'ngx-skeleton-loader') to the component's imports.
 //   Check: the three numbers change every second.
 //
 //  EXERCISE 1.2 · How old is the data
@@ -41,7 +48,7 @@ import type { BedId } from '@core/messaging/contract';
 //   [ts]   Inject Clock (from @core/clock) and keep its `now` signal in a private field `now`.
 //          `now` holds the current time in milliseconds and updates every second. Don't start
 //          your own timer.
-//   [ts]   Create a computed `ageSec` (type number | null):
+//   [ts]   Create a protected computed `ageSec` (type number | null):
 //            - vitals has no value → null;
 //            - otherwise → now minus the value's `at`, divided by 1000, rounded to whole
 //              seconds, and never below 0. (The clock ticks once a second, so right after a
@@ -51,7 +58,7 @@ import type { BedId } from '@core/messaging/contract';
 //
 //  EXERCISE 1.3 · Stale or live
 //   Goal: the card says clearly when its numbers are old.
-//   [ts]   Create a computed `stale` (type boolean). It is true when:
+//   [ts]   Create a protected computed `stale` (type boolean). It is true when:
 //            - the bus's `connected` signal is false, OR
 //            - ageSec is greater than STALE_AFTER_SEC (from ../../../ui/format).
 //          Treat an ageSec of null as 0.
@@ -63,7 +70,7 @@ import type { BedId } from '@core/messaging/contract';
 //
 //  EXERCISE 1.4a · The Pause button
 //   Goal: a nurse can pause the card to read the numbers out.
-//   [ts]   Create a signal `paused` (type boolean), initial value false.
+//   [ts]   Create a protected signal `paused` (type boolean), initial value false.
 //   [html] In the heading, after the chip, one button with type "button":
 //            - its text is "Pause" while paused is false, "Resume" while paused is true;
 //            - a click sets paused to the opposite of its current value.
@@ -72,16 +79,23 @@ import type { BedId } from '@core/messaging/contract';
 //
 //  EXERCISE 1.4b · Freeze the numbers
 //   Goal: while paused, the three numbers stay the same; the chart keeps moving.
-//   [ts]   Create a linkedSignal `shown` (type VitalsFrame | undefined): the frame whose HR, SpO₂
-//          and RR the card displays.
-//            - source: an object with two fields: the latest frame (the frame of vitals' value,
-//              or undefined while vitals has no value) and the current value of paused;
-//            - computation: gets that source and the previous state. If paused is true and there
-//              is a previous value, return the previous value (the frozen frame). In every other
-//              case, return the latest frame.
+//   [ts]   Create a protected linkedSignal `shown`: the frame whose HR, SpO₂ and RR the card
+//          displays. linkedSignal takes an options object with two functions:
+//            - source: a function that returns an object with two fields, `frame` (the frame of
+//              vitals' value, or undefined while vitals has no value) and `paused` (the current
+//              value of paused);
+//            - computation: a function with two arguments. The first is that source object.
+//              The second, `previous`, is undefined on the first run; after that it is an object
+//              whose `value` field is what shown returned last time.
+//              Rule: if the source's paused is true AND previous?.value is defined, return
+//              previous.value (the frozen frame). In every other case return the source's frame.
+//          Types: give linkedSignal both type arguments, first the type of the source object,
+//          then VitalsFrame | undefined.
 //          Why not a computed: a computed can't see its own previous value, so it can't keep a
 //          frame while paused. The button from 1.4a stays as it is: it only flips paused.
-//   [html] Take the three numbers from shown instead of from vitals' value.
+//   [html] shown() can be undefined, so change the @if around the numbers: instead of
+//          vitals.hasValue(), use @if on shown() with an `as` alias named `f`. Inside it take
+//          the three numbers from f. The skeleton stays in the @else.
 //   [html] While paused is true, show a span with class "chip" and the text "paused" instead of
 //          the live / stale chip (like that chip: only once vitals has a value).
 //   Check: after Pause the numbers stop (the chart keeps moving); after Resume they jump on.
@@ -89,12 +103,14 @@ import type { BedId } from '@core/messaging/contract';
 //  EXERCISE 1.5 · Warn when the data goes stale
 //   Goal: a nurse who looks away still hears about lost data.
 //   [ts]   Inject Toasts (from @core/ui/toasts) into a private field `toasts`.
-//   [ts]   Add a constructor and create an effect in it:
-//            - it reads stale; while stale is false it does nothing;
-//            - when stale is true it calls toasts.show with the text "<bed>: no live vitals"
-//              (e.g. "ICU-3: no live vitals") and the kind 'warn';
-//            - make that toasts.show call inside untracked, so that reading bed does not become
-//              a dependency of the effect: only a change of stale may run it again.
+//   [ts]   Add a constructor and create an effect in it (effect and untracked are in
+//          @angular/core). The effect's function:
+//            - reads stale(); if it is false, returns;
+//            - if it is true, calls untracked with a function; inside THAT function it reads
+//              bed() and calls toasts.show with the text "<bed>: no live vitals"
+//              (e.g. "ICU-3: no live vitals") and the kind 'warn'.
+//          Why untracked: everything the effect reads becomes a dependency. Reading bed() inside
+//          untracked keeps it out, so only a change of stale can run the effect again.
 //   Check: one outage → exactly one toast.
 //
 // --------------------------------------------------------------------------------------------
@@ -106,23 +122,26 @@ import type { BedId } from '@core/messaging/contract';
 //  EXERCISE 2.2 · Readings and alarms
 //   Goal: the numbers look like a monitor, and the card shows the bed's alarms.
 //   [ts]   Add VitalReading (from ../vital-reading/vital-reading) to the component's imports.
-//   [html] Replace the paragraph from 1.1 with a div with class "now" holding three
-//          app-vital-reading elements. Set their inputs:
-//            HR:   label "HR",   vital "hr",   unit "bpm",  value: hr of shown
-//            SpO₂: label "SpO₂", vital "spo2", unit "%",    value: spo2 of shown
-//            RR:   label "RR",   vital "rr",   unit "/min", value: rr of shown
-//          and give all three the card's stale.
+//   [html] Inside the @if on shown() (alias f), replace the paragraph with a div with class
+//          "now" holding three app-vital-reading elements. Set their inputs:
+//            HR:   label "HR",   vital "hr",   unit "bpm",  value: f's hr
+//            SpO₂: label "SpO₂", vital "spo2", unit "%",    value: f's spo2
+//            RR:   label "RR",   vital "rr",   unit "/min", value: f's rr
+//          and give all three the card's stale. Use f, not shown()?.hr: value is a required
+//          number, and number | undefined doesn't compile.
 //   [ts]   Create an input `alarms` (type readonly AlarmView[], from
 //          ../../../data/alarms-store), default an empty array.
-//   [ts]   Add two protected fields that point to the functions alarmTitle and isUrgent (from
-//          ../../../ui/format), so the template can call them.
-//   [html] After the chip, loop with @for over alarms (track by the alarm's event.alarmId). For
+//   [ts]   Add two protected fields named alarmTitle and isUrgent that point to the functions
+//          of the same names (from ../../../ui/format), so the template can call them.
+//   [html] In the heading, after the chip's block (not inside it: alarms don't depend on
+//          vitals), loop with @for over alarms() (track by the alarm's event.alarmId). For
 //          each alarm, a span with class "chip", plus the class "bad" when isUrgent(alarm) is
 //          true, and the text "<alarmTitle(alarm)> · <the alarm's event.status>",
 //          e.g. "HR high (143) · raised". Use the raw event.status; don't use alarmStatus()
 //          from the same file, it builds a longer sentence.
 //   [html] In ../../bed-detail.html, bind the card's alarms input to the page's alarms.
-//   Check: the spec's "Exercise 2.2" tests; ICU-3 shows its alarm chips.
+//   Check: the spec's "Exercise 2.2" tests. In the browser, ICU-3 shows alarm chips once the
+//   mock ward raises an alarm there, which can take a little while.
 //
 //  EXERCISE 2.3 · Pause, owned by the parent
 //   Goal: the bed screen, not the card, owns "paused".
@@ -131,7 +150,8 @@ import type { BedId } from '@core/messaging/contract';
 //   [ts]   Create an output `pausedChange` (type boolean).
 //   [html] The button's click no longer sets paused: it emits the opposite of the current
 //          paused through pausedChange (true after Pause, false after Resume).
-//   [ts]   In ../../bed-detail.ts, create a signal `paused` (type boolean), initial value false.
+//   [ts]   In ../../bed-detail.ts, create a protected signal `paused` (type boolean), initial
+//          value false (import signal from @angular/core).
 //   [html] In ../../bed-detail.html, on the card: bind the paused input to that signal, and on
 //          pausedChange set the signal to the emitted value.
 //   Check: the spec's "Exercise 2.3" test; Pause still works in the browser.
@@ -146,7 +166,9 @@ import type { BedId } from '@core/messaging/contract';
 //          setting it emits pausedChange for the parent.
 //   [html] The button's click sets paused to the opposite of its current value again.
 //   [html] In ../../bed-detail.html, replace the two bindings from 2.3 with one two-way binding
-//          of paused to the page's paused signal.
+//          of paused ("banana in a box") to the page's paused signal. Bind the signal ITSELF,
+//          without call parentheses: two-way binding needs something it can write to, and
+//          paused() is only a value.
 //   Check: the spec's "Exercise 2.4" tests, and 2.3 stays green: from outside, the API is the
 //   same as before.
 //

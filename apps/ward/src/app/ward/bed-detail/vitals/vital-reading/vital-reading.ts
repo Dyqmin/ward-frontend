@@ -17,14 +17,18 @@ import { Component } from '@angular/core';
 //          @core/messaging/contract) called with the current vital and value. It is true when
 //          the value is outside the thresholds of that vital.
 //   [ts]   While stale is true, the component's own element (<app-vital-reading>) must have the
-//          class "stale". Do it with the `host` property of @Component: bind the class "stale"
-//          to the stale input. Not in the template: the template can't reach its own host.
+//          class "stale". Do it with the `host` property of @Component, an object:
+//            - the key is a class binding for "stale", written exactly as you would write it on an
+//              element in a template (square brackets, class-dot-name);
+//            - the value is a string with the expression, the same as you would write in the
+//              template: a call of the stale input.
+//          Not in the template: the template can't reach the component's own element.
 //   [html] Three spans:
 //            class "label" with the label;
 //            class "value" with the value, plus class "out" while out is true;
 //            class "unit" with the unit, only when there is a unit.
 //
-//  Check: pnpm nx test ward --include='**/vital-reading.spec.ts'
+//  Check: pnpm nx test ward --include='**/vital-reading.spec.ts' --reporters=verbose
 // ============================================================================================
 
 @Component({

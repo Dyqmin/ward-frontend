@@ -9,7 +9,7 @@
            live  → class "chip ok",   text "live"
          EXERCISE 1.4b · while paused: class "chip", text "paused", instead of the chip above -->
 
-    <!-- EXERCISE 2.2 · after the chip, one chip per alarm:
+    <!-- EXERCISE 2.2 · after the chip's block (not inside it), one chip per alarm:
            class "chip", plus "bad" when the alarm is urgent;
            text "<title> · <status>", e.g. "HR high (143) · raised" (status = the raw event.status) -->
 
@@ -20,10 +20,11 @@
          EXERCISE 2.5 · a second button "Full screen" next to it -->
   </h2>
 
-  <!-- EXERCISE 1.1 · with data: HR, SpO₂ and RR of the latest frame, as text;
-                    before the first frame: a skeleton loader with 3 rows
-       EXERCISE 1.4b · the numbers come from shown
-       EXERCISE 2.2 · three VitalReading (HR, SpO₂, RR) in a div with class "now" -->
+  <!-- EXERCISE 1.1 · @if vitals.hasValue(): HR, SpO₂ and RR of vitals.value().frame, as text;
+                    @else: an ngx-skeleton-loader with count 3
+       EXERCISE 1.4b · the @if becomes an @if on shown() with the alias f; numbers from f
+       EXERCISE 2.2 · inside that @if: three app-vital-reading (HR, SpO₂, RR) in a div with
+                      class "now", values from f -->
 
   <!-- the bed screen puts the chart here: keep this line -->
   <ng-content />
