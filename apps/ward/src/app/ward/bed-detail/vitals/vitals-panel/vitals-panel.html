@@ -1,9 +1,9 @@
 <!-- DAY 2 · EXERCISE 3.1 — full instructions at the top of vitals-panel.ts
 
-     1. Move the whole template of ../vitals-card/vitals-card.html here: the <section>, the chips,
-        the buttons, the readings and the <ng-content />.
-     2. Here it reads the panel's own inputs: frame() instead of shown(), plus stale(), ageSec(),
-        alarms() and paused().
+     1. Move the WHOLE template of ../vitals-card/vitals-card.html here: the <section #card>,
+        the chips, the buttons, the readings and the <ng-content />.
+     2. Replace shown() with frame(). stale(), ageSec(), alarms() and paused() keep their names:
+        they are the panel's inputs now.
      3. The card's template becomes only:
           <app-vitals-panel [frame]="shown()" [stale]="stale()" [ageSec]="ageSec()"
                             [alarms]="alarms()" [(paused)]="paused">

@@ -1,31 +1,31 @@
 <!-- DAY 2 · THE VITALS CARD — full instructions at the top of vitals-card.ts -->
 <section class="card vitals">
+  <!-- EXERCISE 2.5 · add #card to the <section> above:  <section #card class="card vitals"> -->
   <h2 class="row">
     Vitals
     <span class="spacer"></span>
 
-    <!-- EXERCISE 1.3 · the chip. Once there is data, show ONE chip:
-           stale:     <span class="chip warn">no data for {{ ageSec() }} s</span>
-           otherwise: <span class="chip ok">live</span>
-         EXERCISE 1.4 · while paused, show this one instead:
-                      <span class="chip">paused</span> -->
+    <!-- EXERCISE 1.3 · the chip. When there is data, show ONE chip:
+           stale() is true:  <span class="chip warn">no data for {{ ageSec() }} s</span>
+           otherwise:        <span class="chip ok">live</span>
+         EXERCISE 1.4b · while paused() is true, show this one instead:
+                             <span class="chip">paused</span> -->
 
-    <!-- EXERCISE 2.2 · after the chip, one chip per alarm (loop over alarms()):
+    <!-- EXERCISE 2.2 · after the chip, loop over alarms() (track a.event.alarmId), for each:
            <span class="chip" [class.bad]="isUrgent(a)">{{ alarmTitle(a) }} · {{ a.event.status }}</span> -->
 
-    <!-- EXERCISE 1.4 · the button, always visible. A click flips paused:
-           <button type="button">Pause</button>     while running
-           <button type="button">Resume</button>    while paused
-         EXERCISE 2.3 · the click emits pausedChange instead
-         EXERCISE 2.4 · the click changes paused again (two-way)
-         EXERCISE 2.5 · next to it, a click calls requestFullscreen() on this <section>:
-           <button type="button">Full screen</button> -->
+    <!-- EXERCISE 1.4a · ONE button: text Pause when paused() is false, Resume when true.
+           click:  paused.set(!paused())
+         EXERCISE 2.3 · click:  pausedChange.emit(!paused())
+         EXERCISE 2.4 · click:  paused.set(!paused())   (again)
+         EXERCISE 2.5 · a second button next to it:
+           <button type="button" (click)="fullscreen()">Full screen</button> -->
   </h2>
 
-  <!-- EXERCISE 1.1 · the numbers of the latest frame (1.4: of `shown`):
-         with data:    <p>HR {{ … }} · SpO₂ {{ … }} · RR {{ … }}</p>
-         before data:  <ngx-skeleton-loader count="3" />
-       EXERCISE 2.2 · replace the <p> with three readings in a grid:
+  <!-- EXERCISE 1.1 · if vitals.hasValue():  <p>HR {{ … }} · SpO₂ {{ … }} · RR {{ … }}</p>
+                    otherwise:            <ngx-skeleton-loader count="3" />
+       EXERCISE 1.4b · take the numbers from shown() instead of vitals.value().frame
+       EXERCISE 2.2 · replace the <p> with:
          <div class="now">
            <app-vital-reading label="HR"   vital="hr"   [value]="…" unit="bpm"  [stale]="stale()" />
            <app-vital-reading label="SpO₂" vital="spo2" [value]="…" unit="%"    [stale]="stale()" />

@@ -101,7 +101,7 @@ describe('Exercise 1.3: stale or live', () => {
   });
 });
 
-describe('Exercise 1.4: pause', () => {
+describe('Exercise 1.4a + 1.4b: pause', () => {
   // Goes red during 2.3 (the card can no longer change `paused` itself) and green again in 2.4.
   it('freezes the numbers and says "paused"; Resume lets them run again', async () => {
     await advance(1500);
