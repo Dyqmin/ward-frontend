@@ -45,11 +45,7 @@
   <h2 class="ward-title">{{ w }}</h2>
   <div class="grid">
     @for (bed of bedsOf(w); track bed) {
-    <app-bed-tile
-      [bed]="bed"
-      [patient]="patients.patient(bed)"
-      [alarms]="alarmsFor()(bed)"
-    />
+    <app-bed-tile [bed]="bed" />
     }
   </div>
   }

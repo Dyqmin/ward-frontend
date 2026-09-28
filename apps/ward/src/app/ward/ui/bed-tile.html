@@ -1,54 +1,5 @@
-<a
-  class="tile"
-  [routerLink]="['/ward', slug()]"
-  [class.alarm]="urgent()"
-  [class.stale]="stale()"
-  [class.empty]="patient() === null"
->
+<div class="tile">
   <header>
     <h3>{{ bed() }}</h3>
-    <span class="name">
-      @switch (patient()) { @case (undefined) { … } @case (null) { Empty bed }
-      @default { {{ patient()?.name }} } }
-    </span>
   </header>
-
-  @if (vitals.hasValue()) { @let v = vitals.value().frame;
-  <div class="vitals">
-    <app-vital-value
-      label="HR"
-      vital="hr"
-      [value]="v.hr"
-      unit="bpm"
-      [stale]="stale()"
-    />
-    <app-vital-value
-      label="SpO₂"
-      vital="spo2"
-      [value]="v.spo2"
-      unit="%"
-      [stale]="stale()"
-    />
-    <app-vital-value
-      label="RR"
-      vital="rr"
-      [value]="v.rr"
-      unit="/min"
-      [stale]="stale()"
-    />
-  </div>
-  <footer class="row">
-    @if (stale()) {
-    <span class="chip warn">no data for {{ ageSec() }} s</span>
-    } @else {
-    <span class="chip ok">live</span>
-    } @for (a of alarms(); track a.event.alarmId) {
-    <span class="chip" [class.bad]="isUrgent(a)"
-      >{{ alarmTitle(a) }} · {{ a.event.status }}</span
-    >
-    }
-  </footer>
-  } @else {
-  <ngx-skeleton-loader count="3" />
-  }
-</a>
+</div>

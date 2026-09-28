@@ -6,6 +6,12 @@ router resources) on STOMP over WebSockets with `@stomp/rx-stomp`.
 
 > All patients, readings and thresholds are fictional and illustrative, not clinical.
 
+## Day 2 branch
+
+On `day-2`, participants build the Vitals card of the bed screen: the exercises are in
+[DAY-2.md](DAY-2.md). `ward/ui/bed-tile.ts` and `ward/ui/vital-value.ts` are left almost empty on
+purpose: the bed tile of the nurse station is built live, on stage.
+
 ## Run it
 
 ```sh

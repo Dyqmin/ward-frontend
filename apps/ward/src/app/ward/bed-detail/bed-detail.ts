@@ -8,9 +8,7 @@ import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs';
 
 import { AuthStore } from '@core/auth/auth-store';
-import { Clock } from '@core/clock';
 import {
-  MessageBus,
   bedFromSlug,
   toSlug,
   wardOf,
@@ -21,9 +19,7 @@ import {
 } from '@core/messaging/contract';
 import { AlarmsStore } from '../data/alarms-store';
 import { AlarmActions } from '../ui/alarm-actions';
-import { STALE_AFTER_SEC } from '../ui/bed-tile';
 import { clock, who } from '../ui/format';
-import { VitalValue } from '../ui/vital-value';
 import { MedicationList } from './medication-list';
 import { VitalsChart } from './vitals-chart';
 
@@ -32,7 +28,6 @@ import { VitalsChart } from './vitals-chart';
   imports: [
     RouterLink,
     NgxSkeletonLoaderComponent,
-    VitalValue,
     VitalsChart,
     AlarmActions,
     MedicationList,
@@ -49,8 +44,6 @@ export default class BedDetail {
   readonly readings = input.required<Resource<ManualReading[] | undefined>>();
 
   private readonly route = inject(ActivatedRoute);
-  private readonly bus = inject(MessageBus);
-  private readonly now = inject(Clock).now;
   private readonly auth = inject(AuthStore);
   private readonly alarmsStore = inject(AlarmsStore);
 
@@ -63,16 +56,8 @@ export default class BedDetail {
       `${new Date(this.patient().admittedAt).toLocaleDateString()} ${clock(this.patient().admittedAt)}`,
   );
 
-  protected readonly latest = computed(() =>
-    this.vitals().hasValue() ? this.vitals().value()?.at(-1) : undefined,
-  );
-  protected readonly ageSec = computed(() => {
-    const f = this.latest();
-    return f ? Math.max(0, Math.round((this.now() - f.ts) / 1000)) : null;
-  });
-  protected readonly stale = computed(
-    () => !this.bus.connected() || (this.ageSec() ?? 0) > STALE_AFTER_SEC,
-  );
+  // DAY 2 · PART 1 (signals): latest, ageSec, stale, paused and the stale toast go here.
+  // Instructions: DAY-2.md at the repo root.
 
   private readonly wardAlarms = toSignal(
     // from the URL, not from `patient`: blocking-resource inputs are bound by a router effect, after construction

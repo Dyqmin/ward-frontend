@@ -6,6 +6,9 @@ import {
 } from '@core/messaging/contract';
 import type { AlarmView } from '../data/alarms-store';
 
+/** Frames normally arrive every second; older than this and a card must say the data is stale. */
+export const STALE_AFTER_SEC = 3;
+
 export const ALARM_LABELS: Record<AlarmCode, string> = {
   'hr.high': 'HR high',
   'hr.low': 'HR low',

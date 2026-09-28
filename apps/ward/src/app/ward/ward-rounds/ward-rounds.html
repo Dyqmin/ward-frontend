@@ -18,11 +18,7 @@
   <div class="grid">
     @for (bed of bedsOf(w); track bed) { @let patient = patients.patient(bed);
     <div class="slot">
-      <app-bed-tile
-        [bed]="bed"
-        [patient]="patient"
-        [alarms]="alarmsFor()(bed)"
-      />
+      <app-bed-tile [bed]="bed" />
       @if (patient) {
       <a class="button small" [routerLink]="['/ward', slug(bed), 'meds', 'new']"
         >Order medication</a
