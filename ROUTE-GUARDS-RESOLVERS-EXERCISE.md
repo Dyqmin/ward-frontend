@@ -249,7 +249,7 @@ Part A are marked **New**.
 
 ### B1 · Backend: answer `medication.get` (5 min)
 
-Work in the `ward-worker` repo, on the `day2-routing` branch. Look for the two `LAB B1` comments.
+Work in the `ward-worker` repo, on the `day3-routing` branch. Look for the two `LAB B1` comments.
 
 **Already done for you:** `'medication.get'` is in `RpcContract`, in `REQUEST_GUARDS`
 (`src/shared/contract.ts`) and in `IS_COMMAND` (`src/room/ward-room.ts`). Read those three entries
