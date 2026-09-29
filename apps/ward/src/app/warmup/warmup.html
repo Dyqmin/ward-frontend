@@ -1,0 +1,24 @@
+<!-- DAY 2 · EXERCISE 0 · SIGNALS WARM-UP — full instructions at the top of warmup.ts -->
+<section class="page">
+  <h1>Signals warm-up</h1>
+
+  <!-- STEP 0.2 · one button per choice in wards (text = the choice);
+         a click sets ward; the current one has the class "active" -->
+  <nav class="wards"></nav>
+
+  <!-- STEP 0.2 · the text "<count> patients", e.g. "4 patients" -->
+  <p class="count"></p>
+
+  <div class="layout">
+    <!-- STEP 0.1 · @for over patients() (0.2: over visible()), track by id; per patient an <li>:
+           a button class "name" with the name (0.5: a click selects the patient),
+           a span class "bed" with the bed,
+           a button class "discharge" with the text "Discharge" (0.3: a click discharges)
+         STEP 0.5 · the <li> of the selected patient has the class "selected" -->
+    <ul class="patients"></ul>
+
+    <!-- STEP 0.5 · selected patient: an <h2> with the name and a <p> with the bed;
+                    none: a <p> with the text "No patient selected" -->
+    <section class="card details"></section>
+  </div>
+</section>

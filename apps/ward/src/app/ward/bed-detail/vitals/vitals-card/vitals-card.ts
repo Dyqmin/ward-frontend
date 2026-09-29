@@ -100,7 +100,9 @@ import type { BedId } from '@core/messaging/contract';
 //          the live / stale chip (like that chip: only once vitals has a value).
 //   Check: after Pause the numbers stop (the chart keeps moving); after Resume they jump on.
 //
-//  EXERCISE 1.5 · Warn when the data goes stale
+//  EXERCISE 1.5 · Stretch: warn when the data goes stale
+//   Optional, if you have time: you practised effect in the warm-up, and nothing in Part 2
+//   depends on this step. Its spec test stays red if you skip it.
 //   Goal: a nurse who looks away still hears about lost data.
 //   [ts]   Inject Toasts (from @core/ui/toasts) into a private field `toasts`.
 //   [ts]   Add a constructor and create an effect in it (effect and untracked are in

@@ -3,6 +3,8 @@
 Today you build the **Vitals card** of the bed screen: HR, SpO₂ and RR every second, a
 live / stale chip, alarm chips, Pause and Full screen.
 
+You start with a short warm-up on fixed data, to try the four signal primitives one at a time.
+
 **The instructions are in the code.** Every file you work in starts with the exercises for that
 file: what to build, where, and how to check it. This page only tells you where to start.
 
@@ -21,11 +23,15 @@ pnpm start
 
 ## 2. Work through the files in this order
 
-All in `apps/ward/src/app/ward/bed-detail/vitals/`:
+| # | Open this file | Exercises | Topic |
+| --- | --- | --- | --- |
+| 0 | `apps/ward/src/app/warmup/warmup.ts` (page: **Warm-up** in the header) | 0.1–0.5 | Warm-up: signal, computed, effect, linkedSignal |
+
+Then, all in `apps/ward/src/app/ward/bed-detail/vitals/`:
 
 | # | Open this file | Exercises | Topic |
 | --- | --- | --- | --- |
-| 1 | `vitals-card/vitals-card.ts` | 1.1–1.5 | Signals |
+| 1 | `vitals-card/vitals-card.ts` | 1.1–1.5 (1.5 is a stretch) | Signals |
 | 2 | `vital-reading/vital-reading.ts` | 2.1 | Component API: inputs |
 | 3 | `vitals-card/vitals-card.ts` (again) | 2.2–2.5 | Component API: inputs, output, two-way, element access |
 | 4 | `vitals-panel/vitals-panel.ts` | 3.1–3.3 | Component architecture |
@@ -39,6 +45,7 @@ Run the spec of the file you work on after every step (it runs once, so run it a
 change):
 
 ```sh
+pnpm nx test ward --include='**/warmup.spec.ts' --reporters=verbose
 pnpm nx test ward --include='**/vitals-card.spec.ts' --reporters=verbose
 pnpm nx test ward --include='**/vital-reading.spec.ts' --reporters=verbose
 pnpm nx test ward --include='**/vitals-panel.spec.ts' --reporters=verbose

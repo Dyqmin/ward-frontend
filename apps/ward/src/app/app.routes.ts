@@ -20,6 +20,13 @@ export const routes: Routes = [
     loadChildren: () => import('./ward/ward.routes'),
     data: { preload: true },
   },
+  // Day 2, exercise 0: the signals warm-up on fixed data
+  {
+    path: 'warmup',
+    title: 'Signals warm-up',
+    canMatch: [authGuard],
+    loadComponent: () => import('./warmup/warmup'),
+  },
   {
     path: 'reports',
     canMatch: [authGuard],
