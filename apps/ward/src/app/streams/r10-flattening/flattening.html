@@ -1,0 +1,22 @@
+<h2>R.10–12 · switchMap, mergeMap, exhaustMap</h2>
+
+<section class="card">
+  <h3>R.10–11 · the selected bed</h3>
+  <nav class="row">
+    @for (b of beds; track b) {
+    <!-- R.10a · on click, push b into selectedBed$ -->
+    <button type="button">{{ b }}</button>
+    }
+  </nav>
+  <!-- R.10b · show live$ with the async pipe -->
+  <p class="live"></p>
+</section>
+
+<section class="card">
+  <h3>R.12 · acknowledge</h3>
+  <!-- R.12a · on click, call next() on ackClicks$ -->
+  <button type="button">Acknowledge</button>
+  <!-- R.12a · show ack$ with the async pipe -->
+  <p class="ack"></p>
+  <p class="requests">Requests sent: {{ requestsSent() }}</p>
+</section>

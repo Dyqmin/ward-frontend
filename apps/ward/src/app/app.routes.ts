@@ -27,6 +27,13 @@ export const routes: Routes = [
     canMatch: [authGuard],
     loadComponent: () => import('./warmup/warmup'),
   },
+  // Day 3: observables and RxJS, one tab per exercise
+  {
+    path: 'streams',
+    title: 'Streams',
+    canMatch: [authGuard],
+    loadChildren: () => import('./streams/streams.routes'),
+  },
   {
     path: 'reports',
     canMatch: [authGuard],

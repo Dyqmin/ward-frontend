@@ -79,6 +79,13 @@ export class FakeMessageBus extends MessageBus {
   /** Every request the fake broker received (including refused attempts), newest last. */
   readonly log = this._log.asReadonly();
 
+  private readonly _activeVitals = signal(0);
+  /**
+   * How many subscriptions to a vitals topic are open right now (Day 3: leaks, shareReplay).
+   * It goes up on subscribe and down on unsubscribe, so a leak shows as a number that only grows.
+   */
+  readonly activeVitals = this._activeVitals.asReadonly();
+
   /** One shared 1 Hz tick (epoch seconds), so every subscriber of a bed sees the same frame. */
   private readonly tick$ = interval(1000).pipe(
     map(() => Math.floor(Date.now() / 1000)),
@@ -98,7 +105,16 @@ export class FakeMessageBus extends MessageBus {
       filter((e) => e.destination === destination),
       map((e) => e.payload as PayloadOf<D>),
     );
-    return merge(ticks, live).pipe(filter(() => this.online())); // an outage is silence, like the real ward
+    const stream = merge(ticks, live).pipe(filter(() => this.online())); // an outage is silence, like the real ward
+    if (!destination.startsWith('/topic/vitals.')) return stream;
+    return new Observable<PayloadOf<D>>((subscriber) => {
+      this._activeVitals.update((n) => n + 1);
+      const inner = stream.subscribe(subscriber);
+      return () => {
+        inner.unsubscribe();
+        this._activeVitals.update((n) => n - 1);
+      };
+    });
   }
 
   notices(participant: ParticipantId): Observable<GameNotice> {

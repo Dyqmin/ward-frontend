@@ -1,0 +1,24 @@
+.page {
+  display: grid;
+  gap: 1rem;
+}
+
+.head h1 {
+  margin: 0;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.counter {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.exercise {
+  display: grid;
+  gap: 0.75rem;
+}

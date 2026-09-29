@@ -1,0 +1,16 @@
+:host {
+  display: grid;
+  gap: 1rem;
+}
+
+h3 {
+  margin: 0 0 0.5rem;
+}
+
+.live,
+.ack {
+  font-size: 1.4rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-height: 1.5em;
+}
