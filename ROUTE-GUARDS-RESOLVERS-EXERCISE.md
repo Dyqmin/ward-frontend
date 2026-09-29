@@ -249,7 +249,7 @@ Part A are marked **New**.
 
 ### B1 · Backend: answer `medication.get` (5 min)
 
-Work in the `ward-worker` repo.
+Work in the `ward-worker` repo, on the `day2-routing` branch. Look for the two `LAB B1` comments.
 
 **Already done for you:** `'medication.get'` is in `RpcContract`, in `REQUEST_GUARDS`
 (`src/shared/contract.ts`) and in `IS_COMMAND` (`src/room/ward-room.ts`). Read those three entries
@@ -263,7 +263,9 @@ first; they match what you saw in A1. What's missing is the code that answers th
    `medications()` does. Then nobody can change the stored order through your reply.
 3. **`FRONTEND.md`:** add a row to the queries table.
 
-**Done when** `npm run typecheck` is clean.
+**Done when** both `LAB B1` comments are replaced and `npm run typecheck` is clean. The typecheck
+alone passes before you start: `query()` doesn't have to handle every name, so a missing `case`
+only shows up at runtime as an empty reply.
 
 <details>
 <summary>Solution</summary>
