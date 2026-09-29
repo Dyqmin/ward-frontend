@@ -207,6 +207,10 @@ export interface MedOrder {
 }
 export type MedOrderDraft = Omit<MedOrder, 'id' | 'status' | 'orderedBy' | 'createdAt'>;
 
+export type PatientSort = 'name' | 'bed' | 'admittedAt';
+export interface PatientSearchCriteria { term: string; sort: PatientSort }
+export interface PatientSummary extends Pick<Patient, 'id' | 'name' | 'bed' | 'admittedAt'> { openAlarms: number }
+
 export interface ManualReading { bed: BedId; vital: ManualVital; value: number; by: NurseId; at: string }
 
 // ---------- Step 3c · Commands: a generic result union ----------
@@ -231,6 +235,7 @@ export interface RpcContract {
   'medication.list':  { req: { bed: BedId };                                             res: MedOrder[] };
   'alarms.active':    { req: { ward: Ward };                                             res: AlarmEvent[] };
   'medication.get':   { req: { id: MedOrderId };                                         res: MedOrder | null };
+  'patients.search':  { req: PatientSearchCriteria;                                      res: PatientSummary[] };
   // commands
   'alarms.ack':       { req: Command & { alarmId: AlarmId };                             res: CommandResult };
   'alarms.snooze':    { req: Command & { alarmId: AlarmId; minutes: SnoozeMinutes };     res: CommandResult<{ until: string }> };
@@ -297,11 +302,13 @@ export const SNOOZE_MINUTES = [5, 10, 15] as const satisfies readonly SnoozeMinu
 export const HISTORY_MINUTES = [10, 30, 60] as const;
 export const MANUAL_VITALS = ['temp'] as const satisfies readonly ManualVital[];
 export const MED_ROUTES = ['oral', 'iv'] as const satisfies readonly MedOrder['route'][];
+export const PATIENT_SORTS = ['name', 'bed', 'admittedAt'] as const satisfies readonly PatientSort[];
 
 const isSnoozeMinutes = oneOf(SNOOZE_MINUTES);
 const isHistoryMinutes = oneOf(HISTORY_MINUTES);
 const isManualVital = oneOf(MANUAL_VITALS);
 const isMedRoute = oneOf(MED_ROUTES);
+const isPatientSort = oneOf(PATIENT_SORTS);
 
 const hasBed = (x: Obj): boolean => typeof x.bed === 'string' && isBedId(x.bed);
 
@@ -320,6 +327,8 @@ export const REQUEST_GUARDS: RequestGuards = {
     isObj(x) && typeof x.ward === 'string' && isWard(x.ward),
   'medication.get': (x): x is RpcContract['medication.get']['req'] =>
     isObj(x) && typeof x.id === 'string' && isMedOrderId(x.id),
+  'patients.search': (x): x is RpcContract['patients.search']['req'] =>
+    isObj(x) && typeof x.term === 'string' && isPatientSort(x.sort),
   'alarms.ack': (x): x is RpcContract['alarms.ack']['req'] =>
     isCommand(x) && typeof x.alarmId === 'string' && isAlarmId(x.alarmId),
   'alarms.snooze': (x): x is RpcContract['alarms.snooze']['req'] =>
