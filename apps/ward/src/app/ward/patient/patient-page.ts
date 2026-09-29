@@ -11,7 +11,7 @@ import { clock } from '../ui/format';
   styles: '.narrow { max-width: 28rem } .back { text-decoration: none }',
 })
 export default class PatientPage {
-  /** From `resolve: { patient: … }`: a plain Patient, never null. */
+  /** From `resources: … ({ patient: … })`, blocking: a plain Patient, never null. */
   readonly patient = input.required<Patient>();
 
   protected readonly bedLink = computed(

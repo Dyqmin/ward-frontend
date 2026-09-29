@@ -11,7 +11,7 @@ import { clock, who } from '../ui/format';
   styles: '.narrow { max-width: 28rem } .back { text-decoration: none }',
 })
 export default class MedOrderPage {
-  /** From `resolve: { order: … }`: a plain MedOrder that belongs to this bed. */
+  /** From `resources: … ({ order: … })`, blocking: a plain MedOrder that belongs to this bed. */
   readonly order = input.required<MedOrder>();
   /** The `:bed` route param, e.g. 'icu-3': the order itself only knows its patient. */
   readonly bed = input.required<string>();

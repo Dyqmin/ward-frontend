@@ -18,7 +18,7 @@ export const validBed: CanActivateFn = (route) =>
   bedFromSlug(route.params['bed'] ?? '') !== null ||
   new RedirectCommand(inject(Router).parseUrl('/ward'));
 
-/** The URL's shape only: 'pat_…'. Whether this patient exists is the resolver's job. */
+/** The URL's shape only: 'pat_…'. Whether this patient exists is the resource's job. */
 export const validPatientId: CanActivateFn = (route) =>
   isPatientId(route.params['patientId'] ?? '') ||
   new RedirectCommand(inject(Router).parseUrl('/ward'));

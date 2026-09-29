@@ -16,8 +16,8 @@ import {
 import { validBed, validMedOrderId, validPatientId } from './guards';
 import { stepCompleted, unsavedDraftGuard } from './med-order/guards';
 import { MedOrderDraftStore } from './med-order/med-order-draft-store';
-import { medOrderResolver } from './med-order/med-order-resolver';
-import { patientByIdResolver } from './patient/patient-resolver';
+import { medOrderResource } from './med-order/med-order-resource';
+import { patientByIdResource } from './patient/patient-resource';
 
 /** 'icu-3' → 'ICU-3'; with provideAppSeo() the tab reads "Drug and dose · ICU-3 · Ward Monitor". */
 const bedName = (route: ActivatedRouteSnapshot) =>
@@ -76,7 +76,7 @@ export default [
     path: ':bed/meds/:orderId',
     title: 'Medication order',
     canActivate: [validBed, validMedOrderId],
-    resolve: { order: medOrderResolver }, // a classic resolver: a snapshot, loaded before the page opens
+    resources: (ctx) => ({ order: medOrderResource(ctx) }), // blocking: loaded before the page opens
     loadComponent: () => import('./med-order/med-order-page'),
   },
 
@@ -85,7 +85,7 @@ export default [
     path: 'patients/:patientId',
     title: 'Patient',
     canActivate: [validPatientId],
-    resolve: { patient: patientByIdResolver },
+    resources: (ctx) => ({ patient: patientByIdResource(ctx) }),
     loadComponent: () => import('./patient/patient-page'),
   },
 

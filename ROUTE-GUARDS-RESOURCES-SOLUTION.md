@@ -1,6 +1,6 @@
-# Guards and resolvers: solution and design decisions
+# Guards and route resources: solution and design decisions
 
-The companion to `ROUTE-GUARDS-RESOLVERS-EXERCISE.md`. The first half explains **why** the lab
+The companion to `ROUTE-GUARDS-RESOURCES-EXERCISE.md` (and `ROUTE-GUARDS-RESOURCES-TIPS.md`). The first half explains **why** the lab
 looks the way it does. The second half walks through **how** each step was solved, in the order of
 the exercise.
 
@@ -8,7 +8,7 @@ the exercise.
 
 | Repo | Branch | What's on it |
 | --- | --- | --- |
-| `ward-frontend` | `day3-routing` | Starter: the exercise file; `medication.get` already in the contract |
+| `ward-frontend` | `day3-routing` | Starter: the exercise and the cheat sheet; `medication.get` already in the contract |
 | `ward-frontend` | `day3-routing-solution` | Parts A and B done, plus this file |
 | `ward-worker` | `main` | Everything: `patients.byId`, `medication.get`, `patients.search` |
 | `ward-worker` | `day3-routing` | Starter for B1: the `query()` case and `WardState.medication()` are `LAB B1` comments |
@@ -23,10 +23,10 @@ Its 13 failing tests are expected; every other test passes.
 
 ### What to build
 
-**Detail pages for one record by id.** The app already had guards for roles, for the bed, for
-wizard steps and for leaving a form, and it loaded data with `resources:`. It had no classic
-`ResolveFn`. A detail page by id needs exactly the two things the lab teaches: a guard that checks
-the URL, and a resolver that loads a record before the page opens.
+**Detail pages for one record by id.** A detail page by id needs exactly the two things the lab
+teaches: a guard that checks the URL, and a route resource that loads a record before the page
+opens. The app already had both kinds of code, but participants had only read them: the bed page's
+resources were written for them, and the day 1 lab's route was pre-built.
 
 **Patients for the demo, medication orders for the exercise.** Both are seeded on every occupied
 bed, both are already visible on the bed page, and the server never deletes either, so a link to
@@ -37,9 +37,28 @@ one keeps working.
 beds show "No active alarms" most of the time, and a detail URL would stop working seconds after it
 was opened.
 
-**The same eight steps in both parts.** Backend, contract, mock, link, guard, resolver, page,
+**The same eight steps in both parts.** Backend, contract, mock, link, guard, resource, page,
 route. Part B repeats Part A's numbering, so A*n* is the worked example for B*n*. Part B adds only
-two new ideas: an ownership check in the resolver, and a route whose position matters.
+three new ideas: a resource with two params, an ownership check, and a route whose position
+matters.
+
+### Route resources, not classic resolvers
+
+The first version of the lab used a classic `ResolveFn` (`resolve: { … }`), on the theory that
+the app had none and a snapshot-versus-live contrast would be worth teaching. It was switched to
+route resources before the lab ran:
+
+- **It's what Angular now presents for data fetching.** The
+  [guide](https://next.angular.dev/guide/routing/data-fetching-with-resources) lists the reasons:
+  resources on all matched routes load concurrently (resolvers run one route at a time), a resource
+  can be `nonBlocking()`, and it reloads when its params change. `ResolveFn` isn't deprecated, but
+  it's the older pattern.
+- **It's what this app already does.** `patientResource()` and the other factories in
+  `ward/bed-detail/bed-resources.ts` load the bed page. A resolver would have taught a second pattern
+  the codebase doesn't follow.
+- **The guards didn't change.** Only step 6 (and the route's `resources:` line) differs.
+
+The exercise keeps one paragraph on `ResolveFn`, so participants recognise it in older code.
 
 ### Backwards compatibility
 
@@ -53,7 +72,7 @@ two new ideas: an ownership check in the resolver, and a route whose position ma
 
 - **Queries, not commands.** Reading a record needs no `commandId`, idempotency, role check or
   broadcast event. `IS_COMMAND` marks both as `false`.
-- **`null` for an unknown id**, like `patients.get` for an empty bed. The resolver turns `null` into
+- **`null` for an unknown id**, like `patients.get` for an empty bed. The resource turns `null` into
   a redirect, so the page never sees it.
 - **No role check.** Both roles can already read patients and orders through `patients.get` and
   `medication.list`.
@@ -61,32 +80,37 @@ two new ideas: an ownership check in the resolver, and a route whose position ma
   change server state through a reply.
 - **`patientById()` searches by value.** Patients are stored by bed; 15 entries don't justify a
   second index.
-- **The ownership check stays on the frontend.** The resolver asks for the order and for the bed's
+- **The ownership check stays on the frontend.** The resource asks for the order and for the bed's
   patient and compares them. Adding a `bed` field to `MedOrder`, or a `{ bed, id }` request, would
   have changed existing types for one page.
 
-### Frontend: guards and resolvers
+### Frontend: guards and resources
 
-- **The guard checks the URL's shape; the resolver checks the data.** The guard is synchronous and
+- **The guard checks the URL's shape; the resource checks the data.** The guard is synchronous and
   sends no request, so `/ward/patients/hello` is refused before anything goes over the socket.
   Whether the record exists, and whether it belongs to this bed, needs a request, so it's the
-  resolver's job.
+  resource's job.
 - **`canActivate`, not `canMatch`, for the id guards.** A wrong id should redirect, not make the
   route disappear so the router tries the next one. `canMatch` stays for roles (`hasRole`).
-- **The resolver checks the id again.** A guard narrows nothing for later functions: every guard
-  and resolver gets the raw `string` from the URL. Calling `isPatientId(id)` again is cheap, and it's
-  what gives `id` its `PatientId` type for `bus.request`.
-- **`inject()` before the first `await`.** After an `await`, the injection context is gone
-  (NG0203).
-- **The resolver *returns* a `RedirectCommand`.** Returning one cancels the navigation cleanly.
-  `patientResource()` does the same thing by *throwing* one, which is a good contrast to show.
+- **The resource checks the id again, in `params`.** A guard narrows nothing for later code:
+  `ctx.params()` hands over the raw `string`. Returning the id from `params` only after
+  `isPatientId(id)` gives the loader a `PatientId`, and returning `undefined` otherwise keeps the
+  resource idle instead of sending a bad request.
+- **`inject()` in the factory, never in the loader.** The router calls the factory in an injection
+  context; the loader runs later, outside it (NG0203).
+- **Blocking, and redirect by throwing.** A blocking resource that throws a `RedirectCommand`
+  cancels the navigation, so the page never opens with `null`. It's the same move as
+  `patientResource()` for an empty bed.
 - **Where each redirect goes.** A bad patient id goes to `/ward`, because a patient URL has no bed.
   A bad order id goes back to **the bed** in the URL, which the user just came from.
-- **`resolve` next to `resources`.** A resolver gives the page a snapshot that runs again only when
-  the params change. The bed page's `resources:` stay live and can be non-blocking. The lab shows
-  both, so participants can choose.
+- **Two params as one object.** The order resource's `params` returns `{ id, bed }`, with `bed`
+  already a `BedId` from `bedFromSlug()`. The redirect converts it back with `toSlug()`, because
+  `link()` wants the slug.
 - **Two requests in parallel.** `Promise.all` over `medication.get` and `patients.get`, so the
   ownership check costs no extra round trip.
+- **It reloads on param changes.** Going from one patient to another inside the app reuses the page,
+  and the resource loads the new patient. The status of an order still doesn't update by itself
+  when a nurse marks it given elsewhere; `nonBlocking()` plus `reload()` is a stretch goal.
 
 ### Frontend: routes and pages
 
@@ -97,8 +121,9 @@ two new ideas: an ownership check in the resolver, and a route whose position ma
   guard is a second line of defence, not a reason to ignore route order.
 - **`canActivate: [validBed, validMedOrderId]`.** `validBed` runs first, so `/ward/icu-9/meds/…`
   goes to `/ward`, not to a bed that doesn't exist.
-- **Resolved data arrives as an input.** `withComponentInputBinding()` was already on. The input's
-  name is the key in `resolve`.
+- **Loaded data arrives as an input.** `withComponentInputBinding()` and `withRouterResources()`
+  were already on. The input's name is the key in `resources`, and a blocking resource binds the
+  plain value (`MedOrder`), not a `Resource<MedOrder>`.
 - **The order page reads `bed` from the URL.** An order knows only its `patientId`, so the back link
   uses the `:bed` param, which component input binding also delivers as an input.
 - **Links are strings.** `link()` returns `'ward/patients/pat_…'`. Passing it inside an array
@@ -108,8 +133,8 @@ two new ideas: an ownership check in the resolver, and a route whose position ma
 - **Typed paths.** Both routes were added to `AppPath`, so `link()` refuses a missing param.
 - **Two inline style rules.** `.page`, `.muted` and `.chip` are global; `.narrow` and `.back` live
   only in the temperature form's stylesheet, so both new pages declare them inline.
-- **Static titles** ("Patient", "Medication order"). A title from the resolved data is a stretch
-  goal.
+- **Static titles** ("Patient", "Medication order"). A title computed from the URL, like
+  `bedTitle`, is a stretch goal.
 
 ### What participants get for free
 
@@ -123,6 +148,9 @@ The course ran short on time, so the typing-only parts of Part B are done in adv
   runtime, as an empty reply.
 - **Mock replies are optional** in `MockFixtures`, so forgetting B3 still compiles. It fails at
   runtime with "No fixture for /app/…" in the Dev toolbar's log.
+- **A cheat sheet** (`ROUTE-GUARDS-RESOURCES-TIPS.md`) has the patterns as generic snippets, which
+  file to copy each one from, and a troubleshooting table of the mistakes this lab invites. It
+  doesn't contain the solutions; those are folded under each step of the exercise.
 
 ---
 
@@ -203,45 +231,53 @@ export const validMedOrderId: CanActivateFn = (route) =>
   );
 ```
 
-### Step 6 · Resolvers
+### Step 6 · Route resources
 
-**`ward/patient/patient-resolver.ts`**
+**`ward/patient/patient-resource.ts`**
 
 ```ts
-export const patientByIdResolver: ResolveFn<Patient> = async (route) => {
+export function patientByIdResource(ctx: ResourceContext) {
   const bus = inject(MessageBus);
   const router = inject(Router);
-  const toWard = new RedirectCommand(router.parseUrl('/ward'));
-
-  const id = route.params['patientId'] ?? '';
-  if (!isPatientId(id)) return toWard;
-
-  const patient = await firstValueFrom(bus.request('/app/patients.byId', { id }));
-  return patient ?? toWard;
-};
+  return resource({
+    params: computed(() => {
+      const id = String(ctx.params()['patientId'] ?? '');
+      return isPatientId(id) ? id : undefined;
+    }),
+    loader: async ({ params: id }) => {
+      const patient = await firstValueFrom(bus.request('/app/patients.byId', { id }));
+      if (!patient) throw new RedirectCommand(router.parseUrl('/ward'));
+      return patient;
+    },
+  });
+}
 ```
 
-**`ward/med-order/med-order-resolver.ts`**
+**`ward/med-order/med-order-resource.ts`**
 
 ```ts
-export const medOrderResolver: ResolveFn<MedOrder> = async (route) => {
+export function medOrderResource(ctx: ResourceContext) {
   const bus = inject(MessageBus);
   const router = inject(Router);
-  const toBed = new RedirectCommand(
-    router.parseUrl('/' + link('ward/:bed', { bed: route.params['bed'] })),
-  );
-
-  const id = route.params['orderId'] ?? '';
-  const bed = bedFromSlug(route.params['bed'] ?? '');
-  if (!isMedOrderId(id) || !bed) return toBed;
-
-  const [order, patient] = await Promise.all([
-    firstValueFrom(bus.request('/app/medication.get', { id })),
-    firstValueFrom(bus.request('/app/patients.get', { bed })),
-  ]);
-  if (!order || !patient || order.patientId !== patient.id) return toBed;
-  return order;
-};
+  return resource({
+    params: computed(() => {
+      const id = String(ctx.params()['orderId'] ?? '');
+      const bed = bedFromSlug(String(ctx.params()['bed'] ?? ''));
+      return isMedOrderId(id) && bed ? { id, bed } : undefined;
+    }),
+    loader: async ({ params: { id, bed } }) => {
+      const [order, patient] = await Promise.all([
+        firstValueFrom(bus.request('/app/medication.get', { id })),
+        firstValueFrom(bus.request('/app/patients.get', { bed })),
+      ]);
+      if (!order || !patient || order.patientId !== patient.id)
+        throw new RedirectCommand(
+          router.parseUrl('/' + link('ward/:bed', { bed: toSlug(bed) })),
+        );
+      return order;
+    },
+  });
+}
 ```
 
 ### Step 7 · Pages
@@ -251,7 +287,7 @@ computes `bedLink` with `link('ward/:bed', { bed: toSlug(patient().bed) })` and 
 `clock()`. The template shows a back link, the name, the id and the admission time.
 
 **`ward/med-order/med-order-page.ts`** has two inputs: `order = input.required<MedOrder>()` from
-the resolver, and `bed = input.required<string>()` from the URL. It computes `bedLink` and
+the resource, and `bed = input.required<string>()` from the URL. It computes `bedLink` and
 `ordered` (`who(orderedBy)` and `clock(createdAt)`). The template shows the drug, dose, route,
 who ordered it, and the status as a chip.
 
@@ -266,14 +302,14 @@ Both declare `imports: [RouterLink]` and the two inline style rules.
   path: ':bed/meds/:orderId',
   title: 'Medication order',
   canActivate: [validBed, validMedOrderId],
-  resolve: { order: medOrderResolver },
+  resources: (ctx) => ({ order: medOrderResource(ctx) }),
   loadComponent: () => import('./med-order/med-order-page'),
 },
 {
   path: 'patients/:patientId',
   title: 'Patient',
   canActivate: [validPatientId],
-  resolve: { patient: patientByIdResolver },
+  resources: (ctx) => ({ patient: patientByIdResource(ctx) }),
   loadComponent: () => import('./patient/patient-page'),
 },
 ```
@@ -302,8 +338,8 @@ A relative link resolves against the bed's route, so it becomes `/ward/er-2/meds
 
 ## How it was verified
 
-- **Types and lint:** `npx tsc -p apps/ward/tsconfig.app.json --noEmit` and `npx nx lint ward` are
-  clean.
+- **Types and lint:** `npx tsc -p apps/ward/tsconfig.app.json --noEmit` is clean. `npx nx lint ward`
+  has no errors; its warnings are all in the unfinished day 1 lab.
 - **Unit tests:** `npx nx test ward` runs 43 passing tests. The 13 failures are all in the
   unfinished day 1 temperature lab.
 - **Backend:** `npm run typecheck` is clean and 189 tests pass.
@@ -320,3 +356,4 @@ A relative link resolves against the bed's route, so it becomes `/ward/er-2/meds
 | ER-2's order under `/ward/icu-3/meds/med_7` | `/ward/icu-3` |
 | `/ward/icu-9/meds/med_7` | `/ward` |
 | "Order medication" on `/ward/icu-3` | `/ward/icu-3/meds/new/patient`: the wizard still opens |
+| In-app navigation from `pat_er2` to `pat_icu1` | The same page shows the new patient: the resource reloaded |
