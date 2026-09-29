@@ -34,8 +34,10 @@ import { requestsSent } from '../streams-data';
 //
 //  R.11 · mergeMap: the same, wrongly (then undo)
 //   [ts]   In live$, replace switchMap with mergeMap.
-//   Check: click ICU-1, ICU-2, ICU-3: the text jumps between the beds every second, and the
-//   counter grows with each click: every bed you ever clicked is still being watched.
+//   Check: click ICU-1, ICU-2, ICU-3: the counter grows with each click (3 after three beds).
+//   Every bed you ever clicked is still being watched and its data still downloaded, although
+//   only one is on screen: a leak. (The text may still look right: in the mock ward all beds
+//   send at the same moment and the last one wins; with a real server they can also jump.)
 //   [ts]   Put switchMap back, and write in a comment in one sentence why switchMap is right
 //          for "the selected bed".
 //
