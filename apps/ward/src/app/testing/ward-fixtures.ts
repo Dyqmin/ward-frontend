@@ -312,6 +312,11 @@ export function createWardFixtures(ward = new MockWard()) {
 
       '/app/alarms.active': ({ ward: w }) => ward.activeAlarms(w),
 
+      '/app/patients.byId': ({ id }) =>
+        [...ward.patients.values()].find((p) => p.id === id) ?? null,
+
+      '/app/medication.get': ({ id }) => ward.orders.get(id) ?? null,
+
       '/app/vitals.manual': ({ bed }) =>
         [...(ward.readings.get(bed) ?? [])].reverse(), // newest first
 

@@ -212,6 +212,8 @@ export type AppPath =
   | 'ward/:bed/temperature'
   | 'ward/:bed/meds/new'
   | 'ward/:bed/meds/new/:step'
+  | 'ward/:bed/meds/:orderId'
+  | 'ward/patients/:patientId'
   | 'reports/:kind/:bed'
   | 'monitor'
   | 'monitor/:bed';

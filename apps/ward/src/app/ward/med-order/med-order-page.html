@@ -1,0 +1,10 @@
+<section class="page narrow">
+  <a class="back" [routerLink]="bedLink()">← {{ bed().toUpperCase() }}</a>
+  <h1>{{ order().drug }}</h1>
+  <p class="muted">
+    {{ order().doseMg }} mg · {{ order().route }} · ordered by {{ ordered() }}
+  </p>
+  <span class="chip" [class.ok]="order().status === 'given'">{{
+    order().status
+  }}</span>
+</section>

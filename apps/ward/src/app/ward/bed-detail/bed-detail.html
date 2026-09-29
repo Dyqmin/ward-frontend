@@ -4,7 +4,13 @@
   <!-- blocking: always there, no @if -->
   <header class="head">
     <div>
-      <h1>{{ patient().name }} · {{ patient().bed }}</h1>
+      <h1>
+        <a
+          [routerLink]="'/' + link('ward/patients/:patientId', { patientId: patient().id })"
+          >{{ patient().name }}</a
+        >
+        · {{ patient().bed }}
+      </h1>
       <p class="muted">
         Patient {{ patient().id }} · admitted {{ admitted() }}
       </p>

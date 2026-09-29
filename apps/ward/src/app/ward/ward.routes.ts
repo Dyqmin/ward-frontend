@@ -13,9 +13,11 @@ import {
   patientResource,
   vitalsResource,
 } from './bed-detail/bed-resources';
-import { validBed } from './guards';
+import { validBed, validMedOrderId, validPatientId } from './guards';
 import { stepCompleted, unsavedDraftGuard } from './med-order/guards';
 import { MedOrderDraftStore } from './med-order/med-order-draft-store';
+import { medOrderResolver } from './med-order/med-order-resolver';
+import { patientByIdResolver } from './patient/patient-resolver';
 
 /** 'icu-3' → 'ICU-3'; with provideAppSeo() the tab reads "Drug and dose · ICU-3 · Ward Monitor". */
 const bedName = (route: ActivatedRouteSnapshot) =>
@@ -68,6 +70,24 @@ export default [
     ],
   },
   { path: ':bed/meds/new', redirectTo: '/forbidden' }, // nurses fall through to here
+
+  // one medication order – BELOW both 'meds/new' routes, or 'new' would match as an :orderId
+  {
+    path: ':bed/meds/:orderId',
+    title: 'Medication order',
+    canActivate: [validBed, validMedOrderId],
+    resolve: { order: medOrderResolver }, // a classic resolver: a snapshot, loaded before the page opens
+    loadComponent: () => import('./med-order/med-order-page'),
+  },
+
+  // patient page – two segments, so it never clashes with ':bed'
+  {
+    path: 'patients/:patientId',
+    title: 'Patient',
+    canActivate: [validPatientId],
+    resolve: { patient: patientByIdResolver },
+    loadComponent: () => import('./patient/patient-page'),
+  },
 
   // LAB TASK 2 · record a temperature. Fill in the two TODOs; the medication wizard above is a model.
   {

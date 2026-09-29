@@ -12,7 +12,7 @@
   <tbody>
     @for (o of orders(); track o.id) {
     <tr>
-      <td>{{ o.drug }}</td>
+      <td><a [routerLink]="['meds', o.id]">{{ o.drug }}</a></td>
       <td>{{ o.doseMg }} mg</td>
       <td>{{ o.route }}</td>
       <td>{{ who(o.orderedBy) }}, {{ clock(o.createdAt) }}</td>

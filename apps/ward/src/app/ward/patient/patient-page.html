@@ -1,0 +1,5 @@
+<section class="page narrow">
+  <a class="back" [routerLink]="bedLink()">← {{ patient().bed }}</a>
+  <h1>{{ patient().name }}</h1>
+  <p class="muted">Patient {{ patient().id }} · admitted {{ admitted() }}</p>
+</section>

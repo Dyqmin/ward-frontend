@@ -234,6 +234,7 @@ export interface RpcContract {
   'vitals.manual':    { req: { bed: BedId };                                             res: ManualReading[] };
   'medication.list':  { req: { bed: BedId };                                             res: MedOrder[] };
   'alarms.active':    { req: { ward: Ward };                                             res: AlarmEvent[] };
+  'patients.byId':    { req: { id: PatientId };                                          res: Patient | null };
   'medication.get':   { req: { id: MedOrderId };                                         res: MedOrder | null };
   'patients.search':  { req: PatientSearchCriteria;                                      res: PatientSummary[] };
   // commands
@@ -242,7 +243,6 @@ export interface RpcContract {
   'vitals.record':    { req: Command & { bed: BedId; vital: ManualVital; value: number }; res: CommandResult };
   'medication.given': { req: Command & Pick<MedOrder, 'id'>;                             res: CommandResult };
   'medication.order': { req: Command & MedOrderDraft;                                    res: CommandResult<Pick<MedOrder, 'id'>> };
-  'patients.byId': { req: { id: PatientId }; res: Patient | null };
 }
 
 // ---------- Step 3e · Mapped types: destinations and command names from the contract ----------
@@ -325,6 +325,8 @@ export const REQUEST_GUARDS: RequestGuards = {
   'medication.list': (x): x is RpcContract['medication.list']['req'] => isObj(x) && hasBed(x),
   'alarms.active': (x): x is RpcContract['alarms.active']['req'] =>
     isObj(x) && typeof x.ward === 'string' && isWard(x.ward),
+  'patients.byId': (x): x is RpcContract['patients.byId']['req'] =>
+    isObj(x) && typeof x.id === 'string' && isPatientId(x.id),
   'medication.get': (x): x is RpcContract['medication.get']['req'] =>
     isObj(x) && typeof x.id === 'string' && isMedOrderId(x.id),
   'patients.search': (x): x is RpcContract['patients.search']['req'] =>
@@ -340,8 +342,6 @@ export const REQUEST_GUARDS: RequestGuards = {
   'medication.order': (x): x is RpcContract['medication.order']['req'] =>
     isCommand(x) && typeof x.patientId === 'string' && isPatientId(x.patientId) &&
     isNonEmptyString(x.drug) && isFiniteNumber(x.doseMg) && isMedRoute(x.route),
-  'patients.byId': (x): x is RpcContract['patients.byId']['req'] =>
-    isObj(x) && typeof x.id === 'string' && isPatientId(x.id),
 };
 
 export const isRpcName = (v: string): v is RpcName => Object.hasOwn(REQUEST_GUARDS, v);

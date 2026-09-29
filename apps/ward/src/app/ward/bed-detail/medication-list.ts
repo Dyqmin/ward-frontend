@@ -6,6 +6,7 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { AuthStore } from '@core/auth/auth-store';
@@ -21,6 +22,7 @@ import { clock, who } from '../ui/format';
 
 @Component({
   selector: 'app-medication-list',
+  imports: [RouterLink],
   templateUrl: './medication-list.html',
   styleUrl: './medication-list.scss',
 })

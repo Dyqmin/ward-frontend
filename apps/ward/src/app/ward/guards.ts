@@ -6,12 +6,31 @@ import {
   Router,
 } from '@angular/router';
 
-import { bedFromSlug } from '@core/messaging/contract';
+import {
+  bedFromSlug,
+  isMedOrderId,
+  isPatientId,
+  link,
+} from '@core/messaging/contract';
 
 /** Yesterday's `bedFromSlug` at the URL boundary: 'icu-3' → 'ICU-3' ✅, 'icu-9' → null → back to /ward. */
 export const validBed: CanActivateFn = (route) =>
   bedFromSlug(route.params['bed'] ?? '') !== null ||
   new RedirectCommand(inject(Router).parseUrl('/ward'));
+
+/** The URL's shape only: 'pat_…'. Whether this patient exists is the resolver's job. */
+export const validPatientId: CanActivateFn = (route) =>
+  isPatientId(route.params['patientId'] ?? '') ||
+  new RedirectCommand(inject(Router).parseUrl('/ward'));
+
+/** The URL's shape only: 'med_…'. A bad id goes back to the bed, not to /ward. */
+export const validMedOrderId: CanActivateFn = (route) =>
+  isMedOrderId(route.params['orderId'] ?? '') ||
+  new RedirectCommand(
+    inject(Router).parseUrl(
+      '/' + link('ward/:bed', { bed: route.params['bed'] }),
+    ),
+  );
 
 /**
  * LAB TASK 2 · ask before leaving the form with a typed but unsent value.

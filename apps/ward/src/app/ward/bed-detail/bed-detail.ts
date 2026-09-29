@@ -12,6 +12,7 @@ import { Clock } from '@core/clock';
 import {
   MessageBus,
   bedFromSlug,
+  link,
   toSlug,
   wardOf,
   type ManualReading,
@@ -57,6 +58,7 @@ export default class BedDetail {
   protected readonly role = this.auth.role;
   protected readonly clock = clock;
   protected readonly who = who;
+  protected readonly link = link;
   protected readonly slug = computed(() => toSlug(this.patient().bed));
   protected readonly admitted = computed(
     () =>
