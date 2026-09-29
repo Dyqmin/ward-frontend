@@ -7,7 +7,7 @@ import { LeakyVitals } from './leaky-vitals';
 // DAY 3 · R.3 (R.2 is checked with the counter in the browser).
 // Run: pnpm nx test ward --include='**/leaky-vitals.spec.ts' --reporters=verbose
 
-describe('R.3: stop when the component is destroyed', () => {
+describe('R.2–3: the leak and the fix', () => {
   let bus: FakeMessageBus;
   let logs: unknown[];
 
@@ -24,7 +24,7 @@ describe('R.3: stop when the component is destroyed', () => {
     vi.restoreAllMocks();
   });
 
-  it('logs "ICU-3 HR <hr>" every second while it is on the page', async () => {
+  it('R.2 (ready-made): logs "ICU-3 HR <hr>" every second while it is on the page', async () => {
     const fixture = TestBed.createComponent(LeakyVitals);
     expect(bus.activeVitals()).toBe(1);
     await vi.advanceTimersByTimeAsync(3000);
@@ -34,7 +34,7 @@ describe('R.3: stop when the component is destroyed', () => {
     fixture.destroy();
   });
 
-  it('ends its subscription when it is destroyed: the counter goes back to 0', async () => {
+  it('R.3: ends its subscription when it is destroyed: the counter goes back to 0', async () => {
     const fixture = TestBed.createComponent(LeakyVitals);
     await vi.advanceTimersByTimeAsync(1500);
     expect(bus.activeVitals()).toBe(1);
