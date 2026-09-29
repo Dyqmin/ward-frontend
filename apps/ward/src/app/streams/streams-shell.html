@@ -2,15 +2,9 @@
   <header class="row head">
     <h1>Streams</h1>
     <span class="spacer"></span>
-    @if (fake) {
-    <span class="chip counter" [class.warn]="fake.activeVitals() > 1">
-      Active vitals subscriptions: {{ fake.activeVitals() }}
+    <span class="chip counter" [class.warn]="bus.activeVitals() > 1">
+      Active vitals subscriptions: {{ bus.activeVitals() }}
     </span>
-    } @else {
-    <span class="chip warn"
-      >Open this page with ?mock to see the subscription counter</span
-    >
-    }
   </header>
 
   <nav class="tabs">

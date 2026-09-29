@@ -6,7 +6,7 @@
 //
 // Each Day 1 step (roadmap at the top of shared/contract.ts) continues here in its "app layer" section.
 
-import { Signal, computed } from '@angular/core';
+import { Signal, computed, signal } from '@angular/core';
 import { Observable, defer } from 'rxjs';
 
 import {
@@ -151,6 +151,30 @@ export abstract class MessageBus {
 
   abstract readonly state: Signal<ConnectionState>;
   readonly connected: Signal<boolean> = computed(() => this.state() === 'open');
+
+  private readonly _activeVitals = signal(0);
+  /**
+   * How many subscriptions to a vitals topic are open right now, with the real or the fake
+   * broker (Day 3: leaks, shareReplay). It goes up on subscribe and down on unsubscribe, so a
+   * leak shows as a number that only grows.
+   */
+  readonly activeVitals: Signal<number> = this._activeVitals.asReadonly();
+
+  /** Implementations pass every watch() stream through here, so activeVitals stays true. */
+  protected counted<T>(
+    destination: StreamDestination,
+    source: Observable<T>,
+  ): Observable<T> {
+    if (!destination.startsWith('/topic/vitals.')) return source;
+    return new Observable<T>((subscriber) => {
+      this._activeVitals.update((n) => n + 1);
+      const inner = source.subscribe(subscriber);
+      return () => {
+        inner.unsubscribe();
+        this._activeVitals.update((n) => n - 1);
+      };
+    });
+  }
 
   /**
    * Commands: `commandId` and `performedAt` are created ONCE, here. The returned Observable is cold,

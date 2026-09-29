@@ -12,7 +12,7 @@ import { MessageBus } from '@core/messaging/contract';
 //  a server that means twice the traffic; with 18 tiles it adds up fast.
 //  shareReplay makes all subscribers share ONE subscription to the source, and replays the
 //  latest value to anyone who subscribes later.
-//  [ts] = this file. Everything else is ready. Open /streams/r13 with ?mock.
+//  [ts] = this file. Everything else is ready. Open /streams/r13.
 //
 //  R.13a · count (no code)
 //   Look at the counter at the top right: 2, although it is one bed.

@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
 //  A subscription keeps running until someone ends it. Removing a component from the screen
 //  does NOT end the subscriptions it started. Here you build a leak on purpose, watch it grow,
 //  and then fix it.
-//  [ts] = this file. Open /streams/r2 with ?mock; the counter "Active vitals subscriptions" at
+//  [ts] = this file. Open /streams/r2; the counter "Active vitals subscriptions" at
 //  the top right counts the open subscriptions to live vitals.
 //
 //  R.2a · subscribe, and forget to stop

@@ -14,12 +14,12 @@ pnpm install
 pnpm start
 ```
 
-1. Open <http://localhost:4200/login?mock> (the `?mock` matters: it gives you the in-memory
-   ward and the subscription counter), type any name, keep the role **Nurse** and the room
-   code `ward-demo`, and click **Join ward**.
+1. Open <http://localhost:4200/login> (with the real backend) or
+   <http://localhost:4200/login?mock> (the in-memory ward, no backend needed), type any name,
+   keep the role **Nurse** and the room code `ward-demo`, and click **Join ward**.
 2. Click **Streams** in the header. Each tab is one exercise.
-3. Top right: **Active vitals subscriptions: N** counts the open subscriptions to live vitals.
-   You will use it to see leaks and sharing.
+3. Top right: **Active vitals subscriptions: N** counts the open subscriptions to live vitals,
+   in both modes. You will use it to see leaks and sharing.
 4. Some exercises write to the browser console: open it with F12 → Console.
 
 ## 2. Work through the tabs in this order

@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { MessageBus } from '@core/messaging/contract';
-import { FakeMessageBus } from '@core/messaging/fake-message-bus';
 
 /** Ready-made: the Day 3 page with one tab per exercise and the live subscription counter. */
 @Component({
@@ -12,10 +11,8 @@ import { FakeMessageBus } from '@core/messaging/fake-message-bus';
   styleUrl: './streams-shell.scss',
 })
 export default class StreamsShell {
-  private readonly bus = inject(MessageBus);
-  /** null with the real broker: the counter only exists in mock mode (?mock). */
-  protected readonly fake =
-    this.bus instanceof FakeMessageBus ? this.bus : null;
+  /** Counts open vitals subscriptions, with the real broker and with ?mock alike. */
+  protected readonly bus = inject(MessageBus);
 
   protected readonly tabs = [
     { path: 'r1', label: 'R.1 subscribe' },

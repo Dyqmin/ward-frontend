@@ -52,7 +52,7 @@ export class StompMessageBus extends MessageBus {
   watch<D extends StreamDestination>(destination: D): Observable<PayloadOf<D>> {
     const guard: (x: unknown) => x is AnyPayload =
       FRAME_GUARDS[streamNameOf(destination)];
-    return this.stomp
+    const stream = this.stomp
       .watch({ destination })
       .pipe(
         mergeMap((m) =>
@@ -62,6 +62,7 @@ export class StompMessageBus extends MessageBus {
           ),
         ),
       );
+    return this.counted(destination, stream);
   }
 
   notices(participant: ParticipantId): Observable<GameNotice> {

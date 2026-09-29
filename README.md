@@ -17,7 +17,7 @@ the `day-2-instructor` branch.
 
 On `day-3`, participants work with Observables and RxJS on the **Streams** page (`/streams`, one
 tab per exercise): [DAY-3.md](DAY-3.md) says where to start, and each file in `streams/` carries
-its own exercises. In mock mode the page shows how many vitals subscriptions are open, which makes
+its own exercises. The page shows how many vitals subscriptions are open (real broker and `?mock` alike), which makes
 leaks and `shareReplay` visible. Solutions are on `day-3-solution`.
 
 ## Run it

@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 //  re-renders an OnPush component only when it is told that something changed: a signal it
 //  reads changed, an input changed, an event happened inside it, or the async pipe got a value.
 //  A plain field set inside subscribe is none of these.
-//  [ts] = this file, [html] = live-hr.html. Open /streams/r4 with ?mock.
+//  [ts] = this file, [html] = live-hr.html. Open /streams/r4.
 //
 //  R.4a · assign inside subscribe
 //   [ts]   Inject MessageBus (from @core/messaging/contract) into a private field `bus`.
