@@ -216,7 +216,7 @@ export default class PatientPage {
    already imported there:
    ```html
    <h1>
-     <a [routerLink]="['/', link('ward/patients/:patientId', { patientId: patient().id })]"
+     <a [routerLink]="'/' + link('ward/patients/:patientId', { patientId: patient().id })"
        >{{ patient().name }}</a
      >
      · {{ patient().bed }}
@@ -224,6 +224,10 @@ export default class PatientPage {
    ```
    In `bed-detail.ts`, add `link` to the imports from `@core/messaging/contract` and expose it to
    the template with `protected readonly link = link;`, next to `clock` and `who`.
+
+   Pass a **string**, not `['/', link(…)]`. In an array, each item is one path segment, so the
+   router encodes the slashes inside `link()`'s result (`/ward%2Fpatients%2F…`) and the link lands
+   on `/ward`.
 
 ### Part A · Done when
 
