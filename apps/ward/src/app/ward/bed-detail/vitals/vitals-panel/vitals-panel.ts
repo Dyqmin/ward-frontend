@@ -1,4 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, input, model, viewChild } from '@angular/core';
+import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
+
+import type { VitalsFrame } from '@core/messaging/contract';
+import type { AlarmView } from '../../../data/alarms-store';
+import { alarmTitle, isUrgent } from '../../../ui/format';
+import { VitalReading } from '../vital-reading/vital-reading';
 
 // ============================================================================================
 //  DAY 2 · PART 3 · COMPONENT ARCHITECTURE — VitalsPanel
@@ -69,9 +75,27 @@ import { Component } from '@angular/core';
 //   Check: the card no longer injects Clock; all three specs stay green. (No spec test for 3.3.)
 // ============================================================================================
 
+/** The presentational half (3.1): shows what it is given, reports clicks. Injects nothing. */
 @Component({
   selector: 'app-vitals-panel',
+  imports: [NgxSkeletonLoaderComponent, VitalReading],
   templateUrl: './vitals-panel.html',
   styleUrl: './vitals-panel.scss',
 })
-export class VitalsPanel {}
+export class VitalsPanel {
+  readonly frame = input.required<VitalsFrame | undefined>();
+  readonly stale = input(false);
+  readonly ageSec = input<number | null>(null);
+  readonly alarms = input<readonly AlarmView[]>([]);
+  readonly paused = model(false);
+
+  protected readonly alarmTitle = alarmTitle;
+  protected readonly isUrgent = isUrgent;
+
+  // 2.5
+  private readonly card = viewChild.required<ElementRef<HTMLElement>>('card');
+
+  protected fullscreen(): void {
+    void this.card().nativeElement.requestFullscreen();
+  }
+}

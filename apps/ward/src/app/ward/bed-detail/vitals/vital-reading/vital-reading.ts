@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
+
+import { isOutOfRange, type StreamedVital } from '@core/messaging/contract';
 
 // ============================================================================================
 //  DAY 2 · EXERCISE 2.1 · VitalReading — one reading: "HR  72  bpm"
@@ -35,5 +37,16 @@ import { Component } from '@angular/core';
   selector: 'app-vital-reading',
   templateUrl: './vital-reading.html',
   styleUrl: './vital-reading.scss',
+  host: { '[class.stale]': 'stale()' },
 })
-export class VitalReading {}
+export class VitalReading {
+  readonly label = input.required<string>();
+  readonly vital = input.required<StreamedVital>();
+  readonly value = input.required<number>();
+  readonly unit = input('');
+  readonly stale = input(false);
+
+  protected readonly out = computed(() =>
+    isOutOfRange(this.vital(), this.value()),
+  );
+}

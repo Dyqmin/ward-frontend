@@ -1,4 +1,11 @@
-import { Component, Resource, computed, inject, input } from '@angular/core';
+import {
+  Component,
+  Resource,
+  computed,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 
 /** What the router hands a component for a non-blocking resource: a Resource that can reload. */
 type RouteResource<T> = Resource<T> & { reload(): boolean };
@@ -49,6 +56,8 @@ export default class BedDetail {
   private readonly auth = inject(AuthStore);
   private readonly alarmsStore = inject(AlarmsStore);
 
+  /** 2.3: the bed screen owns "paused"; 2.4 binds it two-way. */
+  protected readonly paused = signal(false);
   protected readonly role = this.auth.role;
   protected readonly clock = clock;
   protected readonly who = who;

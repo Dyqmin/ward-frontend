@@ -30,8 +30,11 @@
   </header>
 
   <div class="layout">
-    <!-- DAY 2: your card — open vitals/vitals-card/vitals-card.ts -->
-    <app-vitals-card [bed]="patient().bed">
+    <app-vitals-card
+      [bed]="patient().bed"
+      [alarms]="alarms()"
+      [(paused)]="paused"
+    >
       <!-- the chart: ready-made, it gets the last ten minutes from the route -->
       @if (vitals().hasValue()) {
       <app-vitals-chart [frames]="vitals().value() ?? []" />

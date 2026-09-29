@@ -1,31 +1,9 @@
-<!-- DAY 2 · THE VITALS CARD — full instructions at the top of vitals-card.ts -->
-<section class="card vitals">
-  <h2 class="row">
-    Vitals
-    <span class="spacer"></span>
-
-    <!-- EXERCISE 1.3 · the chip, once there is a frame:
-           stale → class "chip warn", text "no data for N s" (N = ageSec)
-           live  → class "chip ok",   text "live"
-         EXERCISE 1.4b · while paused: class "chip", text "paused", instead of the chip above -->
-
-    <!-- EXERCISE 2.2 · after the chip's block (not inside it), one chip per alarm:
-           class "chip", plus "bad" when the alarm is urgent;
-           text "<title> · <status>", e.g. "HR high (143) · raised" (status = the raw event.status) -->
-
-    <!-- EXERCISE 1.4a · one button: "Pause" while running, "Resume" while paused;
-           a click switches paused
-         EXERCISE 2.3 · the click sends the new value through pausedChange instead
-         EXERCISE 2.4 · the click switches paused directly again
-         EXERCISE 2.5 · a second button "Full screen" next to it -->
-  </h2>
-
-  <!-- EXERCISE 1.1 · @if vitals.hasValue(): HR, SpO₂ and RR of vitals.value().frame, as text;
-                    @else: an ngx-skeleton-loader with count 3
-       EXERCISE 1.4b · the @if becomes an @if on shown() with the alias f; numbers from f
-       EXERCISE 2.2 · inside that @if: three app-vital-reading (HR, SpO₂, RR) in a div with
-                      class "now", values from f -->
-
-  <!-- the bed screen puts the chart here: keep this line -->
+<app-vitals-panel
+  [frame]="shown()"
+  [stale]="stale()"
+  [ageSec]="ageSec()"
+  [alarms]="alarms()"
+  [(paused)]="paused"
+>
   <ng-content />
-</section>
+</app-vitals-panel>

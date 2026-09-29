@@ -1,4 +1,18 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  linkedSignal,
+  signal,
+} from '@angular/core';
+
+import {
+  wardOf,
+  type Patient,
+  type PatientId,
+  type Ward,
+} from '@core/messaging/contract';
+import { WARMUP_PATIENTS } from './warmup-patients';
 
 // ============================================================================================
 //  DAY 2 · EXERCISE 0 · SIGNALS WARM-UP
@@ -94,4 +108,43 @@ import { Component } from '@angular/core';
   templateUrl: './warmup.html',
   styleUrl: './warmup.scss',
 })
-export default class Warmup {}
+export default class Warmup {
+  // 0.1
+  protected readonly patients = signal<readonly Patient[]>(WARMUP_PATIENTS);
+
+  // 0.2
+  protected readonly ward = signal<Ward | 'All'>('All');
+  protected readonly wards: readonly (Ward | 'All')[] = [
+    'All',
+    'ICU',
+    'ER',
+    'CARD',
+  ];
+  protected readonly visible = computed(() => {
+    const ward = this.ward();
+    return ward === 'All'
+      ? this.patients()
+      : this.patients().filter((p) => wardOf(p.bed) === ward);
+  });
+  protected readonly count = computed(() => this.visible().length);
+
+  // 0.5
+  protected readonly selected = linkedSignal<
+    readonly Patient[],
+    Patient | undefined
+  >({
+    source: () => this.visible(),
+    computation: (list, previous) =>
+      list.find((p) => p.id === previous?.value?.id) ?? list[0],
+  });
+
+  constructor() {
+    // 0.4
+    effect(() => console.log(`${this.ward()}: ${this.count()} patients`));
+  }
+
+  // 0.3
+  protected discharge(id: PatientId): void {
+    this.patients.update((all) => all.filter((p) => p.id !== id));
+  }
+}

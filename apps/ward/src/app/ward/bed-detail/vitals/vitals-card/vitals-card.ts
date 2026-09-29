@@ -1,6 +1,25 @@
-import { Component, input } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  linkedSignal,
+  model,
+  untracked,
+} from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 
-import type { BedId } from '@core/messaging/contract';
+import {
+  MessageBus,
+  type BedId,
+  type VitalsFrame,
+} from '@core/messaging/contract';
+import { Toasts } from '@core/ui/toasts';
+import type { AlarmView } from '../../../data/alarms-store';
+import { liveness } from '../liveness';
+import { VitalsPanel } from '../vitals-panel/vitals-panel';
 
 // ============================================================================================
 //  DAY 2 · THE VITALS CARD
@@ -188,12 +207,62 @@ import type { BedId } from '@core/messaging/contract';
 //  PART 3 continues in ../vitals-panel/vitals-panel.ts.
 // ============================================================================================
 
+/** The smart half (3.1): gets the data, owns the state, decides. VitalsPanel shows it. */
 @Component({
   selector: 'app-vitals-card',
+  imports: [VitalsPanel],
   templateUrl: './vitals-card.html',
   styleUrl: './vitals-card.scss',
 })
 export class VitalsCard {
-  /** Which bed to show. The bed screen passes it: <app-vitals-card [bed]="patient().bed">. */
+  /** Which bed to show; the bed screen passes it. */
   readonly bed = input.required<BedId>();
+  // 2.2
+  readonly alarms = input<readonly AlarmView[]>([]);
+  // 1.4a → 2.3 (input + output) → 2.4 (model)
+  readonly paused = model(false);
+
+  private readonly bus = inject(MessageBus);
+  private readonly toasts = inject(Toasts);
+
+  // 1.1
+  protected readonly vitals = rxResource({
+    params: () => this.bed(),
+    stream: ({ params: bed }) =>
+      this.bus
+        .watch(`/topic/vitals.${bed}`)
+        .pipe(map((frame) => ({ frame, at: Date.now() }))),
+  });
+
+  // 1.2 + 1.3, extracted into liveness() in 3.3
+  private readonly live = liveness(
+    computed(() =>
+      this.vitals.hasValue() ? this.vitals.value().at : undefined,
+    ),
+  );
+  protected readonly ageSec = this.live.ageSec;
+  protected readonly stale = this.live.stale;
+
+  // 1.4b
+  protected readonly shown = linkedSignal<
+    { frame: VitalsFrame | undefined; paused: boolean },
+    VitalsFrame | undefined
+  >({
+    source: () => ({
+      frame: this.vitals.hasValue() ? this.vitals.value().frame : undefined,
+      paused: this.paused(),
+    }),
+    computation: (source, previous) =>
+      source.paused && previous?.value ? previous.value : source.frame,
+  });
+
+  constructor() {
+    // 1.5
+    effect(() => {
+      if (!this.stale()) return;
+      untracked(() =>
+        this.toasts.show(`${this.bed()}: no live vitals`, 'warn'),
+      );
+    });
+  }
 }
