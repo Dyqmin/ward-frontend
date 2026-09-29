@@ -30,7 +30,7 @@ All in `apps/ward/src/app/streams/`:
 | --- | --- | --- | --- |
 | R.1 | `r01-subscribe/subscribe-basics.ts` | R.1a–c | subscribe, next, complete |
 | R.2–3 | `r02-leak/leaky-vitals.ts` | R.2a–b, R.3 | a ready-made leak to watch, then takeUntilDestroyed |
-| R.4–5 | `r04-view/live-hr.ts` | R.4a–b, R.5a–b | why the view doesn't update; the async pipe |
+| R.4–5 | `r04-view/live-hr.ts` | R.4a–b, R.5a–b | a ready-made view that doesn't update; the async pipe |
 | R.6 | `r06-operators/operators.ts` | R.6a–d | map, filter, take, distinctUntilChanged, tap |
 | R.7–8 | `r07-subjects/notes.ts` | R.7a–c, R.8a–b | Subject, BehaviorSubject |
 | R.9 | `r09-combine/patient-filter.ts` | R.9a–d | combineLatest, debounceTime |
@@ -51,7 +51,7 @@ pnpm nx test ward --include='**/subscribe-basics.spec.ts' --reporters=verbose
 
 - Every test is named after its exercise; ✓ passes, × fails.
 - Some steps are checked only in the browser, on purpose: R.2 (you watch a ready-made leak) and
-  R.4 (a view that doesn't update). Their files say what you should see.
+  R.4 (you watch a ready-made view that doesn't update). Their files say what you should see.
 - In R.11 and R.12a you use the wrong operator on purpose: the R.10 / R.12 tests turn red
   there, and green again when you switch back.
 - If a template doesn't compile, **every** test of that file fails. Read the first error at the
