@@ -1,11 +1,15 @@
-# Guards and resolvers: detail routes by id
+# Guards and route resources: detail routes by id
 
 **Instructor demo: 25 minutes · Pairs exercise: 40 minutes + 10 minutes review**
 
 The ward already has guards for roles (`hasRole`), for the bed in the URL (`validBed`), for wizard
-steps (`stepCompleted`) and for leaving a form (`unsavedDraftGuard`). Screens load their data with
-the router's `resources:`. What it doesn't have yet is a **classic resolver**: a `ResolveFn` that
-loads one record before the page opens, and redirects when that record doesn't exist.
+steps (`stepCompleted`) and for leaving a form (`unsavedDraftGuard`). The bed page loads its data
+with **route resources** (`resources:` in `ward.routes.ts`, factories in
+`ward/bed-detail/bed-resources.ts`). In this lab you write both halves yourself for a new page: a
+guard that checks the id in the URL, and a blocking route resource that loads one record before the
+page opens, and redirects when that record doesn't exist.
+
+Reference: [Data fetching with route resources](https://next.angular.dev/guide/routing/data-fetching-with-resources).
 
 Both parts build the same feature, end to end, for two different records:
 
@@ -15,7 +19,7 @@ Both parts build the same feature, end to end, for two different records:
 | Linked from | The patient's name in the bed detail header | The drug name in each row of the bed's medication list |
 | RPC | `patients.byId { id }` → `Patient \| null` | `medication.get { id }` → `MedOrder \| null` |
 | Guard (`canActivate`) | `validPatientId`: a bad id → `/ward` | `validMedOrderId`: a bad id → `/ward/:bed` |
-| Resolver (`resolve`) | `patientByIdResolver`: unknown patient → `/ward` | `medOrderResolver`: unknown order, or another bed's order → `/ward/:bed` |
+| Route resource (`resources`) | `patientByIdResource`: unknown patient → `/ward` | `medOrderResource`: unknown order, or another bed's order → `/ward/:bed` |
 
 Every occupied bed has a patient and 1–2 medication orders. The server never deletes either, so a
 link to one keeps working. The empty beds are ICU-6, ER-4 and CARD-3.
@@ -23,7 +27,8 @@ link to one keeps working. The empty beds are ICU-6, ER-4 and CARD-3.
 ## The eight steps
 
 Part B repeats Part A's steps with the same numbers, so **A*n* is the worked example for B*n***.
-When you're stuck on B5, reread A5.
+When you're stuck on B5, reread A5. `ROUTE-GUARDS-RESOURCES-TIPS.md` has snippets and a
+troubleshooting table.
 
 | Step | Where | What |
 | --- | --- | --- |
@@ -32,8 +37,8 @@ When you're stuck on B5, reread A5.
 | 3 | `testing/ward-fixtures.ts` | The mock ward answers it too (for `?mock`) |
 | 4 | `core/messaging/contract.ts` | A type-safe link to the new page |
 | 5 | `ward/guards.ts` | The guard: is the id in the URL well-formed? |
-| 6 | a new resolver file | The resolver: load the record, or redirect |
-| 7 | a new page component | Render the resolved record |
+| 6 | a new resource file | The route resource: load the record, or redirect |
+| 7 | a new page component | Render the loaded record |
 | 8 | `ward/ward.routes.ts` + a template | The route, and a link that leads to it |
 
 Frontend paths are relative to `apps/ward/src/app/`. Backend paths are relative to the
@@ -119,7 +124,7 @@ Add `'ward/patients/:patientId'` to the `AppPath` union. After that,
 ### A5 · Guard (`ward/guards.ts`)
 
 ```ts
-/** The URL's shape only: 'pat_…'. Whether this patient exists is the resolver's job. */
+/** The URL's shape only: 'pat_…'. Whether this patient exists is the resource's job. */
 export const validPatientId: CanActivateFn = (route) =>
   isPatientId(route.params['patientId'] ?? '') ||
   new RedirectCommand(inject(Router).parseUrl('/ward'));
@@ -127,43 +132,55 @@ export const validPatientId: CanActivateFn = (route) =>
 
 Import `isPatientId` from `@core/messaging/contract`, which re-exports all of `shared/contract.ts`.
 
-### A6 · Resolver (new file `ward/patient/patient-resolver.ts`)
+### A6 · Route resource (new file `ward/patient/patient-resource.ts`)
+
+Model: `patientResource()` in `ward/bed-detail/bed-resources.ts`.
 
 ```ts
-import { inject } from '@angular/core';
-import { RedirectCommand, ResolveFn, Router } from '@angular/router';
+import { computed, inject, resource } from '@angular/core';
+import { RedirectCommand, ResourceContext, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
-import { MessageBus, isPatientId, type Patient } from '@core/messaging/contract';
+import { MessageBus, isPatientId } from '@core/messaging/contract';
 
-export const patientByIdResolver: ResolveFn<Patient> = async (route) => {
-  const bus = inject(MessageBus); // ① before any await
+/** Blocking: the page opens with a plain Patient. An unknown id redirects to /ward. */
+export function patientByIdResource(ctx: ResourceContext) {
+  const bus = inject(MessageBus); // ① in the factory, never in the loader
   const router = inject(Router);
-  const toWard = new RedirectCommand(router.parseUrl('/ward'));
-
-  const id = route.params['patientId'] ?? '';
-  if (!isPatientId(id)) return toWard; // ②
-
-  const patient = await firstValueFrom(bus.request('/app/patients.byId', { id }));
-  return patient ?? toWard; // ③
-};
+  return resource({
+    params: computed(() => {
+      const id = String(ctx.params()['patientId'] ?? '');
+      return isPatientId(id) ? id : undefined; // ② undefined: the resource stays idle
+    }),
+    loader: async ({ params: id }) => {
+      const patient = await firstValueFrom(bus.request('/app/patients.byId', { id }));
+      if (!patient) throw new RedirectCommand(router.parseUrl('/ward')); // ③
+      return patient; // Patient – null is gone
+    },
+  });
+}
 ```
 
 Points to make while you write it:
 
-- **① `inject()` only works synchronously.** After the first `await`, the injection context is gone.
-  Move `inject(Router)` below the `await` once to show error NG0203.
-- **② The guard doesn't narrow anything for the resolver.** Every function gets the raw `string`
-  from the URL, so the resolver checks the id again. The check is cheap, and it's what gives `id`
-  the type `PatientId`.
-- **③ A resolver can redirect too.** Returning a `RedirectCommand` cancels the navigation, so the
-  page never opens with `null`. Compare this with `patientResource()` in
-  `ward/bed-detail/bed-resources.ts`, which does the same thing by *throwing* one.
+- **① `inject()` belongs in the factory.** The router calls `patientByIdResource(ctx)` in an
+  injection context; the loader runs later, outside it. Move `inject(Router)` into the loader once
+  to show error NG0203.
+- **② The guard doesn't narrow anything for the resource.** `ctx.params()` hands over the raw
+  `string`, so the resource checks the id again. The check is cheap, and it's what gives `id` the
+  type `PatientId`. Returning `undefined` from `params` keeps the resource idle instead of sending
+  a bad request.
+- **③ Redirect by throwing.** A blocking resource that throws a `RedirectCommand` cancels the
+  navigation, so the page never opens with `null`. `patientResource()` does exactly this for an
+  empty bed.
+- **`params` is reactive.** Going from one patient to another changes `ctx.params()`, and the
+  resource loads again. No `runGuardsAndResolvers` needed.
 
 ### A7 · Page (new files `ward/patient/patient-page.ts` and `.html`)
 
-`withComponentInputBinding()` is already on, so the resolved value arrives as an input. **Its name
-is the key in `resolve`** (step 8). `.page`, `.muted` and `.chip` are global styles; `.narrow` and
+`withComponentInputBinding()` and `withRouterResources()` are already on, so the loaded value
+arrives as an input. **Its name is the key in `resources`** (step 8). A blocking resource arrives
+as the plain value (`Patient`), not as a `Resource<Patient>`. `.page`, `.muted` and `.chip` are global styles; `.narrow` and
 `.back` are not, hence the two inline rules.
 
 ```ts
@@ -180,7 +197,7 @@ import { clock } from '../ui/format';
   styles: '.narrow { max-width: 28rem } .back { text-decoration: none }',
 })
 export default class PatientPage {
-  /** From `resolve: { patient: … }`: a plain Patient, never null. */
+  /** From `resources: … ({ patient: … })`, blocking: a plain Patient, never null. */
   readonly patient = input.required<Patient>();
 
   protected readonly bedLink = computed(
@@ -202,12 +219,12 @@ export default class PatientPage {
 
 1. **`ward/ward.routes.ts`:** add this above the bed detail route (`path: ':bed'`):
    ```ts
-   // patient page: a classic resolver, loaded before the page opens
+   // patient page: a blocking route resource, loaded before the page opens
    {
      path: 'patients/:patientId',
      title: 'Patient',
      canActivate: [validPatientId],
-     resolve: { patient: patientByIdResolver },
+     resources: (ctx) => ({ patient: patientByIdResource(ctx) }),
      loadComponent: () => import('./patient/patient-page'),
    },
    ```
@@ -233,15 +250,17 @@ export default class PatientPage {
 
 | Check | Proves |
 | --- | --- |
-| Clicking the name on `/ward/icu-3` opens the patient page, with the name on first paint | resolver + input binding |
+| Clicking the name on `/ward/icu-3` opens the patient page, with the name on first paint | blocking resource + input binding |
 | `/ward/patients/hello` lands on `/ward`, and the Dev log shows no `patients.byId` request | the guard runs first |
-| `/ward/patients/pat_nobody` lands on `/ward` after one `patients.byId` request | the resolver redirects |
+| `/ward/patients/pat_nobody` lands on `/ward` after one `patients.byId` request | the resource redirects |
 | The tab title reads "Patient · Ward Monitor" | `title` |
 
-**Talking point: `resolve` or `resources`?** The resolver gives the page a *snapshot*. It runs
-again only when the route's params change (see `runGuardsAndResolvers`). The bed page's
-`resources:` stay live and can be non-blocking. Use a resolver for one record that has to exist
-before the page makes sense.
+**Talking point: why not a classic resolver?** Before route resources, this was
+`resolve: { patient: patientByIdResolver }` with a `ResolveFn<Patient>` that *returned* the
+`RedirectCommand`. Route resources do the same job and more: resources on all matched routes load
+concurrently (resolvers run one route at a time), a resource can be `nonBlocking()` so the page
+opens at once with a loading state, and it reloads by itself when its params change. You'll still
+meet `ResolveFn` in older code; the idea is the same.
 
 ---
 
@@ -348,37 +367,39 @@ Import `isMedOrderId` and `link` from `@core/messaging/contract`.
 
 </details>
 
-### B6 · Resolver (10 min)
+### B6 · Route resource (10 min)
 
-**File:** new `ward/med-order/med-order-resolver.ts`
+**File:** new `ward/med-order/med-order-resource.ts`
 
 ```ts
-export const medOrderResolver: ResolveFn<MedOrder> = async (route) => {
-  // 1. inject MessageBus and Router (before any await), build `toBed`, a RedirectCommand to /ward/:bed
-  // 2. read `id` from params['orderId'] and `bed` with bedFromSlug(params['bed']);
-  //    if id isn't a MedOrderId or bed is null → return toBed
-  // 3. request medication.get { id } AND patients.get { bed }, at the same time
-  // 4. no order, no patient, or order.patientId !== patient.id → return toBed
-  // 5. return the order
-};
+export function medOrderResource(ctx: ResourceContext) {
+  // 1. inject MessageBus and Router here, in the factory
+  // 2. return resource({ params, loader })
+  //    params: a computed that reads 'orderId' and 'bed' from ctx.params();
+  //            { id, bed } when id is a MedOrderId and bedFromSlug(bed) isn't null, else undefined
+  //    loader: request medication.get { id } AND patients.get { bed }, at the same time;
+  //            no order, no patient, or order.patientId !== patient.id → throw a RedirectCommand
+  //            to /ward/:bed; otherwise return the order
+}
 ```
 
-Steps 1, 2 and 5 are A6 with other names. **New:**
+Step 1 and the redirect are A6 with other names. **New:**
 
-- **Step 3: two requests at once.** You need the order *and* the bed's patient. Wrap each
+- **Two params.** `params` returns an object, `{ id, bed }`. The loader receives it as
+  `({ params: { id, bed } })`. `bed` is a `BedId` there (`'ER-2'`); for the redirect URL, turn it
+  back into a slug with `toSlug(bed)`.
+- **Two requests at once.** You need the order *and* the bed's patient. Wrap each
   `bus.request(…)` in `firstValueFrom` and `await Promise.all([…])`.
-- **Step 4: ownership.** Without it, `/ward/icu-3/meds/<an ER-2 order>` would show the ER-2 order
-  under ICU-3. An order belongs to a *patient* (`order.patientId`) and the URL names a *bed*, so
-  compare `order.patientId` with the id of the patient in that bed.
-- `bed` has the type `BedId | null`. `validBed` has already run, but just like in A6 ②, it doesn't
-  narrow anything for you.
+- **Ownership.** Without it, `/ward/icu-3/meds/<an ER-2 order>` would show the ER-2 order under
+  ICU-3. An order belongs to a *patient* (`order.patientId`) and the URL names a *bed*, so compare
+  `order.patientId` with the id of the patient in that bed.
 
 <details>
 <summary>Solution</summary>
 
 ```ts
-import { inject } from '@angular/core';
-import { RedirectCommand, ResolveFn, Router } from '@angular/router';
+import { computed, inject, resource } from '@angular/core';
+import { RedirectCommand, ResourceContext, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import {
@@ -386,28 +407,32 @@ import {
   bedFromSlug,
   isMedOrderId,
   link,
-  type MedOrder,
+  toSlug,
 } from '@core/messaging/contract';
 
-/** The order in the URL, if it exists and belongs to the patient in this bed; otherwise back to the bed. */
-export const medOrderResolver: ResolveFn<MedOrder> = async (route) => {
+/** Blocking: the order in the URL, if it exists and belongs to the patient in this bed; otherwise back to the bed. */
+export function medOrderResource(ctx: ResourceContext) {
   const bus = inject(MessageBus);
   const router = inject(Router);
-  const toBed = new RedirectCommand(
-    router.parseUrl('/' + link('ward/:bed', { bed: route.params['bed'] })),
-  );
-
-  const id = route.params['orderId'] ?? '';
-  const bed = bedFromSlug(route.params['bed'] ?? '');
-  if (!isMedOrderId(id) || !bed) return toBed;
-
-  const [order, patient] = await Promise.all([
-    firstValueFrom(bus.request('/app/medication.get', { id })),
-    firstValueFrom(bus.request('/app/patients.get', { bed })),
-  ]);
-  if (!order || !patient || order.patientId !== patient.id) return toBed;
-  return order;
-};
+  return resource({
+    params: computed(() => {
+      const id = String(ctx.params()['orderId'] ?? '');
+      const bed = bedFromSlug(String(ctx.params()['bed'] ?? ''));
+      return isMedOrderId(id) && bed ? { id, bed } : undefined;
+    }),
+    loader: async ({ params: { id, bed } }) => {
+      const [order, patient] = await Promise.all([
+        firstValueFrom(bus.request('/app/medication.get', { id })),
+        firstValueFrom(bus.request('/app/patients.get', { bed })),
+      ]);
+      if (!order || !patient || order.patientId !== patient.id)
+        throw new RedirectCommand(
+          router.parseUrl('/' + link('ward/:bed', { bed: toSlug(bed) })),
+        );
+      return order;
+    },
+  });
+}
 ```
 
 </details>
@@ -419,7 +444,7 @@ export const medOrderResolver: ResolveFn<MedOrder> = async (route) => {
 Copy A7's component and change it:
 
 1. The input is `order = input.required<MedOrder>()`. Its name must match the key you'll use in
-   `resolve` in B8.
+   `resources` in B8.
 2. **New:** the order has no bed, only a `patientId`. Build the back link from the URL instead:
    add `readonly bed = input.required<string>()`. Component input binding fills it from the
    `:bed` route param.
@@ -444,7 +469,7 @@ import { clock, who } from '../ui/format';
   styles: '.narrow { max-width: 28rem } .back { text-decoration: none }',
 })
 export default class MedOrderPage {
-  /** From `resolve: { order: … }`: a plain MedOrder that belongs to this bed. */
+  /** From `resources: … ({ order: … })`, blocking: a plain MedOrder that belongs to this bed. */
   readonly order = input.required<MedOrder>();
   /** The `:bed` route param, e.g. 'icu-3'. */
   readonly bed = input.required<string>();
@@ -475,7 +500,7 @@ export default class MedOrderPage {
      path: ':bed/meds/:orderId',
      title: 'Medication order',
      canActivate: [validBed, validMedOrderId],
-     resolve: { order: medOrderResolver },
+     resources: (ctx) => ({ order: medOrderResource(ctx) }),
      loadComponent: () => import('./med-order/med-order-page'),
    },
    ```
@@ -495,19 +520,22 @@ export default class MedOrderPage {
 
 | Check | Proves |
 | --- | --- |
-| Clicking a drug on `/ward/er-2` opens its order, with the drug on first paint | resolver + input binding |
+| Clicking a drug on `/ward/er-2` opens its order, with the drug on first paint | blocking resource + input binding |
 | `/ward/er-2/meds/hello` lands on `/ward/er-2`, with no `medication.get` in the Dev log | guard |
-| `/ward/er-2/meds/med_nothing` lands on `/ward/er-2` | resolver: `null` |
-| An ER-2 order's id under `/ward/icu-3/meds/…` lands on `/ward/icu-3` | resolver: ownership |
+| `/ward/er-2/meds/med_nothing` lands on `/ward/er-2` | resource: `null` |
+| An ER-2 order's id under `/ward/icu-3/meds/…` lands on `/ward/icu-3` | resource: ownership |
 | As a doctor, "Order medication" on `/ward/icu-3` still opens the wizard | route order |
 | `/ward/icu-9/meds/<any id>` lands on `/ward` | `validBed` runs first |
 
 ### Stretch goals
 
-- **Tab title.** Show "Paracetamol · ICU-3 · Ward Monitor". A `title` can itself be a
-  `ResolveFn<string>` (see `bedTitle`), and `provideAppSeo()` appends " · Ward Monitor". Can it
-  read the resolved order? (`route.data['order']`: resolvers run before titles.)
-- **Snapshot.** As a nurse, open an order, mark it given in a second tab, and come back. The page
-  still says `ordered`. Why? What would you use for a live status?
+- **Tab title.** Show "Medication order · ICU-3 · Ward Monitor". Make the route's `title` a function
+  of the route, like `bedTitle` in `ward.routes.ts`; `provideAppSeo()` appends " · Ward Monitor".
+- **Stale status.** As a nurse, open an order, mark it given in a second tab, and come back. The
+  page still says `ordered`: the resource loads again only when its params change. Make it
+  `nonBlocking()` and add a Refresh button that calls `order.reload()`, as the bed page does for
+  `meds`. What happens to the input's type? And to the redirect for an unknown order? (The
+  Angular guide describes the thrown `RedirectCommand` for *blocking* resources only: a
+  non-blocking one has already opened the page.)
 - **Nurses only.** Make the order page nurse-only with `canMatch: [hasRole('nurse')]` and a
   fallback route to `/forbidden`, as in the temperature lab.
