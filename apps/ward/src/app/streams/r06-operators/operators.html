@@ -2,15 +2,11 @@
 <p class="muted">Source: 72, 118, 75, 75, 131, 64, 64, 99 — one per second.</p>
 <dl>
   <dt>R.6a · map</dt>
-  <!-- show hrText$ with the async pipe -->
-  <dd><p class="r6a"></p></dd>
+  <dd><p class="r6a">{{ hrText$ | async }}</p></dd>
   <dt>R.6b · filter (above 100)</dt>
-  <!-- show highHr$ with the async pipe -->
-  <dd><p class="r6b"></p></dd>
+  <dd><p class="r6b">{{ highHr$ | async }}</p></dd>
   <dt>R.6c · take (3)</dt>
-  <!-- show firstThree$ with the async pipe -->
-  <dd><p class="r6c"></p></dd>
+  <dd><p class="r6c">{{ firstThree$ | async }}</p></dd>
   <dt>R.6d · distinctUntilChanged + tap</dt>
-  <!-- show distinct$ with the async pipe -->
-  <dd><p class="r6d"></p></dd>
+  <dd><p class="r6d">{{ distinct$ | async }}</p></dd>
 </dl>

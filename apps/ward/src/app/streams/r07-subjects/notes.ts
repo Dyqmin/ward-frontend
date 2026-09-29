@@ -1,4 +1,6 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 // ============================================================================================
 //  DAY 3 · R.7–8 · SUBJECT AND BEHAVIORSUBJECT
@@ -40,14 +42,17 @@ import { Component, signal } from '@angular/core';
 
 @Component({
   selector: 'app-notes',
+  imports: [AsyncPipe],
   templateUrl: './notes.html',
   styleUrl: './notes.scss',
 })
 export default class Notes {
   protected readonly showLate = signal(false);
 
-  /** Called by "Add note" with the text of the field. R.7a: push it into notes$. */
+  // R.7a: new Subject<string>() — R.8a: a BehaviorSubject remembers the latest value
+  protected readonly notes$ = new BehaviorSubject<string>('(no notes yet)');
+
   protected add(text: string): void {
-    void text;
+    this.notes$.next(text);
   }
 }

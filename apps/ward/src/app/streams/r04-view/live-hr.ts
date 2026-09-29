@@ -1,5 +1,6 @@
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 
 import { MessageBus } from '@core/messaging/contract';
 
@@ -45,24 +46,21 @@ import { MessageBus } from '@core/messaging/contract';
 //    pnpm nx test ward --include='**/live-hr.spec.ts' --reporters=verbose
 // ============================================================================================
 
+// R.4b: none of them. A plain field is not a signal, not an input, not an event, and nothing
+// went through the async pipe; so Angular never re-rendered this OnPush component.
+
 @Component({
   selector: 'app-live-hr',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [AsyncPipe],
   templateUrl: './live-hr.html',
   styleUrl: './live-hr.scss',
 })
 export default class LiveHr {
   private readonly bus = inject(MessageBus);
-  protected hr = 0;
 
-  constructor() {
-    // Ready-made (R.4): the field changes, the view doesn't. R.5: replace it.
-    this.bus
-      .watch('/topic/vitals.ICU-3')
-      .pipe(takeUntilDestroyed())
-      .subscribe((frame) => {
-        this.hr = frame.hr;
-        console.log(`R.4 HR ${frame.hr}`);
-      });
-  }
+  // R.5a
+  protected readonly hr$ = this.bus
+    .watch('/topic/vitals.ICU-3')
+    .pipe(map((frame) => frame.hr));
 }

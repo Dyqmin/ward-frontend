@@ -1,6 +1,8 @@
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
+import { BehaviorSubject, combineLatest, debounceTime, map } from 'rxjs';
 
-import type { Patient, Ward } from '@core/messaging/contract';
+import { wardOf, type Patient, type Ward } from '@core/messaging/contract';
 import { WARMUP_PATIENTS } from '../../warmup/warmup-patients';
 
 // ============================================================================================
@@ -46,6 +48,7 @@ import { WARMUP_PATIENTS } from '../../warmup/warmup-patients';
 
 @Component({
   selector: 'app-patient-filter',
+  imports: [AsyncPipe],
   templateUrl: './patient-filter.html',
   styleUrl: './patient-filter.scss',
 })
@@ -57,4 +60,21 @@ export default class PatientFilter {
     'ER',
     'CARD',
   ];
+
+  protected readonly ward$ = new BehaviorSubject<Ward | 'All'>('All'); // R.9a
+  protected readonly search$ = new BehaviorSubject<string>(''); // R.9b
+
+  // R.9c
+  protected readonly visible$ = combineLatest([
+    this.ward$,
+    this.search$.pipe(debounceTime(300)),
+  ]).pipe(
+    map(([ward, text]) =>
+      this.patients.filter(
+        (p) =>
+          (ward === 'All' || wardOf(p.bed) === ward) &&
+          p.name.toLowerCase().includes(text.toLowerCase()),
+      ),
+    ),
+  );
 }

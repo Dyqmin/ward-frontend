@@ -4,19 +4,15 @@
   <h3>R.10–11 · the selected bed</h3>
   <nav class="row">
     @for (b of beds; track b) {
-    <!-- R.10a · on click, push b into selectedBed$ -->
-    <button type="button">{{ b }}</button>
+    <button type="button" (click)="selectedBed$.next(b)">{{ b }}</button>
     }
   </nav>
-  <!-- R.10b · show live$ with the async pipe -->
-  <p class="live"></p>
+  <p class="live">{{ live$ | async }}</p>
 </section>
 
 <section class="card">
   <h3>R.12 · acknowledge</h3>
-  <!-- R.12a · on click, call next() on ackClicks$ -->
-  <button type="button">Acknowledge</button>
-  <!-- R.12a · show ack$ with the async pipe -->
-  <p class="ack"></p>
+  <button type="button" (click)="ackClicks$.next()">Acknowledge</button>
+  <p class="ack">{{ ack$ | async }}</p>
   <p class="requests">Requests sent: {{ requestsSent() }}</p>
 </section>

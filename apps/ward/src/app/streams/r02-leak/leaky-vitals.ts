@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { MessageBus } from '@core/messaging/contract';
 
@@ -43,6 +44,9 @@ import { MessageBus } from '@core/messaging/contract';
 //    pnpm nx test ward --include='**/leaky-vitals.spec.ts' --reporters=verbose
 // ============================================================================================
 
+// R.2b: nobody. Destroying the component removes it from the page, but the subscription belongs
+// to the stream, not to the component: it runs until someone calls unsubscribe.
+
 @Component({
   selector: 'app-leaky-vitals',
   templateUrl: './leaky-vitals.html',
@@ -52,9 +56,9 @@ export class LeakyVitals {
   private readonly bus = inject(MessageBus);
 
   constructor() {
-    // Ready-made, and leaking on purpose (R.2). R.3: fix it.
     this.bus
       .watch('/topic/vitals.ICU-3')
+      .pipe(takeUntilDestroyed()) // R.3
       .subscribe((frame) => console.log(`ICU-3 HR ${frame.hr}`));
   }
 }

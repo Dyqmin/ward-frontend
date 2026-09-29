@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { BehaviorSubject, Subject, exhaustMap, map, switchMap } from 'rxjs';
 
-import type { BedId } from '@core/messaging/contract';
-import { requestsSent } from '../streams-data';
+import { MessageBus, type BedId } from '@core/messaging/contract';
+import { acknowledge, requestsSent } from '../streams-data';
 
 // ============================================================================================
 //  DAY 3 · R.10–12 · SWITCHMAP, MERGEMAP, EXHAUSTMAP
@@ -77,6 +79,7 @@ import { requestsSent } from '../streams-data';
 
 @Component({
   selector: 'app-flattening',
+  imports: [AsyncPipe],
   templateUrl: './flattening.html',
   styleUrl: './flattening.scss',
 })
@@ -88,4 +91,19 @@ export default class Flattening {
     'ICU-4',
   ];
   protected readonly requestsSent = requestsSent;
+  private readonly bus = inject(MessageBus);
+
+  protected readonly selectedBed$ = new BehaviorSubject<BedId>('ICU-1'); // R.10a
+
+  // R.10b. R.11: switchMap is right for "the selected bed": only the latest selection matters,
+  // so the previous bed must be unsubscribed (mergeMap would keep watching every bed ever clicked).
+  protected readonly live$ = this.selectedBed$.pipe(
+    switchMap((bed) => this.bus.watch(`/topic/vitals.${bed}`)),
+    map((frame) => `${frame.bed}: ${frame.hr}`),
+  );
+
+  protected readonly ackClicks$ = new Subject<void>(); // R.12a
+  protected readonly ack$ = this.ackClicks$.pipe(
+    exhaustMap(() => acknowledge()),
+  ); // R.12b
 }

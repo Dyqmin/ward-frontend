@@ -2,13 +2,19 @@
 <div class="row">
   <nav class="wards row">
     @for (w of wards; track w) {
-    <!-- R.9a · on click, push w into ward$ -->
-    <button type="button">{{ w }}</button>
+    <button type="button" (click)="ward$.next(w)">{{ w }}</button>
     }
   </nav>
-  <!-- R.9b · on input, push search.value into search$ -->
-  <input #search class="search" placeholder="Search by name" />
+  <input
+    #search
+    class="search"
+    placeholder="Search by name"
+    (input)="search$.next(search.value)"
+  />
 </div>
 
-<!-- R.9d · @if on visible$ with the async pipe (alias list), then @for over list -->
-<ul class="patients"></ul>
+<ul class="patients">
+  @if (visible$ | async; as list) { @for (p of list; track p.id) {
+  <li>{{ p.name }}</li>
+  } }
+</ul>

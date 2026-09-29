@@ -9,20 +9,17 @@
   </button>
 </div>
 
-<!-- R.8b · show notes$.value here, without the async pipe -->
-<p class="current"></p>
+<p class="current">{{ notes$.value }}</p>
 
 <div class="panels">
   <section class="card early">
     <h3>Early</h3>
-    <!-- R.7b · show notes$ with the async pipe -->
-    <p class="note"></p>
+    <p class="note">{{ notes$ | async }}</p>
   </section>
   @if (showLate()) {
   <section class="card late">
     <h3>Late</h3>
-    <!-- R.7b · show notes$ with the async pipe -->
-    <p class="note"></p>
+    <p class="note">{{ notes$ | async }}</p>
   </section>
   }
 </div>

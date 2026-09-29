@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+import { ticks$ } from '../streams-data';
+
 // ============================================================================================
 //  DAY 3 · R.1 · SUBSCRIBE AND NEXT
 // ============================================================================================
@@ -42,4 +44,17 @@ import { Component } from '@angular/core';
   templateUrl: './subscribe-basics.html',
   styleUrl: './subscribe-basics.scss',
 })
-export default class SubscribeBasics {}
+export default class SubscribeBasics {
+  constructor() {
+    // R.1a + R.1b
+    ticks$.subscribe({
+      next: (n) => console.log(`A: ${n}`),
+      complete: () => console.log('A: done'),
+    });
+    // R.1c
+    ticks$.subscribe({
+      next: (n) => console.log(`B: ${n}`),
+      complete: () => console.log('B: done'),
+    });
+  }
+}

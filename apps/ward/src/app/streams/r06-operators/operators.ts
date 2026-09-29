@@ -1,4 +1,11 @@
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
+import { distinctUntilChanged, filter, take, tap } from 'rxjs';
+
+import { simpleTrace } from '../simple-trace';
+import { hrSamples$ } from '../streams-data';
+import { toBpmText } from '../to-bpm-text';
+import { trace } from '../trace';
 
 // ============================================================================================
 //  DAY 3 · R.6 · OPERATORS
@@ -65,7 +72,22 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-operators',
+  imports: [AsyncPipe],
   templateUrl: './operators.html',
   styleUrl: './operators.scss',
 })
-export default class Operators {}
+export default class Operators {
+  protected readonly hrText$ = hrSamples$.pipe(toBpmText()); // R.6a, then R.6e
+  protected readonly highHr$ = hrSamples$.pipe(
+    // R.6b, with R.6f and R.6g
+    trace('in'),
+    filter((hr) => hr > 100),
+    simpleTrace('out'),
+  );
+  protected readonly firstThree$ = hrSamples$.pipe(take(3)); // R.6c
+  protected readonly distinct$ = hrSamples$.pipe(
+    // R.6d
+    distinctUntilChanged(),
+    tap((hr) => console.log(`R.6d ${hr}`)),
+  );
+}

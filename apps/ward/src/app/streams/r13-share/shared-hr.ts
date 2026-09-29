@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { map } from 'rxjs';
+import { map, shareReplay } from 'rxjs';
 
 import { MessageBus } from '@core/messaging/contract';
 
@@ -40,8 +40,8 @@ import { MessageBus } from '@core/messaging/contract';
 export default class SharedHr {
   private readonly bus = inject(MessageBus);
 
-  /** R.13b: add shareReplay after map. */
-  protected readonly hr$ = this.bus
-    .watch('/topic/vitals.ICU-3')
-    .pipe(map((frame) => frame.hr));
+  protected readonly hr$ = this.bus.watch('/topic/vitals.ICU-3').pipe(
+    map((frame) => frame.hr),
+    shareReplay({ bufferSize: 1, refCount: true }), // R.13b
+  );
 }
