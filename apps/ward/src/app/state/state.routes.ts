@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { provideState } from '@ngrx/store';
 
 import { checklistFeature } from './s01-checklist/checklist.feature';
+import { wardFeature } from './s02-ward/ward.feature';
 import StateShell from './state-shell';
 
 /** Day 4: one tab per exercise under /state. */
@@ -13,7 +14,7 @@ export default [
     // survives switching tabs. The S.1 checklist is ready-made; the exercises add the rest here.
     providers: [
       provideState(checklistFeature),
-      // S.2c · the ward feature
+      provideState(wardFeature), // S.2c
       // S.4b · the alarms feature
       // S.5b · the alarms effects
     ],
