@@ -2,8 +2,13 @@
 <app-ward-picker />
 
 <h3>Checked on the night round, in this ward</h3>
-<!-- S.3c · inside the ul: an @for over checked(), one <li> per bed; @empty: none yet -->
-<ul class="checked-beds"></ul>
+<ul class="checked-beds">
+  @for (b of checked(); track b) {
+  <li>{{ b }}</li>
+  } @empty {
+  <li class="muted">none yet</li>
+  }
+</ul>
 
 <p class="row">
   <button type="button" class="small local" (click)="countClick()">

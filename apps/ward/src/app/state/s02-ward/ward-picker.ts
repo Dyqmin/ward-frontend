@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 
 import { WARDS, type Ward } from '@core/messaging/contract';
 import { WardPickerActions } from './ward.actions';
+import { wardFeature } from './ward.feature';
 
 // ============================================================================================
 //  DAY 4 · S.2 · YOUR FIRST SLICE: AN ACTION AND A REDUCER
@@ -56,6 +57,9 @@ export default class WardPicker {
   private readonly store = inject(Store);
 
   protected readonly wards = WARDS;
+  protected readonly selected = this.store.selectSignal(
+    wardFeature.selectSelected,
+  ); // S.3a
 
   protected select(ward: Ward): void {
     this.store.dispatch(WardPickerActions.wardSelected({ ward })); // S.2d

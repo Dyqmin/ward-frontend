@@ -1,6 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { Store } from '@ngrx/store';
 
 import WardPicker from '../s02-ward/ward-picker';
+import { selectCheckedInSelectedWard } from './ward.selectors';
 
 // ============================================================================================
 //  DAY 4 · S.3 · SELECTORS
@@ -55,6 +57,9 @@ import WardPicker from '../s02-ward/ward-picker';
 //  The same steps as Markdown, easier to read: ward-overview.md, next to this file.
 //  Spec: pnpm nx test ward --include='**/ward-overview.spec.ts' --reporters=verbose
 // ============================================================================================
+// S.3d: the ward the nurse is looking at belongs in the Store: several screens read it, and it
+// must survive switching tabs. "Is this dropdown open" belongs to one component only and may
+// reset with it, so a plain signal in that component is enough.
 
 @Component({
   selector: 'app-ward-overview',
@@ -63,6 +68,12 @@ import WardPicker from '../s02-ward/ward-picker';
   styleUrl: './ward-overview.scss',
 })
 export default class WardOverview {
+  private readonly store = inject(Store);
+
+  protected readonly checked = this.store.selectSignal(
+    selectCheckedInSelectedWard,
+  ); // S.3c
+
   /** Ready-made for S.3d: a counter in a plain signal of this component, not in the Store. */
   protected readonly clicks = signal(0);
 
