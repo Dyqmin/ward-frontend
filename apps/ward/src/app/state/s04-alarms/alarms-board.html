@@ -2,15 +2,20 @@
 <app-ward-picker />
 
 <div class="row">
-  <!-- S.4c · on click, call refresh() -->
-  <button type="button" class="refresh">Refresh</button>
-  <!-- S.4c · only while loading(): <span class="loading muted">Loading alarms…</span> -->
-  <!-- S.4c · only when error() has a value: <span class="error error-text"> showing the error -->
+  <button type="button" class="refresh" (click)="refresh()">Refresh</button>
+  @if (loading()) {
+  <span class="loading muted">Loading alarms…</span>
+  } @if (error(); as error) {
+  <span class="error error-text">{{ error }}</span>
+  }
 </div>
 
 <ul class="alarms">
-  <!-- S.4c · here, inside the ul: an @for over alarms() (track the alarmId), one <li> per alarm
-       holding an <app-alarm-row> whose [event] is that alarm; @empty: <li class="muted">No alarms</li> -->
   <!-- S.7c · on each app-alarm-row: [pending] is whether pending() includes the alarm's alarmId,
        and (acknowledge) calls acknowledge with that alarmId -->
+  @for (a of alarms(); track a.alarmId) {
+  <li><app-alarm-row [event]="a" /></li>
+  } @empty {
+  <li class="muted">No alarms</li>
+  }
 </ul>

@@ -1,6 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Store } from '@ngrx/store';
 
 import WardPicker from '../s02-ward/ward-picker';
+import { wardFeature } from '../s02-ward/ward.feature';
+import { AlarmRow } from './alarm-row';
+import { NurseStationActions } from './alarms.actions';
+import { alarmsFeature } from './alarms.feature';
 
 // ============================================================================================
 //  DAY 4 · S.4–8 · THE NURSE STATION ALARMS
@@ -219,8 +224,26 @@ import WardPicker from '../s02-ward/ward-picker';
 
 @Component({
   selector: 'app-alarms-board',
-  imports: [WardPicker],
+  imports: [WardPicker, AlarmRow],
   templateUrl: './alarms-board.html',
   styleUrl: './alarms-board.scss',
 })
-export default class AlarmsBoard {}
+export default class AlarmsBoard {
+  private readonly store = inject(Store);
+
+  // S.4c
+  protected readonly ward = this.store.selectSignal(wardFeature.selectSelected);
+  protected readonly alarms = this.store.selectSignal(
+    alarmsFeature.selectAlarms,
+  );
+  protected readonly loading = this.store.selectSignal(
+    alarmsFeature.selectLoading,
+  );
+  protected readonly error = this.store.selectSignal(alarmsFeature.selectError);
+
+  protected refresh(): void {
+    this.store.dispatch(
+      NurseStationActions.refreshClicked({ ward: this.ward() }),
+    );
+  }
+}

@@ -3,6 +3,7 @@ import { provideState } from '@ngrx/store';
 
 import { checklistFeature } from './s01-checklist/checklist.feature';
 import { wardFeature } from './s02-ward/ward.feature';
+import { alarmsFeature } from './s04-alarms/alarms.feature';
 import StateShell from './state-shell';
 
 /** Day 4: one tab per exercise under /state. */
@@ -15,7 +16,7 @@ export default [
     providers: [
       provideState(checklistFeature),
       provideState(wardFeature), // S.2c
-      // S.4b · the alarms feature
+      provideState(alarmsFeature), // S.4b
       // S.5b · the alarms effects
     ],
     children: [
