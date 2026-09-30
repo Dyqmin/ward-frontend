@@ -24,7 +24,7 @@ export const checklistFeature = createFeature({
       NightRoundActions.bedChecked,
       (state, { bed }): ChecklistState =>
         state.checked.includes(bed)
-          ? state // S.1c · change this case
+          ? { ...state, checked: state.checked.filter((b) => b !== bed) } // S.1c
           : { ...state, checked: [...state.checked, bed] },
     ),
     on(NightRoundActions.roundReset, (): ChecklistState => initialState),

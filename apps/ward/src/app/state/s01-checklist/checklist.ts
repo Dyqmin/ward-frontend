@@ -40,6 +40,13 @@ import { checklistFeature } from './checklist.feature';
 //  The same steps as Markdown, easier to read: checklist.md, next to this file.
 //  Spec: pnpm nx test ward --include='**/checklist.spec.ts' --reporters=verbose
 // ============================================================================================
+// S.1b:
+// 1. The (click) of the bed button calls check(bed). It hands the Store an action object:
+//    NightRoundActions.bedChecked({ bed }), i.e. { type: '[Night Round] Bed Checked', bed }.
+// 2. From createActionGroup: "[" + the source 'Night Round' + "] " + the event 'Bed Checked'.
+// 3. The reducer of checklistFeature: the on() handler for NightRoundActions.bedChecked.
+// 4. Still one ICU-1: the handler returns the old state unchanged when `checked` already
+//    includes the bed (the `? state` case). A second action arrived; the state did not change.
 
 @Component({
   selector: 'app-checklist',
