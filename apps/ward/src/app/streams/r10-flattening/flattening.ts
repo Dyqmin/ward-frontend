@@ -32,12 +32,19 @@ import { requestsSent } from '../streams-data';
 //   Check: click quickly between the beds: the text always shows the bed you clicked LAST, and
 //   the counter stays at 1: switchMap unsubscribed from the previous bed.
 //
+//  R.10c · see which bed is watched (optional, no test)
+//   [ts]   Inside switchMap, pipe the bus's watch() through trace(bed) (from ../trace.ts), so
+//          each bed gets its own label.
+//   Check: click ICU-2: "ICU-1 teardown", then "ICU-2 subscribe". switchMap ended the old bed.
+//
 //  R.11 · mergeMap: the same, wrongly (then undo)
 //   [ts]   In live$, replace switchMap with mergeMap.
 //   Check: click ICU-1, ICU-2, ICU-3: the counter grows with each click (3 after three beds).
 //   Every bed you ever clicked is still being watched and its data still downloaded, although
 //   only one is on screen: a leak. (The text may still look right: in the mock ward all beds
 //   send at the same moment and the last one wins; with a real server they can also jump.)
+//   With the trace from R.10c: no "teardown" for the old beds, and every clicked bed keeps
+//   writing "next" to the console.
 //   [ts]   Put switchMap back, and write in a comment in one sentence why switchMap is right
 //          for "the selected bed".
 //
@@ -59,6 +66,11 @@ import { requestsSent } from '../streams-data';
 //  R.12c · stretch: concatMap
 //   Try concatMap instead: 5 quick clicks → 5 requests, but one after another (5 seconds).
 //   When would that be the right choice?
+//
+//  R.12d · count the requests in the console (optional, no test)
+//   [ts]   Pipe acknowledge() through trace('ack') (from ../trace.ts), inside the *Map.
+//   Check: with mergeMap, 5 quick clicks write "ack subscribe" five times; with exhaustMap only
+//   once. Every "subscribe" is one request.
 //
 //  Spec: pnpm nx test ward --include='**/flattening.spec.ts' --reporters=verbose
 // ============================================================================================

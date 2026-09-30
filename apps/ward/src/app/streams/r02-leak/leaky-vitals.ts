@@ -33,6 +33,12 @@ import { MessageBus } from '@core/messaging/contract';
 //   Check: reload the page. Open → the counter shows 1; Close → 0; the console stops.
 //   Open/Close five times: it only goes 0 ↔ 1.
 //
+//  R.3b · see the leak in the console (optional, no test)
+//   [ts]   Put trace('leaky') (from ../trace.ts) FIRST in the pipe, before takeUntilDestroyed().
+//   Check: Open → "leaky subscribe" and "leaky next …" every second; Close → "leaky teardown":
+//   the subscription ended. Take takeUntilDestroyed() out for a moment: Close shows NO
+//   teardown — that missing line is what a leak looks like. Put it back.
+//
 //  Spec (R.3; R.2 is checked with the counter):
 //    pnpm nx test ward --include='**/leaky-vitals.spec.ts' --reporters=verbose
 // ============================================================================================

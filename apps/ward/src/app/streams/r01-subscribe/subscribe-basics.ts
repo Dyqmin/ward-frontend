@@ -27,6 +27,13 @@ import { Component } from '@angular/core';
 //   Try: put the whole constructor in a comment. Nothing is written at all: without subscribe,
 //   an Observable does nothing.
 //
+//  R.1d · look inside (optional, no test)
+//   [ts]   In the first subscription, put trace('A') (from ../trace.ts) in a pipe before
+//          subscribe. trace() is a ready-made operator that writes to the console what happens
+//          at that point of the stream.
+//   Check: besides "A: 1" … the console shows "A subscribe", then "A next 1" … "A next 5",
+//   "A complete" and "A teardown": the whole life of one subscription.
+//
 //  Spec: pnpm nx test ward --include='**/subscribe-basics.spec.ts' --reporters=verbose
 // ============================================================================================
 

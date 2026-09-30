@@ -38,6 +38,28 @@ import { Component } from '@angular/core';
 //   Check: the console shows 72, 118, 75, 131, 64, 99: the second 75 and the second 64 were
 //   skipped.
 //
+//  R.6e · your own operator
+//   [new file ../to-bpm-text.ts] Export a function `toBpmText` with no parameters. It does not
+//          take the stream: it RETURNS an operator — the same map you wrote in R.6a.
+//          Return type: OperatorFunction<number, string> (from 'rxjs'): numbers in, text out.
+//          You may leave the return type out; TypeScript infers it.
+//          ../trace.ts has the same shape: a function that returns an operator (tap there).
+//   [ts]   In hrText$, use toBpmText() instead of your own map.
+//   Check: the R.6a test stays green, and the page shows the same texts as before.
+//
+//  R.6f · look inside a filter (optional, no test)
+//   [ts]   In highHr$, put trace('in') (from ../trace.ts) before filter and trace('out') after
+//          it.
+//   Check: the console shows "in next 72" but no "out next 72": the filter stopped it. For 118
+//   you see both "in next 118" and "out next 118".
+//
+//  R.6g · stretch: your own trace
+//   [new file ../simple-trace.ts] Export a function `simpleTrace` with a parameter `label`
+//          (type string) that returns tap, writing
+//          "<label> <value>" with console.log for every value.
+//   [ts]   In highHr$, use simpleTrace('out') instead of trace('out'), then compare the console
+//          with ../trace.ts: what does the ready-made one show that yours doesn't?
+//
 //  Spec: pnpm nx test ward --include='**/operators.spec.ts' --reporters=verbose
 // ============================================================================================
 

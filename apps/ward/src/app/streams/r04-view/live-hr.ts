@@ -36,6 +36,11 @@ import { MessageBus } from '@core/messaging/contract';
 //   Check: the number changes every second. Click another tab: the counter goes back to 0 —
 //   no takeUntilDestroyed needed, the async pipe cleaned up by itself.
 //
+//  R.5c · look inside (optional, no test)
+//   [ts]   Add trace('hr') (from ../trace.ts) to hr$'s pipe, after map.
+//   Check: "hr subscribe" when the tab opens, "hr teardown" when you leave it. You never called
+//   subscribe or unsubscribe: the async pipe did both.
+//
 //  Spec (R.5; R.4 is checked in the browser):
 //    pnpm nx test ward --include='**/live-hr.spec.ts' --reporters=verbose
 // ============================================================================================
