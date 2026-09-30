@@ -1,9 +1,9 @@
 <h2>S.3 · Selectors</h2>
 <app-ward-picker />
 
-<h3>Beds of the selected ward</h3>
-<!-- S.3c · an @for over beds(), one <li> per bed -->
-<ul class="beds"></ul>
+<h3>Checked on the night round, in this ward</h3>
+<!-- S.3c · inside the ul: an @for over checked(), one <li> per bed; @empty: none yet -->
+<ul class="checked-beds"></ul>
 
 <p class="row">
   <button type="button" class="small local" (click)="countClick()">

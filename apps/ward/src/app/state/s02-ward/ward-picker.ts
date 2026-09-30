@@ -8,8 +8,9 @@ import { WARDS } from '@core/messaging/contract';
 //  Your own slice of the Store: which ward is selected. The ward buttons will DISPATCH an action,
 //  a REDUCER will keep the ward in the state, and every other tab can read it (S.3, S.4).
 //  [actions] = ward.actions.ts, [feature] = ward.feature.ts, [routes] = ../state.routes.ts,
-//  [ts] = this file, [html] = ward-picker.html. The NgRx functions come from '@ngrx/store'
-//  (the imports you need are ready at the top of each file).
+//  [ts] = this file, [html] = ward-picker.html. The NgRx functions come from '@ngrx/store'.
+//  Some imports are ready at the top of each file. Whenever you use something from another file
+//  (your actions, a feature, inject, Store), add its import: the editor's quick fix does it.
 //
 //  S.2a · the action
 //   [actions] Create and export a const `WardPickerActions`: createActionGroup with the source
@@ -24,12 +25,13 @@ import { WARDS } from '@core/messaging/contract';
 //          reducer made with createReducer. It starts from initialState and has one on() for
 //          WardPickerActions.wardSelected, which returns a NEW state object: a copy of the state
 //          with `selected` set to the ward from the action. Give the handler the return type
-//          WardState, like the S.1 checklist does.
+//          WardState. ../s01-checklist/checklist.feature.ts is your model: same shape, other names.
 //
 //  S.2c · register it
 //   [routes] In the route's providers, under the S.1 checklist, add provideState with wardFeature.
 //   Check: reload /state. The inspector shows `ward: { selected: "ICU" }` in the state, next to
-//   `checklist`, and one more "@ngrx/store/update-reducers" action: NgRx added your reducer.
+//   `checklist`, and an "@ngrx/store/update-reducers" action whose features now include "ward":
+//   NgRx added your reducer.
 //
 //  S.2d · dispatch
 //   [ts]   Inject the Store (from '@ngrx/store') into a private readonly field `store`.

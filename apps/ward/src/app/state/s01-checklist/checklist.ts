@@ -1,14 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { bedsOf, type BedId } from '@core/messaging/contract';
+import { ALL_BEDS, WARDS, bedsOf, type BedId } from '@core/messaging/contract';
 import { NightRoundActions } from './checklist.actions';
 import { checklistFeature } from './checklist.feature';
 
 // ============================================================================================
 //  DAY 4 · S.1 · LOOK INSIDE A STORE
 // ============================================================================================
-//  Everything on this tab is ready-made: a checklist for the night round. You click and you read.
+//  This tab is ready-made, except one rule you change in S.1c: a checklist for the night round,
+//  over every bed of the three wards. You click and you read.
 //  The Store holds the state of the whole app in ONE object. Nobody changes that object
 //  directly: a component DISPATCHES an action (a plain object that says what happened), and a
 //  REDUCER (a pure function) takes the current state and the action and returns the NEXT state.
@@ -17,7 +18,7 @@ import { checklistFeature } from './checklist.feature';
 //  [html] = checklist.html.
 //
 //  S.1a · watch (no code)
-//   Click ICU-1, then ICU-3, then "Reset round". After every click, read the inspector: which
+//   Click ICU-1, then ER-2, then "Reset round". After every click, read the inspector: which
 //   action arrived (its type and the data it carries), and what `checklist` in the state looks
 //   like now.
 //
@@ -48,7 +49,9 @@ import { checklistFeature } from './checklist.feature';
 export default class Checklist {
   private readonly store = inject(Store);
 
-  protected readonly beds = bedsOf('ICU');
+  protected readonly wards = WARDS;
+  protected readonly bedsOf = bedsOf;
+  protected readonly total = ALL_BEDS.length;
   /** A selector turned into a signal: it updates every time the checked list changes. */
   protected readonly checked = this.store.selectSignal(
     checklistFeature.selectChecked,

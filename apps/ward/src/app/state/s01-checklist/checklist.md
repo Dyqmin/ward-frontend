@@ -2,7 +2,8 @@
 
 **Tab:** S.1 look · **Spec:** `pnpm nx test ward --include='**/checklist.spec.ts' --reporters=verbose`
 
-Everything on this tab is ready-made: a checklist for the night round. You click and you read.
+This tab is ready-made, except one rule you change in S.1c: a checklist for the night round,
+over every bed of the three wards. You click and you read.
 
 The Store holds the state of the whole app in **one** object. Nobody changes that object
 directly:
@@ -23,7 +24,7 @@ them.
 
 ## S.1a · Watch (no code)
 
-Click **ICU-1**, then **ICU-3**, then **Reset round**. After every click, read the inspector:
+Click **ICU-1**, then **ER-2**, then **Reset round**. After every click, read the inspector:
 
 - which action arrived: its type, and the data it carries;
 - what `checklist` in the state looks like now.

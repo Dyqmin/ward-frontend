@@ -1,14 +1,17 @@
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 
-import { advance, setupState, text } from '../testing';
+import { advance, setupState, text, type StateTest } from '../testing';
 import WardOverview from './ward-overview';
 
 // DAY 4 · S.3. Run: pnpm nx test ward --include='**/ward-overview.spec.ts' --reporters=verbose
 
+let t: StateTest;
 let fixture: ComponentFixture<WardOverview>;
 const el = () => fixture.nativeElement as HTMLElement;
-const beds = () =>
-  [...el().querySelectorAll('ul.beds li')].map((li) => text(li));
+const checked = () =>
+  [...el().querySelectorAll('ul.checked-beds li:not(.muted)')].map((li) =>
+    text(li),
+  );
 const wardButton = (label: string) =>
   [...el().querySelectorAll<HTMLButtonElement>('nav.wards button')].find(
     (b) => text(b) === label,
@@ -26,8 +29,13 @@ async function pick(label: string) {
   await advance(fixture, 0);
 }
 
+async function checkBed(bed: string) {
+  t.store.dispatch({ type: '[Night Round] Bed Checked', bed });
+  await advance(fixture, 0);
+}
+
 beforeEach(async () => {
-  await setupState();
+  t = await setupState();
   await render();
 });
 
@@ -41,29 +49,34 @@ describe('S.3a: the picker shows the selected ward', () => {
   });
 });
 
-describe('S.3b–c: the beds of the selected ward', () => {
-  it('lists ICU-1 … ICU-6, then the ER beds after a click on ER', async () => {
-    expect(beds()).toEqual([
-      'ICU-1',
-      'ICU-2',
-      'ICU-3',
-      'ICU-4',
-      'ICU-5',
-      'ICU-6',
-    ]);
+describe('S.3b–c: the checked beds of the selected ward', () => {
+  it('combines the two features: only the checked beds of the selected ward', async () => {
+    await checkBed('ICU-1');
+    await checkBed('ER-2');
+    await checkBed('ICU-3');
+    expect(checked()).toEqual(['ICU-1', 'ICU-3']);
     await pick('ER');
-    expect(beds()).toEqual(['ER-1', 'ER-2', 'ER-3', 'ER-4', 'ER-5', 'ER-6']);
+    expect(checked()).toEqual(['ER-2']);
+    await pick('CARD');
+    expect(checked()).toEqual([]);
+  });
+
+  it('follows the checklist too: a bed checked later shows up at once', async () => {
+    await pick('ER');
+    await checkBed('ER-5');
+    expect(checked()).toEqual(['ER-5']);
   });
 });
 
 describe('S.3d: the Store outlives the component', () => {
   it('a new component shows the ward picked before, while its own counter starts at 0', async () => {
+    await checkBed('CARD-1');
     el().querySelector<HTMLButtonElement>('button.local')?.click();
     await pick('CARD');
     fixture.destroy();
     await render();
     expect(text(el().querySelector('.local-count'))).toBe('0');
     expect(highlighted()).toEqual(['CARD']);
-    expect(beds()[0]).toBe('CARD-1');
+    expect(checked()).toEqual(['CARD-1']);
   });
 });

@@ -1,13 +1,15 @@
 <h2>S.1 · Look inside a Store</h2>
 <p class="muted">
-  Night round: check every ICU bed once. Watch the Store inspector after each
-  click.
+  Night round: check every bed once. Watch the Store inspector after each click.
 </p>
 
-<nav class="beds row" aria-label="Beds">
-  @for (b of beds; track b) {
+@for (w of wards; track w) {
+<nav class="beds row" [attr.aria-label]="w + ' beds'">
+  <span class="ward muted">{{ w }}</span>
+  @for (b of bedsOf(w); track b) {
   <button
     type="button"
+    class="small"
     [class.primary]="checked().includes(b)"
     (click)="check(b)"
   >
@@ -15,8 +17,9 @@
   </button>
   }
 </nav>
+}
 
-<p>Checked ({{ checked().length }} of {{ beds.length }}):</p>
+<p>Checked ({{ checked().length }} of {{ total }}):</p>
 <ul class="checked">
   @for (b of checked(); track b) {
   <li>{{ b }}</li>

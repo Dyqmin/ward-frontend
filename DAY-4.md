@@ -27,8 +27,9 @@ pnpm start
 4. At the top of the page, two helpers for the checks:
    - **Test alarm**: pick a bed and click **Raise HR to 140**; within a few seconds the ward raises
      an "HR high" alarm on that bed. **Back to 72** calms it down. If the broker refuses, a message
-     says why: tell the instructor.
-   - **Simulate outage (8 s)**: drops *your* connection to the broker for 8 seconds, then
+     says why: tell the instructor. The whole room shares the ward, so for a check pick a bed
+     that has no open alarm yet.
+   - **Simulate outage (12 s)**: drops *your* connection to the broker for 12 seconds, then
      reconnects. Nobody else notices.
 
 No backend? <http://localhost:4200/login?mock> runs the same app on an in-memory ward (the tests

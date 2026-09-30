@@ -16,7 +16,8 @@ import { Toasts } from '@core/ui/toasts';
 import { MOCK_EMPTY_BEDS } from '../testing/ward-fixtures';
 import { StoreInspector } from './store-inspector';
 
-const OUTAGE_MS = 8_000;
+/** Longer than the 8 s request timeout, so a request sent during the outage fails. */
+const OUTAGE_MS = 12_000;
 
 /**
  * Ready-made: the Day 4 page with one tab per exercise, the Store inspector and two lab helpers
@@ -85,7 +86,7 @@ export default class StateShell {
     });
   }
 
-  /** Drops THIS browser's connection to the broker for 8 s, then reconnects. Nobody else notices. */
+  /** Drops THIS browser's connection to the broker for 12 s, then reconnects. Nobody else notices. */
   protected outage(): void {
     this.outageRunning.set(true);
     const end = () => this.outageRunning.set(false);
