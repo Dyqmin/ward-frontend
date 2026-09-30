@@ -7,8 +7,15 @@ import {
   provideEnvironmentInitializer,
   signal,
 } from '@angular/core';
-import { ActionsSubject, provideStore } from '@ngrx/store';
+import {
+  ActionsSubject,
+  ReducerManagerDispatcher,
+  UPDATE,
+  provideStore,
+  type Action,
+} from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { EMPTY, filter, merge } from 'rxjs';
 
 /**
  * Day 4: the NgRx Store, registered once for the whole app. It starts empty: every feature adds
@@ -56,8 +63,16 @@ export class ActionLog {
   readonly entries = this._entries.asReadonly();
 
   constructor() {
+    const actions = inject(ActionsSubject);
+    // With DevTools installed, NgRx sends "@ngrx/store/update-reducers" (a feature was added) to
+    // a separate dispatcher instead of ActionsSubject: listen there too, for that action only.
+    const reducerUpdates = inject(ReducerManagerDispatcher);
+    const updates =
+      reducerUpdates === actions
+        ? EMPTY
+        : reducerUpdates.pipe(filter((a: Action) => a.type === UPDATE));
     // a root service lives as long as the app, so this subscription needs no cleanup
-    inject(ActionsSubject).subscribe(({ type, ...data }) => {
+    merge(actions, updates).subscribe(({ type, ...data }) => {
       const logged: LoggedAction = {
         n: ++this.count,
         type,
