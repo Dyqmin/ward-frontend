@@ -1,0 +1,8 @@
+<nav class="wards row" aria-label="Ward">
+  <span class="muted">Ward</span>
+  @for (w of wards; track w) {
+  <!-- S.2d · on click, call select with w -->
+  <!-- S.3a · the class primary when w is the selected() ward -->
+  <button type="button">{{ w }}</button>
+  }
+</nav>

@@ -29,6 +29,7 @@ import {
 } from '@core/messaging/provide-stomp';
 import { provideAppSeo } from '@core/providers/seo';
 import { provideSkeletonConfig } from '@core/providers/skeleton';
+import { provideAppStore } from '@core/providers/store';
 import { WifiAwarePreloading } from '@core/providers/wifi-aware-preloading';
 import { routes } from './app.routes';
 
@@ -64,6 +65,8 @@ export const appConfig: ApplicationConfig = {
       withExponentialReconnect({ initialMs: 500, maxMs: 15_000 }),
       withErrorLogging(),
     ),
+    // Day 4: one global NgRx Store; features register their slices on their routes
+    provideAppStore(),
     provideAppSeo({ siteName: 'Ward Monitor' }),
     provideSkeletonConfig(),
   ],

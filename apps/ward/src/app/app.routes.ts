@@ -34,6 +34,13 @@ export const routes: Routes = [
     canMatch: [authGuard],
     loadChildren: () => import('./streams/streams.routes'),
   },
+  // Day 4: the NgRx global Store, one tab per exercise
+  {
+    path: 'state',
+    title: 'State',
+    canMatch: [authGuard],
+    loadChildren: () => import('./state/state.routes'),
+  },
   {
     path: 'reports',
     canMatch: [authGuard],

@@ -1,0 +1,20 @@
+<aside class="card inspector" aria-label="Store inspector">
+  <h2>Store inspector</h2>
+
+  <h3>Last actions <span class="muted">(newest first)</span></h3>
+  <ol class="actions">
+    @for (a of actions(); track a.n) {
+    <li [class.internal]="a.internal">
+      <code class="type">{{ a.type }}</code>
+      @if (a.payload) {
+      <code class="payload">{{ a.payload }}</code>
+      }
+    </li>
+    } @empty {
+    <li class="muted">No actions yet</li>
+    }
+  </ol>
+
+  <h3>State</h3>
+  <pre class="state">{{ state() | json }}</pre>
+</aside>

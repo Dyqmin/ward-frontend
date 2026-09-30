@@ -1,0 +1,15 @@
+<h2>S.4–8 · Nurse station alarms</h2>
+<app-ward-picker />
+
+<div class="row">
+  <!-- S.4c · on click, call refresh() -->
+  <button type="button" class="refresh">Refresh</button>
+  <!-- S.4c · only while loading(): <span class="loading muted">Loading alarms…</span> -->
+  <!-- S.4c · only when error() has a value: <span class="error error-text"> with the error -->
+</div>
+
+<!-- S.4c · an @for over alarms() (track the alarmId): one <li> per alarm, holding an
+     <app-alarm-row> whose [event] is that alarm; @empty: <li class="muted">No alarms</li> -->
+<!-- S.7c · on each app-alarm-row: [pending] is whether pending() includes the alarm's alarmId,
+     and (acknowledge) calls acknowledge with that alarmId -->
+<ul class="alarms"></ul>

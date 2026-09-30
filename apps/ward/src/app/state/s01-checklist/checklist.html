@@ -1,0 +1,28 @@
+<h2>S.1 · Look inside a Store</h2>
+<p class="muted">
+  Night round: check every ICU bed once. Watch the Store inspector after each
+  click.
+</p>
+
+<nav class="beds row" aria-label="Beds">
+  @for (b of beds; track b) {
+  <button
+    type="button"
+    [class.primary]="checked().includes(b)"
+    (click)="check(b)"
+  >
+    {{ b }}
+  </button>
+  }
+</nav>
+
+<p>Checked ({{ checked().length }} of {{ beds.length }}):</p>
+<ul class="checked">
+  @for (b of checked(); track b) {
+  <li>{{ b }}</li>
+  } @empty {
+  <li class="muted">none yet</li>
+  }
+</ul>
+
+<button type="button" class="small reset" (click)="reset()">Reset round</button>

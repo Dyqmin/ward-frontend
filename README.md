@@ -20,6 +20,14 @@ tab per exercise): [DAY-3.md](DAY-3.md) says where to start, and each file in `s
 its own exercises. The page shows how many vitals subscriptions are open (real broker and `?mock` alike), which makes
 leaks and `shareReplay` visible. Solutions are on `day-3-solution`.
 
+## Day 4 branch
+
+On `day-4`, participants build state with the NgRx global Store on the **State** page (`/state`,
+one tab per exercise): [DAY-4.md](DAY-4.md) says where to start, and each file in `state/`
+carries its own exercises. A Store inspector on the page shows the last actions and the whole
+state. Solutions are on `day-4-solution`; `day-4-solution-1` … `day-4-solution-7` hold the
+solution up to and including that exercise (S.1 … S.7), to catch up mid-day.
+
 ## Run it
 
 ```sh
