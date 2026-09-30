@@ -68,3 +68,46 @@ export const liveAlarms = createEffect(
     ),
   { functional: true },
 );
+
+/**
+ * S.7d · Acknowledge Clicked → the alarms.ack command (retried safely: one commandId) → Ack
+ * Accepted or Ack Rejected. The alarm's new status is NOT set here: it arrives as a topic event.
+ */
+export const acknowledgeAlarm = createEffect(
+  (actions$ = inject(Actions), bus = inject(MessageBus)) =>
+    actions$.pipe(
+      ofType(NurseStationActions.acknowledgeClicked),
+      mergeMap(({ alarmId }) =>
+        bus.send('/app/alarms.ack', { alarmId }).pipe(
+          commandRetry(bus),
+          map((result) =>
+            result.status === 'accepted'
+              ? AlarmsApiActions.ackAccepted({ alarmId })
+              : AlarmsApiActions.ackRejected({
+                  alarmId,
+                  reason: reasonOf(result),
+                }),
+          ),
+          catchError(() =>
+            of(
+              AlarmsApiActions.ackRejected({
+                alarmId,
+                reason: 'Broker unreachable',
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
+  { functional: true },
+);
+
+/** S.7e · stretch: tell the nurse why. Emits no action (dispatch: false). */
+export const showRejection = createEffect(
+  (actions$ = inject(Actions), toasts = inject(Toasts)) =>
+    actions$.pipe(
+      ofType(AlarmsApiActions.ackRejected),
+      tap(({ reason }) => toasts.show(reason, 'warn')),
+    ),
+  { functional: true, dispatch: false },
+);

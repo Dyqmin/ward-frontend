@@ -1,6 +1,8 @@
 import { Component, DestroyRef, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 
+import type { AlarmId } from '@core/messaging/contract';
+
 import WardPicker from '../s02-ward/ward-picker';
 import { wardFeature } from '../s02-ward/ward.feature';
 import { AlarmRow } from './alarm-row';
@@ -240,6 +242,9 @@ export default class AlarmsBoard {
     alarmsFeature.selectLoading,
   );
   protected readonly error = this.store.selectSignal(alarmsFeature.selectError);
+  protected readonly pending = this.store.selectSignal(
+    alarmsFeature.selectPending,
+  ); // S.7c
 
   constructor() {
     // S.6c
@@ -247,6 +252,10 @@ export default class AlarmsBoard {
     inject(DestroyRef).onDestroy(() =>
       this.store.dispatch(NurseStationActions.closed()),
     );
+  }
+
+  protected acknowledge(alarmId: AlarmId): void {
+    this.store.dispatch(NurseStationActions.acknowledgeClicked({ alarmId })); // S.7c
   }
 
   protected refresh(): void {

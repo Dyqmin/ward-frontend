@@ -11,10 +11,14 @@
 </div>
 
 <ul class="alarms">
-  <!-- S.7c · on each app-alarm-row: [pending] is whether pending() includes the alarm's alarmId,
-       and (acknowledge) calls acknowledge with that alarmId -->
   @for (a of alarms(); track a.alarmId) {
-  <li><app-alarm-row [event]="a" /></li>
+  <li>
+    <app-alarm-row
+      [event]="a"
+      [pending]="pending().includes(a.alarmId)"
+      (acknowledge)="acknowledge(a.alarmId)"
+    />
+  </li>
   } @empty {
   <li class="muted">No alarms</li>
   }

@@ -11,6 +11,7 @@ export const NurseStationActions = createActionGroup({
     'Refresh Clicked': props<{ ward: Ward }>(),
     Opened: emptyProps(),
     Closed: emptyProps(),
+    'Acknowledge Clicked': props<{ alarmId: AlarmId }>(),
   },
 });
 
@@ -20,6 +21,8 @@ export const AlarmsApiActions = createActionGroup({
   events: {
     'Load Success': props<{ alarms: AlarmEvent[] }>(),
     'Load Failure': props<{ error: string }>(),
+    'Ack Accepted': props<{ alarmId: AlarmId }>(),
+    'Ack Rejected': props<{ alarmId: AlarmId; reason: string }>(),
   },
 });
 
