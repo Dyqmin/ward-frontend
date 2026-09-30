@@ -22,17 +22,26 @@ import { reasonOf, reconnects } from './alarm-helpers';
 import {
   AlarmsApiActions,
   AlarmsTopicActions,
+  BrokerActions,
   NurseStationActions,
 } from './alarms.actions';
 
 // S.5a, S.6d–g, S.7d–e, S.8 · the effects of the alarms board. The steps are in alarms-board.ts.
 
-/** S.5a · Refresh Clicked → one alarms.active request → Load Success or Load Failure. */
+/**
+ * S.5a · Refresh Clicked → one alarms.active request → Load Success or Load Failure.
+ * S.8 · also after every reconnect, for the ward selected in the store.
+ */
 export const loadAlarms = createEffect(
-  (actions$ = inject(Actions), bus = inject(MessageBus)) =>
+  (
+    actions$ = inject(Actions),
+    store = inject(Store),
+    bus = inject(MessageBus),
+  ) =>
     actions$.pipe(
-      ofType(NurseStationActions.refreshClicked),
-      exhaustMap(({ ward }) =>
+      ofType(NurseStationActions.refreshClicked, BrokerActions.reconnected),
+      withLatestFrom(store.select(wardFeature.selectSelected)),
+      exhaustMap(([, ward]) =>
         bus.request('/app/alarms.active', { ward }).pipe(
           map((alarms) => AlarmsApiActions.loadSuccess({ alarms })),
           catchError((error: Error) =>
@@ -110,4 +119,11 @@ export const showRejection = createEffect(
       tap(({ reason }) => toasts.show(reason, 'warn')),
     ),
   { functional: true, dispatch: false },
+);
+
+/** S.8 · the connection came back (reconnects() skips the first connect at start). */
+export const brokerReconnected = createEffect(
+  (reconnects$ = reconnects()) =>
+    reconnects$.pipe(map(() => BrokerActions.reconnected())),
+  { functional: true },
 );

@@ -33,3 +33,11 @@ export const AlarmsTopicActions = createActionGroup({
     'Event Received': props<{ event: AlarmEvent }>(),
   },
 });
+
+/** S.8 · what happened to the connection itself. */
+export const BrokerActions = createActionGroup({
+  source: 'Broker',
+  events: {
+    Reconnected: emptyProps(),
+  },
+});
