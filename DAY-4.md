@@ -18,15 +18,21 @@ pnpm start
 `pnpm install` is needed once today: Day 4 adds `@ngrx/store`, `@ngrx/effects` and
 `@ngrx/store-devtools`.
 
-1. Open <http://localhost:4200/login?mock> (the in-memory ward, no backend needed), type any
-   name, keep the role **Nurse** and the room code `ward-demo`, and click **Join ward**.
+1. Open <http://localhost:4200/login>, type your name, keep the role **Nurse**, enter the room
+   code the instructor gives you, and click **Join ward**. Everybody in the room shares one ward:
+   you will also see the alarms your neighbours raise.
 2. Click **State** in the header. Each tab is one exercise.
 3. On the right: the **Store inspector**. It shows the last actions dispatched to the Store
    (newest first, with their data) and the whole state after them. Watch it after every step.
-4. Top right, in mock mode: **Test alarm**. Pick a bed and click **Raise HR to 140**: within a
-   second or two the ward raises an "HR high" alarm on that bed. **Back to 72** calms it down.
-5. Bottom left, in mock mode: the **Dev** toolbar, with **Simulate outage (8 s)** and a log of
-   every request the fake broker received.
+4. At the top of the page, two helpers for the checks:
+   - **Test alarm**: pick a bed and click **Raise HR to 140**; within a few seconds the ward raises
+     an "HR high" alarm on that bed. **Back to 72** calms it down. If the broker refuses, a message
+     says why: tell the instructor.
+   - **Simulate outage (8 s)**: drops *your* connection to the broker for 8 seconds, then
+     reconnects. Nobody else notices.
+
+No backend? <http://localhost:4200/login?mock> runs the same app on an in-memory ward (the tests
+use it too). Both helpers work there as well.
 
 Redux DevTools (a browser extension) also works, but you don't need it.
 
@@ -47,6 +53,10 @@ All in `apps/ward/src/app/state/`:
 Each tab has its own files next to it: `*.actions.ts`, `*.feature.ts` (the reducer and its
 selectors) and, from S.5, `alarms.effects.ts`. They start almost empty; the steps say what goes
 in. You also register your features in `state.routes.ts`.
+
+The steps are at the top of each exercise's component, and again as Markdown next to it
+(`checklist.md`, `ward-picker.md`, `ward-overview.md`, `alarms-board.md`). Same steps, easier to
+read; keep your answers in the `.ts` file.
 
 ## 3. Check your work
 

@@ -40,6 +40,7 @@ import WardPicker from '../s02-ward/ward-picker';
 //   Answer in a comment under this block: where would you keep "which ward the nurse is
 //   looking at", and where "is this dropdown open"? Why?
 //
+//  The same steps as Markdown, easier to read: ward-overview.md, next to this file.
 //  Spec: pnpm nx test ward --include='**/ward-overview.spec.ts' --reporters=verbose
 // ============================================================================================
 

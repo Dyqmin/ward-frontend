@@ -39,6 +39,7 @@ import { WARDS } from '@core/messaging/contract';
 //   Check: click ER. The inspector shows "[Ward Picker] Ward Selected" with {"ward":"ER"}, and
 //   `ward.selected` in the state is "ER". The buttons don't show it yet: that is S.3.
 //
+//  The same steps as Markdown, easier to read: ward-picker.md, next to this file.
 //  Spec: pnpm nx test ward --include='**/ward-picker.spec.ts' --reporters=verbose
 // ============================================================================================
 

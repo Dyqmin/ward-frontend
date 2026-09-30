@@ -36,6 +36,7 @@ import { checklistFeature } from './checklist.feature';
 //   Check: click ICU-1 twice. The inspector shows two "Bed Checked" actions, and ICU-1 is no
 //   longer in `checked`. You changed only the rule: not the component, not the action.
 //
+//  The same steps as Markdown, easier to read: checklist.md, next to this file.
 //  Spec: pnpm nx test ward --include='**/checklist.spec.ts' --reporters=verbose
 // ============================================================================================
 

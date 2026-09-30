@@ -3,8 +3,7 @@
     <h1>State</h1>
     <span class="muted">the NgRx global Store</span>
     <span class="spacer"></span>
-    @if (mock) {
-    <div class="row test-alarm">
+    <div class="row helpers">
       <span class="muted">Test alarm</span>
       <select
         #bedSelect
@@ -21,8 +20,15 @@
       <button type="button" class="small" (click)="setHr(72)">
         Back to 72
       </button>
+      <button
+        type="button"
+        class="small"
+        [disabled]="outageRunning()"
+        (click)="outage()"
+      >
+        {{ outageRunning() ? 'Outage running…' : 'Simulate outage (8 s)' }}
+      </button>
     </div>
-    }
   </header>
 
   <nav class="tabs">

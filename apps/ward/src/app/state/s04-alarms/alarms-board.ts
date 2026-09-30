@@ -11,8 +11,11 @@ import WardPicker from '../s02-ward/ward-picker';
 //  [actions] = alarms.actions.ts, [feature] = alarms.feature.ts, [effects] = alarms.effects.ts,
 //  [routes] = ../state.routes.ts, [ts] = this file, [html] = alarms-board.html.
 //  Ready-made: alarm-row.ts (one alarm with its Acknowledge button) and alarm-helpers.ts.
-//  With ?mock, the "Test alarm" control at the top of the page raises an alarm on any bed:
-//  pick a bed, click "Raise HR to 140"; "Back to 72" calms it down again.
+//  Two helpers at the top of the page, for the checks:
+//   - "Test alarm": pick a bed, click "Raise HR to 140": within a few seconds the ward raises
+//     "HR high" on it; "Back to 72" calms it down. If the broker refuses, a message says why.
+//   - "Simulate outage (8 s)": drops YOUR connection to the broker for 8 seconds, then reconnects.
+//  On the shared ward you also see the alarms your neighbours raise. That is expected.
 //
 //  ---------- S.4 · STATE FOR A REQUEST ----------
 //  S.4a · the actions
@@ -66,10 +69,11 @@ import WardPicker from '../s02-ward/ward-picker';
 //          providers.
 //   Check: raise a test alarm on an ICU bed, wait two seconds, click Refresh: the list, and in
 //   the inspector a second action, "[Alarms API] Load Success".
-//   Dev toolbar (bottom left) → "Simulate outage (8 s)", then Refresh: "[Alarms API] Load
-//   Failure" and the error on the board. After the outage, Refresh works again: the effect is
-//   still alive. Now click Refresh five times quickly: the dev toolbar's log shows ONE
-//   alarms.active. Why one? What would mergeMap do here?
+//   Click "Simulate outage (8 s)", then Refresh: after a few seconds "[Alarms API] Load
+//   Failure" and the error on the board (the request timed out). When the outage is over,
+//   Refresh works again: the effect is still alive.
+//   Think: while a request runs, exhaustMap ignores new clicks (the spec checks it). What would
+//   mergeMap do with five quick clicks? And switchMap?
 //
 //  ---------- S.6 · LIVE DATA FROM THE BROKER ----------
 //  The broker sends EVENTS (AlarmEvent, from the shared contract), not NgRx actions. An effect
@@ -145,6 +149,8 @@ import WardPicker from '../s02-ward/ward-picker';
 //   Check: click Acknowledge: "pending sync…" goes away, and the row says "Acknowledged by …".
 //   Read the inspector: that new status did NOT come from "Ack Accepted" (it only clears
 //   pending). It came from "[Alarms Topic] Event Received": the broker told every screen.
+//   On the shared ward, try it with a neighbour: both acknowledge the same alarm. One of you
+//   gets "Ack Rejected" with the reason "Already handled by …".
 //
 //  S.7e · stretch: tell the nurse why
 //   [effects] Create and export a const `showRejection`: a parameter `actions$`, then
@@ -165,9 +171,10 @@ import WardPicker from '../s02-ward/ward-picker';
 //          in ofType, and take the ward from the store instead of the action: after ofType,
 //          withLatestFrom(store.select(wardFeature.selectSelected)), then exhaustMap over
 //          [action, ward].
-//   Check: "Simulate outage (8 s)". When it ends, the inspector shows "[Broker] Reconnected",
-//   then "[Alarms API] Load Success", and nobody clicked Refresh.
+//   Check: "Simulate outage (8 s)" at the top of the page. When it ends, the inspector shows
+//   "[Broker] Reconnected", then "[Alarms API] Load Success", and nobody clicked Refresh.
 //
+//  The same steps as Markdown, easier to read: alarms-board.md, next to this file.
 //  Spec: pnpm nx test ward --include='**/alarms-board.spec.ts' --reporters=verbose
 // ============================================================================================
 
