@@ -47,7 +47,7 @@ All in `apps/ward/src/app/state/`:
 | S.2 | `s02-ward/ward-picker.ts` | S.2a–d | your first action, reducer and feature |
 | S.3 | `s03-selectors/ward-overview.ts` | S.3a–d | selectors, selectSignal, createSelector |
 | S.4–8 | `s04-alarms/alarms-board.ts` | S.4a–c, S.5a–b | state for a request; an effect that loads |
-| | | S.6a–f | live alarms from the broker |
+| | | S.6a–g | live alarms from the broker |
 | | | S.7a–e | acknowledge: a command, then an event |
 | | | S.8 | stretch: catch up after a reconnect |
 

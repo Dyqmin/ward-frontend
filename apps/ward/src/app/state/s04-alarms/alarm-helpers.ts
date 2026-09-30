@@ -1,4 +1,9 @@
+import { ApplicationRef, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { Observable, filter, map, pairwise, skipWhile } from 'rxjs';
+
 import {
+  MessageBus,
   assertNever,
   type AlarmEvent,
   type CommandResult,
@@ -56,3 +61,21 @@ export function alarmStatus(e: AlarmEvent): string {
 /** A nurse can acknowledge what is still open. */
 export const canAcknowledge = (e: AlarmEvent): boolean =>
   e.status === 'raised' || e.status === 'escalated';
+
+/**
+ * Emits once every time the connection to the broker comes BACK after a drop; the first connect
+ * at start does not count. Call it in an injection context, e.g. as a parameter's default value.
+ * It is tied to the app, not to the route that registers the effect, so it keeps working after
+ * you leave /state and come back.
+ */
+export function reconnects(
+  bus = inject(MessageBus),
+  app = inject(ApplicationRef),
+): Observable<void> {
+  return toObservable(bus.connected, { injector: app.injector }).pipe(
+    skipWhile((connected) => !connected), // wait for the first connect
+    pairwise(),
+    filter(([was, is]) => !was && is),
+    map(() => undefined),
+  );
+}

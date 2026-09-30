@@ -112,6 +112,19 @@ describe('S.4: state for a request', () => {
   });
 });
 
+describe('S.4b: a success clears an earlier error', () => {
+  it('"[Alarms API] Load Success" after a failure removes the error', async () => {
+    t.store.dispatch({
+      type: '[Alarms API] Load Failure',
+      error: 'Broker down',
+    });
+    t.store.dispatch({ type: '[Alarms API] Load Success', alarms: [ICU_2] });
+    await advance(fixture, 0);
+    expect(alarmsState()?.error).toBeNull();
+    expect(el().querySelector('.error')).toBeNull();
+  });
+});
+
 describe('S.5: an effect talks to the broker', () => {
   it('Refresh loads the active alarms of the selected ward', async () => {
     await click('button.refresh');
@@ -184,6 +197,54 @@ describe('S.6: live data from the broker', () => {
   });
 });
 
+describe('S.6b: a new ward starts clean', () => {
+  it('picking a ward clears the error and ends the loading', async () => {
+    await click('button.refresh');
+    t.store.dispatch({
+      type: '[Alarms API] Load Failure',
+      error: 'Broker down',
+    });
+    await pickWard('ER');
+    expect(alarmsState()?.error).toBeNull();
+    expect(alarmsState()?.loading).toBe(false);
+  });
+});
+
+describe('S.6e–f: the live feed follows the board, not the effect', () => {
+  it('a board opened again listens again', async () => {
+    fixture.destroy();
+    fixture = TestBed.createComponent(AlarmsBoard);
+    await advance(fixture, 0);
+    await emit(ICU_2);
+    expect(rows()).toEqual([expect.stringContaining('ICU-2')]);
+  });
+
+  it('after the board closes, picking another ward does not start listening again', async () => {
+    fixture.destroy();
+    t.store.dispatch({ type: '[Ward Picker] Ward Selected', ward: 'ER' });
+    const before = ofType(t.actions, '[Alarms Topic] Event Received').length;
+    t.bus.emit('/topic/alarms.ER', ER_1);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(ofType(t.actions, '[Alarms Topic] Event Received')).toHaveLength(
+      before,
+    );
+  });
+});
+
+describe('S.6g: a late reply for the old ward', () => {
+  it('is dropped when the ward changes while the request runs', async () => {
+    await click('button.refresh');
+    await pickWard('ER');
+    await advance(fixture, 300);
+    expect(ofType(t.actions, '[Alarms API] Load Success')).toEqual([]);
+    expect(rows()).toEqual([]);
+    expect(el().querySelector('.loading')).toBeNull();
+    await click('button.refresh');
+    await advance(fixture, 300);
+    expect(rows()).toEqual([expect.stringContaining('ER-1')]);
+  });
+});
+
 describe('S.7: a command, then an event', () => {
   it('Acknowledge dispatches "[Nurse Station] Acknowledge Clicked" and the alarm is pending', async () => {
     ackReply = () => ({ status: 'accepted', value: null });
@@ -230,5 +291,33 @@ describe('S.7: a command, then an event', () => {
     expect(rejected?.['alarmId']).toBe(ICU_2.alarmId);
     expect(rejected?.['reason']).toMatch(/^Already handled by Bob at /);
     expect(alarmsState()?.pending).toEqual([]);
+  });
+
+  it('two alarms acknowledged at once are both handled (mergeMap)', async () => {
+    ackReply = () => ({ status: 'accepted', value: null });
+    await emit(ICU_2);
+    await emit(ICU_3);
+    for (const b of el().querySelectorAll<HTMLButtonElement>('button.ack'))
+      b.click();
+    await advance(fixture, 300);
+    expect(
+      ofType(t.actions, '[Alarms API] Ack Accepted').map((a) => a['alarmId']),
+    ).toEqual([ICU_2.alarmId, ICU_3.alarmId]);
+    expect(alarmsState()?.pending).toEqual([]);
+  });
+
+  it('a lost attempt is sent again (commandRetry)', async () => {
+    let calls = 0;
+    ackReply = () => {
+      calls++;
+      if (calls === 1) throw new Error('lost on the way');
+      return { status: 'accepted', value: null };
+    };
+    await emit(ICU_2);
+    await click('button.ack');
+    await advance(fixture, 900);
+    expect(calls).toBe(2);
+    expect(ofType(t.actions, '[Alarms API] Ack Accepted')).toHaveLength(1);
+    expect(ofType(t.actions, '[Alarms API] Ack Rejected')).toEqual([]);
   });
 });

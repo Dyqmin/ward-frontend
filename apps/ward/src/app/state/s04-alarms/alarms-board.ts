@@ -36,7 +36,7 @@ import WardPicker from '../s02-ward/ward-picker';
 //   [feature] Create and export a const `alarmsFeature`: createFeature with the name 'alarms'
 //          and a reducer with three on() handlers, each returning a copy of the state with:
 //            - Refresh Clicked: `loading` true and `error` null (the old alarms stay);
-//            - Load Success: the `alarms` from the action, `loading` false;
+//            - Load Success: the `alarms` from the action, `loading` false, `error` null;
 //            - Load Failure: the `error` from the action, `loading` false.
 //          ../s02-ward/ward.feature.ts is your model.
 //   [routes] Add provideState with alarmsFeature to the providers.
@@ -102,7 +102,8 @@ import WardPicker from '../s02-ward/ward-picker';
 //   [feature] Event Received: `alarms` becomes withEvent(state.alarms, event) (ready-made in
 //          ./alarm-helpers: the newest event of an alarm replaces the older one).
 //   [feature] The alarms feature ALSO listens to WardPickerActions.wardSelected (import it from
-//          ../s02-ward/ward.actions): a new ward starts with no alarms and no error. One action,
+//          ../s02-ward/ward.actions): a new ward starts with no alarms, no error and not
+//          loading (S.6g stops a request that is still running for the old ward). One action,
 //          two reducers: that is how features react to each other in a Store.
 //   Check: click Refresh, then pick ER: the list empties, and `alarms.alarms` is [] in the
 //   inspector.
@@ -140,6 +141,15 @@ import WardPicker from '../s02-ward/ward-picker';
 //   Check: go to tab S.3, pick another ward, and raise a test alarm on a free bed of it: no
 //   "Event Received" arrives anymore. An effect lives as long as the app, not as long as the
 //   component: without takeUntil it would keep listening after the board is gone (Day 3, R.2–3).
+//
+//  S.6g · a late reply for the old ward
+//   Click Refresh on ICU and pick ER at once: the ICU reply still arrives, and ICU alarms end up
+//   in the ER list. The request must stop when the ward changes.
+//   [effects] In loadAlarms, pipe the request (inside exhaustMap, after the catchError) through
+//          takeUntil with actions$ piped through ofType(WardPickerActions.wardSelected) (import it
+//          from ../s02-ward/ward.actions).
+//   Check: Refresh on ICU and pick ER right away: the list stays empty and "Loading alarms…" goes
+//   away; no "[Alarms API] Load Success" arrives for ICU. Refresh on ER works as usual.
 //
 //  ---------- S.7 · A COMMAND, THEN AN EVENT ----------
 //  S.7a · the actions
@@ -191,14 +201,15 @@ import WardPicker from '../s02-ward/ward-picker';
 //   out of date. Load the list again after every reconnect.
 //   [actions] Create and export a const `BrokerActions`: the source 'Broker' and the event
 //          'Reconnected' (emptyProps()).
-//   [effects] Create and export a const `brokerReconnected`: a parameter `bus`; it returns
-//          toObservable(bus.connected) (from @angular/core/rxjs-interop) piped through skip(1)
-//          (the value at start is not a reconnect), filter(Boolean) and map to
-//          BrokerActions.reconnected().
+//   [effects] Create and export a const `brokerReconnected`: a function with one parameter,
+//          `reconnects$`, whose default value is reconnects() (ready-made in ./alarm-helpers: it
+//          emits every time the connection comes back, not at the first connect). It returns
+//          reconnects$ piped through map to BrokerActions.reconnected().
 //   [effects] In loadAlarms: add a parameter `store` (inject(Store)), and let ofType take
-//          BrokerActions.reconnected too. A Reconnected action has no ward, so take the ward
-//          from the store: after ofType, withLatestFrom(store.select(wardFeature.selectSelected)).
-//          exhaustMap now receives a pair [action, ward]: request the alarms of that ward.
+//          BrokerActions.reconnected too. A Reconnected action has no ward, so take the ward from
+//          the store: after ofType, withLatestFrom(store.select(wardFeature.selectSelected)).
+//          exhaustMap now receives a pair [action, ward]; only the ward is needed (you may leave
+//          the first place of the pair empty). Request the alarms of that ward.
 //   Check: "Simulate outage (12 s)". When it ends, the inspector shows "[Broker] Reconnected",
 //   then "[Alarms API] Load Success", and nobody clicked Refresh.
 //

@@ -1,9 +1,13 @@
 import {
   EnvironmentProviders,
+  Service,
+  inject,
   isDevMode,
   makeEnvironmentProviders,
+  provideEnvironmentInitializer,
+  signal,
 } from '@angular/core';
-import { provideStore } from '@ngrx/store';
+import { ActionsSubject, provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 
 /**
@@ -30,5 +34,37 @@ export function provideAppStore(): EnvironmentProviders {
       },
     ),
     provideStoreDevtools({ maxAge: 50, logOnly: !isDevMode() }),
+    // start recording at bootstrap, so the inspector also shows the actions from before it opened
+    provideEnvironmentInitializer(() => void inject(ActionLog)),
   ]);
+}
+
+export interface LoggedAction {
+  n: number;
+  type: string;
+  /** The action's data without its type, as JSON; '' when it carries none. */
+  payload: string;
+  /** NgRx's own bookkeeping, e.g. "@ngrx/store/update-reducers". */
+  internal: boolean;
+}
+
+/** The last actions dispatched since the app started, newest first. Read by the Store inspector. */
+@Service()
+export class ActionLog {
+  private count = 0;
+  private readonly _entries = signal<readonly LoggedAction[]>([]);
+  readonly entries = this._entries.asReadonly();
+
+  constructor() {
+    // a root service lives as long as the app, so this subscription needs no cleanup
+    inject(ActionsSubject).subscribe(({ type, ...data }) => {
+      const logged: LoggedAction = {
+        n: ++this.count,
+        type,
+        payload: Object.keys(data).length ? JSON.stringify(data) : '',
+        internal: type.startsWith('@ngrx/'),
+      };
+      this._entries.update((all) => [logged, ...all].slice(0, 12));
+    });
+  }
 }
