@@ -9,6 +9,8 @@ export const NurseStationActions = createActionGroup({
   source: 'Nurse Station',
   events: {
     'Refresh Clicked': props<{ ward: Ward }>(),
+    Opened: emptyProps(),
+    Closed: emptyProps(),
   },
 });
 
@@ -18,5 +20,13 @@ export const AlarmsApiActions = createActionGroup({
   events: {
     'Load Success': props<{ alarms: AlarmEvent[] }>(),
     'Load Failure': props<{ error: string }>(),
+  },
+});
+
+/** What the broker broadcast on the ward's alarm topic. */
+export const AlarmsTopicActions = createActionGroup({
+  source: 'Alarms Topic',
+  events: {
+    'Event Received': props<{ event: AlarmEvent }>(),
   },
 });

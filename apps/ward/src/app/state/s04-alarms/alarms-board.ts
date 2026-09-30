@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import WardPicker from '../s02-ward/ward-picker';
@@ -240,6 +240,14 @@ export default class AlarmsBoard {
     alarmsFeature.selectLoading,
   );
   protected readonly error = this.store.selectSignal(alarmsFeature.selectError);
+
+  constructor() {
+    // S.6c
+    this.store.dispatch(NurseStationActions.opened());
+    inject(DestroyRef).onDestroy(() =>
+      this.store.dispatch(NurseStationActions.closed()),
+    );
+  }
 
   protected refresh(): void {
     this.store.dispatch(
