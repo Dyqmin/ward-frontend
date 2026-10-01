@@ -1,0 +1,13 @@
+{
+  "name": "monitoring-ui",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/monitoring/ui/src",
+  "prefix": "wm",
+  "projectType": "library",
+  "tags": ["scope:monitoring", "type:ui"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

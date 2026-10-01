@@ -26,7 +26,7 @@ import {
   who,
 } from '@wm/shared/domain';
 import { AlarmsStore } from '@wm/monitoring/data-access';
-import { AlarmActions } from '../ui/alarm-actions/alarm-actions';
+import { AlarmActions } from '@wm/monitoring/ui';
 import { clock } from '@wm/shared/util-dates';
 import { MedicationList } from './components/medication-list/medication-list';
 import { VitalsChart } from './components/vitals-chart/vitals-chart';

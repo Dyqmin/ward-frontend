@@ -3,12 +3,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
 import { AlarmsStore, PatientsStore } from '@wm/monitoring/data-access';
+import { AlarmActions, alarmsByBed, BedTile } from '@wm/monitoring/ui';
 import { bedsOf, toSlug, WARDS } from '@wm/shared/domain';
 import { Card, EmptyState, PageHeader } from '@wm/shared/ui-design-system';
-
-import { AlarmActions } from '../ui/alarm-actions/alarm-actions';
-import { BedTile } from '../ui/bed-tile/bed-tile';
-import { alarmsByBed } from '../ui/format';
 
 /** The doctor's view of the same URL: escalations first, and the way into the medication wizard. */
 @Component({

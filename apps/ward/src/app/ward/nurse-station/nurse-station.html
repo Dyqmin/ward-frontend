@@ -31,7 +31,7 @@
     @if (urgentCount()) {
     <wm-badge cardAside tone="bad">{{ urgentCount() }} need action</wm-badge>
     } @for (a of alarms(); track a.event.alarmId) {
-    <app-alarm-actions [alarm]="a" />
+    <wm-alarm-actions [alarm]="a" />
     } @empty {
     <wm-empty-state message="No active alarms." />
     }
@@ -41,7 +41,7 @@
   <h2 class="ward-title">{{ w }}</h2>
   <div class="grid">
     @for (bed of bedsOf(w); track bed) {
-    <app-bed-tile [bed]="bed" />
+    <wm-bed-tile [bed]="bed" />
     }
   </div>
   }

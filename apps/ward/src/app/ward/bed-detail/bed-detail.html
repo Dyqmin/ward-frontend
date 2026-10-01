@@ -49,7 +49,7 @@
       <section class="card stack">
         <h2>Alarms</h2>
         @for (a of alarms(); track a.event.alarmId) {
-        <app-alarm-actions [alarm]="a" />
+        <wm-alarm-actions [alarm]="a" />
         } @empty {
         <p class="muted">No active alarms for this bed.</p>
         }

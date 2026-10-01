@@ -42,3 +42,11 @@ The answers to the questions at the end of each step. Compare them with yours af
 1. Only `ward`: the app is the only project that uses the stores so far.
 2. No. Who lies in which bed is not about monitoring vitals and alarms: the medication wizard
    needs it too. It came along because it was in the same folder. D5.9 gives it its own scope.
+
+## D5.4 · The ward's ui folder becomes a library
+
+1. No. `bed-tile` is presentational. `format.ts` holds the ward's alarm rules and imports a
+   type, `AlarmView`, from data-access. `alarm-actions.ts` injects `MessageBus`, `AuthStore` and
+   `Toasts` and sends commands: it is a container. The folder name said `ui`; the code did not.
+2. Rules: tags on the projects, and a constraint saying that a `type:ui` project may not import
+   a `type:data-access` one. That is D5.5.

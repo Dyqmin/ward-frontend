@@ -8,7 +8,7 @@ import { type BedId, toSlug } from '@wm/shared/domain';
  * Styles are ready in bed-tile.scss (.tile, header, .name, .vitals, footer, .alarm, .stale, .empty).
  */
 @Component({
-  selector: 'app-bed-tile',
+  selector: 'wm-bed-tile',
   imports: [RouterLink],
   templateUrl: './bed-tile.html',
   styleUrl: './bed-tile.scss',

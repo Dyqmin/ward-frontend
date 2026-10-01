@@ -17,7 +17,7 @@ import { clock } from '@wm/shared/util-dates';
 import { alarmStatus, alarmTitle, isUrgent } from '../format';
 
 @Component({
-  selector: 'app-alarm-actions',
+  selector: 'wm-alarm-actions',
   templateUrl: './alarm-actions.html',
   styleUrl: './alarm-actions.scss',
 })

@@ -3,7 +3,7 @@
 
   <wm-card class="escalations" heading="Escalated to doctor">
     @for (a of escalated(); track a.event.alarmId) {
-    <app-alarm-actions [alarm]="a" />
+    <wm-alarm-actions [alarm]="a" />
     } @empty {
     <wm-empty-state
       message="Nothing escalated. Nurses acknowledge alarms within 20 s, or they come here."
@@ -16,7 +16,7 @@
   <div class="grid">
     @for (bed of bedsOf(w); track bed) { @let patient = patients.patient(bed);
     <div class="slot">
-      <app-bed-tile [bed]="bed" />
+      <wm-bed-tile [bed]="bed" />
       @if (patient) {
       <a class="button small" [routerLink]="['/ward', slug(bed), 'meds', 'new']"
         >Order medication</a

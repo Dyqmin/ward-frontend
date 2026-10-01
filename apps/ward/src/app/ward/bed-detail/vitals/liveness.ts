@@ -1,9 +1,9 @@
 import { computed, inject, type Signal } from '@angular/core';
 
+import { STALE_AFTER_SEC } from '@wm/monitoring/ui';
 import { MessageBus } from '@wm/shared/data-access-messaging';
 
 import { Clock } from '../../../core/clock';
-import { STALE_AFTER_SEC } from '../../ui/format';
 
 /**
  * How old the newest frame is, and whether it is stale. Call it in an injection context
