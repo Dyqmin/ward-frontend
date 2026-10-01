@@ -1,0 +1,13 @@
+{
+  "name": "monitoring-domain",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/monitoring/domain/src",
+  "prefix": "wm",
+  "projectType": "library",
+  "tags": ["scope:monitoring", "type:domain"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

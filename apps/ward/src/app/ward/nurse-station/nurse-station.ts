@@ -3,12 +3,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
 import { AlarmsStore, PatientsStore } from '@wm/monitoring/data-access';
-import {
-  AlarmActions,
-  alarmsByBed,
-  BedTile,
-  isUrgent,
-} from '@wm/monitoring/ui';
+import { alarmsByBed, isUrgent } from '@wm/monitoring/domain';
+import { AlarmActions, BedTile } from '@wm/monitoring/ui';
 import { bedsOf, isWardName, type Ward, WARDS } from '@wm/shared/domain';
 import {
   Badge,

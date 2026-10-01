@@ -1,6 +1,6 @@
 import { computed, inject, type Signal } from '@angular/core';
 
-import { STALE_AFTER_SEC } from '@wm/monitoring/ui';
+import { STALE_AFTER_SEC } from '@wm/monitoring/domain';
 import { MessageBus } from '@wm/shared/data-access-messaging';
 
 import { Clock } from '../../../core/clock';

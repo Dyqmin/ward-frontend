@@ -1,4 +1,3 @@
-import type { AlarmView } from '@wm/monitoring/data-access';
 import {
   type AlarmCode,
   assertNever,
@@ -6,6 +5,8 @@ import {
   who,
 } from '@wm/shared/domain';
 import { clock } from '@wm/shared/util-dates';
+
+import type { AlarmView } from './alarm-view';
 
 /** Frames normally arrive every second; older than this and a card must say the data is stale. */
 export const STALE_AFTER_SEC = 3;

@@ -35,7 +35,8 @@
       "@wm/monitoring/data-access": [
         "./libs/monitoring/data-access/src/index.ts"
       ],
-      "@wm/monitoring/ui": ["./libs/monitoring/ui/src/index.ts"]
+      "@wm/monitoring/ui": ["./libs/monitoring/ui/src/index.ts"],
+      "@wm/monitoring/domain": ["./libs/monitoring/domain/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

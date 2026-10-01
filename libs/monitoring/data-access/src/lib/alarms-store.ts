@@ -16,37 +16,14 @@ import {
   switchMap,
 } from 'rxjs';
 
+import {
+  type AlarmState,
+  type AlarmView,
+  reduceAlarms,
+} from '@wm/monitoring/domain';
 import { Logger } from '@wm/shared/data-access-logging';
 import { MessageBus } from '@wm/shared/data-access-messaging';
-import {
-  type AlarmCode,
-  type AlarmEvent,
-  type AlarmId,
-  type Ward,
-  WARDS,
-} from '@wm/shared/domain';
-
-/** The latest event of an alarm, plus what only its `raised` event carried. */
-export interface AlarmView {
-  event: AlarmEvent;
-  code: AlarmCode | null;
-  value: number | null;
-}
-
-type AlarmState = ReadonlyMap<AlarmId, AlarmView>;
-
-/** The newest event per alarmId wins; code and value survive from the last `raised` event. */
-export function reduceAlarms(state: AlarmState, e: AlarmEvent): AlarmState {
-  const prev = state.get(e.alarmId);
-  const next = new Map(state);
-  next.set(
-    e.alarmId,
-    e.status === 'raised'
-      ? { event: e, code: e.code, value: e.value }
-      : { event: e, code: prev?.code ?? null, value: prev?.value ?? null },
-  );
-  return next;
-}
+import { type Ward, WARDS } from '@wm/shared/domain';
 
 /** Endings are silent unless the instructor enables emitResolved, so the snapshot is re-fetched this often. */
 export const ALARM_RESYNC_MS = 30_000;

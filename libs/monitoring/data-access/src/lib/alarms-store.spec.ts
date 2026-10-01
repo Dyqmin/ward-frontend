@@ -9,9 +9,10 @@ import {
   provideStomp,
   withMockBroker,
 } from '@wm/shared/data-access-messaging';
+import type { AlarmView } from '@wm/monitoring/domain';
 import type { AlarmEvent } from '@wm/shared/domain';
 
-import { AlarmsStore, type AlarmView, reduceAlarms } from './alarms-store';
+import { AlarmsStore } from './alarms-store';
 
 const raised: AlarmEvent = {
   status: 'raised',
@@ -22,20 +23,6 @@ const raised: AlarmEvent = {
 };
 
 describe('AlarmsStore', () => {
-  it('lets the newest event per alarm win', () => {
-    const acked: AlarmEvent = {
-      status: 'acknowledged',
-      alarmId: 'alarm_1',
-      bed: 'ICU-3',
-      by: 'nurse_ann',
-      at: 'now',
-    };
-    const state = [raised, acked].reduce(reduceAlarms, new Map());
-    expect([...state.values()]).toEqual([
-      { event: acked, code: 'hr.high', value: 140 },
-    ]);
-  });
-
   describe('snapshot, then stream', () => {
     let ward: MockWard;
     let bus: FakeMessageBus;

@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import type { AlarmView } from '@wm/monitoring/data-access';
+import type { AlarmView } from '@wm/monitoring/domain';
 import type { VitalsFrame } from '@wm/shared/domain';
 
 import { VitalsPanel } from './vitals-panel';

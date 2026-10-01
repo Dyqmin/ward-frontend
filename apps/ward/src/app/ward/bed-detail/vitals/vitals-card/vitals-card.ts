@@ -11,7 +11,7 @@ import {
 import { rxResource } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 
-import type { AlarmView } from '@wm/monitoring/data-access';
+import type { AlarmView } from '@wm/monitoring/domain';
 import { MessageBus } from '@wm/shared/data-access-messaging';
 import { Toasts } from '@wm/shared/data-access-toasts';
 import type { BedId, VitalsFrame } from '@wm/shared/domain';

@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { type OutputRef, reflectComponentType } from '@angular/core';
 import { type ComponentFixture, TestBed } from '@angular/core/testing';
 
-import type { AlarmView } from '@wm/monitoring/data-access';
+import type { AlarmView } from '@wm/monitoring/domain';
 import { AuthStore } from '@wm/shared/data-access-auth';
 import {
   FakeMessageBus,

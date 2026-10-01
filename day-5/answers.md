@@ -70,3 +70,13 @@ The 5 errors, all in `monitoring-ui`:
 3. Its own imports would not be checked at all: no rule names it. And every tagged project that
    imported it would fail, because it has none of the tags they may import. That is why the
    generator adds the tags.
+
+## D5.6 · A domain library
+
+1. The rule is not about one file. Once `type:ui` may import `type:data-access`, every
+   presentational component may inject stores and the broker: they would need providers in
+   every test, and could no longer be used without the ward's data layer. The boundary would be
+   gone for everyone.
+2. No. `alarm-actions.ts` does not need a type from data-access, it needs to **act**: send
+   commands with `MessageBus`, read the role from `AuthStore`, show `Toasts`. It is a container,
+   so it must be split (D5.7).
