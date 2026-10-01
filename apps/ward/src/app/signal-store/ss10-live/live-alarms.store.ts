@@ -38,6 +38,7 @@ export const LiveAlarmsStore = signalStore(
   withState(initialState),
   withProps(() => ({
     _bus: inject(MessageBus), // SS.10a
+    _toasts: inject(Toasts), // SS.12a
   })),
   withMethods((store) => ({
     // SS.10b
@@ -55,6 +56,15 @@ export const LiveAlarmsStore = signalStore(
           ? state.alarms.map((a) => (a.alarmId === event.alarmId ? event : a))
           : [...state.alarms, event],
       }));
+    },
+    // SS.12a
+    async acknowledge(alarmId: AlarmId): Promise<void> {
+      const result = await firstValueFrom(
+        store._bus.send('/app/alarms.ack', { alarmId }),
+      );
+      if (result.status !== 'accepted') {
+        store._toasts.show(`Not acknowledged: ${result.status}`, 'warn');
+      }
     },
   })),
   // SS.11b · a second withMethods: it sees apply() from the block above

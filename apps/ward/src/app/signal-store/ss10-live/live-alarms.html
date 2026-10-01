@@ -37,8 +37,13 @@
     <span class="spacer"></span>
     <span class="chip status">{{ a.status }}</span>
     @if (a.status === 'raised' || a.status === 'escalated') {
-    <!-- SS.12b · on click, call store.acknowledge(a.alarmId) -->
-    <button type="button" class="small ack">Acknowledge</button>
+    <button
+      type="button"
+      class="small ack"
+      (click)="store.acknowledge(a.alarmId)"
+    >
+      Acknowledge
+    </button>
     }
   </li>
   } @empty {
