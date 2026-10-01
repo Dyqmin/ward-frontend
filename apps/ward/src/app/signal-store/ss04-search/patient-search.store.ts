@@ -48,11 +48,24 @@ export const PatientSearchStore = signalStore(
       patchState(store, { term });
     },
   })),
-  // SS.5b · a second withMethods: it sees load() from the block above
   withMethods((store) => ({
-    followTerm: signalMethod<string>((term) => {
-      void store.load(term);
-    }),
+    // SS.5b was: signalMethod<string>((term) => { void store.load(term); })
+    // SS.6
+    followTerm: rxMethod<string>(
+      pipe(
+        debounceTime(300),
+        tap(() => patchState(store, { loading: true })),
+        switchMap((term) =>
+          store._directory.search$(term).pipe(
+            tapResponse({
+              next: (patients) =>
+                patchState(store, { patients, loading: false }),
+              error: () => patchState(store, { loading: false }),
+            }),
+          ),
+        ),
+      ),
+    ),
   })),
   withHooks({
     onInit(store) {
