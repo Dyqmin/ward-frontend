@@ -294,6 +294,18 @@ export function createWardFixtures(ward = new MockWard()) {
       // ---------- queries ----------
       '/app/patients.get': ({ bed }) => ward.patients.get(bed) ?? null,
 
+      '/app/patients.search': ({ term, sort }) => {
+        const needle = term.trim().toLowerCase();
+        const alarms = [...ward.alarms.values()];
+        return [...ward.patients.values()]
+          .filter((p) => p.name.toLowerCase().includes(needle))
+          .map((p) => ({
+            ...p,
+            openAlarms: alarms.filter((a) => a.bed === p.bed).length,
+          }))
+          .sort((a, b) => a[sort].localeCompare(b[sort]));
+      },
+
       '/app/vitals.history': ({ bed, minutes }) => {
         const now = Math.floor(Date.now() / 1000);
         const frames: VitalsFrame[] = [];
