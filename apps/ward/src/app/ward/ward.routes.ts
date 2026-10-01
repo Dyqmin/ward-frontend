@@ -1,12 +1,13 @@
 import {
   ActivatedRouteSnapshot,
+  nonBlocking,
   ResolveFn,
   Routes,
-  nonBlocking,
 } from '@angular/router';
 
-import { hasRole } from '@core/auth/guards';
-import { bedFromSlug } from '@core/messaging/contract';
+import { hasRole } from '@wm/shared/data-access-auth';
+import { bedFromSlug } from '@wm/shared/domain';
+
 import {
   manualReadingsResource,
   medicationResource,
@@ -45,25 +46,26 @@ export default [
     canActivate: [validBed],
     canDeactivate: [unsavedDraftGuard],
     providers: [MedOrderDraftStore], // a route injector: created on entry, destroyed on exit
-    loadComponent: () => import('./med-order/med-order-wizard'), // header + stepper + <router-outlet>
+    loadComponent: () =>
+      import('./med-order/med-order-wizard/med-order-wizard'), // header + stepper + <router-outlet>
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'patient' },
       {
         path: 'patient',
         title: 'Pick patient',
-        loadComponent: () => import('./med-order/patient-step'),
+        loadComponent: () => import('./med-order/patient-step/patient-step'),
       },
       {
         path: 'drug',
         title: 'Drug and dose',
         canActivate: [stepCompleted('patient')],
-        loadComponent: () => import('./med-order/drug-step'),
+        loadComponent: () => import('./med-order/drug-step/drug-step'),
       },
       {
         path: 'review',
         title: 'Review',
         canActivate: [stepCompleted('drug')],
-        loadComponent: () => import('./med-order/review-step'),
+        loadComponent: () => import('./med-order/review-step/review-step'),
       },
     ],
   },

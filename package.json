@@ -16,15 +16,14 @@
     "@angular/forms": "~22.2.0",
     "@angular/platform-browser": "~22.2.0",
     "@angular/router": "~22.2.0",
-    "@ngrx/effects": "~22.0.1",
-    "@ngrx/store": "~22.0.1",
-    "@ngrx/store-devtools": "~22.0.1",
     "@stomp/rx-stomp": "^2.4.0",
     "@stomp/stompjs": "^7.3.0",
     "ngx-skeleton-loader": "^13.0.0",
     "rxjs": "~7.8.0"
   },
   "devDependencies": {
+    "@analogjs/vite-plugin-angular": "~2.7.5",
+    "@analogjs/vitest-angular": "~2.7.5",
     "@angular-devkit/architect": "~0.2202.0",
     "@angular-devkit/core": "~22.2.0",
     "@angular-devkit/schematics": "~22.2.0",
@@ -37,11 +36,17 @@
     "@nx/eslint": "23.2.1",
     "@nx/eslint-plugin": "23.2.1",
     "@nx/js": "23.2.1",
+    "@nx/vite": "23.2.1",
+    "@nx/vitest": "23.2.1",
     "@nx/web": "23.2.1",
     "@nx/workspace": "23.2.1",
+    "@oxc-project/runtime": "^0.115.0",
     "@schematics/angular": "~22.2.0",
     "@swc/helpers": "~0.5.18",
+    "@types/node": "^22.0.0",
     "@typescript-eslint/utils": "^8.58.0",
+    "@vitest/coverage-v8": "~4.1.0",
+    "@vitest/ui": "~4.1.0",
     "angular-eslint": "^22.1.0",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
@@ -51,6 +56,7 @@
     "tslib": "^2.3.0",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.58.0",
+    "vite": "^8.0.0",
     "vitest": "^4.0.8"
   }
 }

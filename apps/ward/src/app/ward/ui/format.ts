@@ -1,9 +1,11 @@
 import {
-  assertNever,
   type AlarmCode,
+  assertNever,
   type BedId,
-  type ParticipantId,
-} from '@core/messaging/contract';
+  who,
+} from '@wm/shared/domain';
+import { clock } from '@wm/shared/util-dates';
+
 import type { AlarmView } from '../data/alarms-store';
 
 /** Frames normally arrive every second; older than this and a card must say the data is stale. */
@@ -16,27 +18,6 @@ export const ALARM_LABELS: Record<AlarmCode, string> = {
   'rr.high': 'RR high',
   'rr.low': 'RR low',
 };
-
-/** 'nurse_ann_x7k2' → 'Ann' */
-export function who(id: ParticipantId | string): string {
-  const slug = id
-    .replace(/^(nurse|dr)_/, '')
-    .replace(/_[a-z0-9]{4}$/, '')
-    .replace(/_mock$|_seed$/, '');
-  const name = slug.replace(/_/g, ' ');
-  return (
-    (id.startsWith('dr_') ? 'Dr ' : '') +
-    name.charAt(0).toUpperCase() +
-    name.slice(1)
-  );
-}
-
-export const clock = (iso: string): string =>
-  new Date(iso).toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
 
 export function alarmTitle(a: AlarmView): string {
   const label = a.code ? ALARM_LABELS[a.code] : 'Alarm';

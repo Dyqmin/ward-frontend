@@ -12,19 +12,19 @@ import {
   toSignal,
 } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
-import { EMPTY, Subject, map, of, switchMap, throttleTime } from 'rxjs';
+import { EMPTY, map, of, Subject, switchMap, throttleTime } from 'rxjs';
 
-import { AuthStore } from '@core/auth/auth-store';
+import { AuthStore, STOMP_MODE } from '@wm/shared/data-access-auth';
+import { MessageBus } from '@wm/shared/data-access-messaging';
 import {
   ALL_BEDS,
-  MessageBus,
   bedFromSlug,
+  type BedId,
   isOutOfRange,
   toSlug,
-  type BedId,
-} from '@core/messaging/contract';
-import { STOMP_MODE } from '@core/messaging/stomp-mode';
-import { ConnectionBadge } from '@core/ui/connection-badge';
+} from '@wm/shared/domain';
+
+import { ConnectionBadge } from '../core/ui/connection-badge/connection-badge';
 
 /**
  * The room game: a participant's phone becomes the bedside monitor of one bed. The instructor

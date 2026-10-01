@@ -2,8 +2,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { AuthStore } from '@core/auth/auth-store';
-import { provideStomp, withMockBroker } from '@core/messaging/provide-stomp';
+import { AuthStore } from '@wm/shared/data-access-auth';
+import { provideStomp, withMockBroker } from '@wm/shared/data-access-messaging';
+
 import { App } from './app';
 
 describe('App', () => {

@@ -1,45 +1,24 @@
 import { Routes } from '@angular/router';
 
-import { authGuard } from '@core/auth/guards';
+import { authGuard } from '@wm/shared/data-access-auth';
 
 // Default exports everywhere: loadComponent/loadChildren need no `.then()`.
 export const routes: Routes = [
   {
     path: 'login',
     title: 'Sign in',
-    loadComponent: () => import('./auth/login'),
+    loadComponent: () => import('./auth/login/login'),
   },
   {
     path: 'forbidden',
     title: 'Not for your role',
-    loadComponent: () => import('./auth/forbidden'),
+    loadComponent: () => import('./auth/forbidden/forbidden'),
   },
   {
     path: 'ward',
     canMatch: [authGuard],
     loadChildren: () => import('./ward/ward.routes'),
     data: { preload: true },
-  },
-  // Day 2, exercise 0: the signals warm-up on fixed data
-  {
-    path: 'warmup',
-    title: 'Signals warm-up',
-    canMatch: [authGuard],
-    loadComponent: () => import('./warmup/warmup'),
-  },
-  // Day 3: observables and RxJS, one tab per exercise
-  {
-    path: 'streams',
-    title: 'Streams',
-    canMatch: [authGuard],
-    loadChildren: () => import('./streams/streams.routes'),
-  },
-  // Day 4: the NgRx global Store, one tab per exercise
-  {
-    path: 'state',
-    title: 'State',
-    canMatch: [authGuard],
-    loadChildren: () => import('./state/state.routes'),
   },
   {
     path: 'reports',

@@ -6,9 +6,10 @@ import {
   Router,
 } from '@angular/router';
 
-import { link } from '@core/messaging/contract';
+import { link } from '@wm/shared/domain';
+
 import { MedOrderDraftStore } from './med-order-draft-store';
-import type MedOrderWizard from './med-order-wizard';
+import type MedOrderWizard from './med-order-wizard/med-order-wizard';
 
 /** A step opens only when the previous one is done; otherwise back to that step. */
 export const stepCompleted =

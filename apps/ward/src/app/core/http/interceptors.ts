@@ -8,9 +8,8 @@ import {
   HttpRequest,
   HttpResponse,
 } from '@angular/common/http';
-import { LOCALE_ID, inject } from '@angular/core';
+import { inject, LOCALE_ID } from '@angular/core';
 import {
-  Observable,
   catchError,
   concat,
   filter,
@@ -18,6 +17,7 @@ import {
   interval,
   map,
   mergeMap,
+  Observable,
   retry,
   switchMap,
   take,
@@ -26,9 +26,8 @@ import {
   timer,
 } from 'rxjs';
 
-import { AuthStore } from '../auth/auth-store';
-import { Logger } from '../logger';
-import { STOMP_MODE } from '../messaging/stomp-mode';
+import { AuthStore, STOMP_MODE } from '@wm/shared/data-access-auth';
+import { Logger } from '@wm/shared/data-access-logging';
 
 const isReportRequest = (req: HttpRequest<unknown>) =>
   req.url.includes('/api/reports/');

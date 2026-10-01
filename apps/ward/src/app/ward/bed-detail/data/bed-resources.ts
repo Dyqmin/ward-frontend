@@ -3,7 +3,9 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { RedirectCommand, ResourceContext, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
-import { MessageBus, bedFromSlug } from '@core/messaging/contract';
+import { MessageBus } from '@wm/shared/data-access-messaging';
+import { bedFromSlug } from '@wm/shared/domain';
+
 import { snapshotThenStream } from './snapshot-then-stream';
 
 /** The bed from the URL. `validBed` already ran, so null only happens mid-navigation. */

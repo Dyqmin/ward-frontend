@@ -1,0 +1,7 @@
+@if (heading()) {
+<header>
+  <h2>{{ heading() }}</h2>
+  <ng-content select="[cardAside]" />
+</header>
+}
+<ng-content />

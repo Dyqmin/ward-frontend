@@ -1,10 +1,10 @@
 import { Component, computed, input, signal } from '@angular/core';
 
 import {
-  THRESHOLDS,
   type StreamedVital,
+  THRESHOLDS,
   type VitalsFrame,
-} from '@core/messaging/contract';
+} from '@wm/shared/domain';
 
 interface Panel {
   vital: StreamedVital;

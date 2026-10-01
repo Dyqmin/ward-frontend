@@ -1,7 +1,5 @@
 <section class="page">
-  <header class="row head">
-    <h1>Nurse station</h1>
-    <span class="spacer"></span>
+  <app-page-header heading="Nurse station">
     <nav class="row" aria-label="Ward filter">
       <a class="button small" routerLink="/ward" [class.primary]="!selected()"
         >All wards</a
@@ -16,7 +14,7 @@
       >
       }
     </nav>
-  </header>
+  </app-page-header>
 
   @if (empty(); as bed) {
   <p class="card notice">
@@ -24,22 +22,20 @@
   </p>
   }
 
-  <section
-    class="alarms card"
-    [class.hot]="urgentCount() > 0"
+  <app-card
+    class="alarms"
+    heading="Active alarms"
+    [tone]="urgentCount() > 0 ? 'alert' : 'neutral'"
     aria-live="polite"
   >
-    <h2>
-      Active alarms @if (urgentCount()) {
-      <span class="chip bad">{{ urgentCount() }} need action</span>
-      }
-    </h2>
-    @for (a of alarms(); track a.event.alarmId) {
+    @if (urgentCount()) {
+    <app-badge cardAside tone="bad">{{ urgentCount() }} need action</app-badge>
+    } @for (a of alarms(); track a.event.alarmId) {
     <app-alarm-actions [alarm]="a" />
     } @empty {
-    <p class="muted">No active alarms.</p>
+    <app-empty-state message="No active alarms." />
     }
-  </section>
+  </app-card>
 
   @for (w of visibleWards(); track w) {
   <h2 class="ward-title">{{ w }}</h2>

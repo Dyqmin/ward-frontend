@@ -1,0 +1,23 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.1rem 0.6rem;
+  border: 1px solid var(--border, #d0d7de);
+  border-radius: 999px;
+  background: var(--card-2, #f6f8fa);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+:host([data-tone='ok']) {
+  border-color: var(--ok, #1a7f37);
+}
+
+:host([data-tone='warn']) {
+  border-color: var(--warn, #9a6700);
+}
+
+:host([data-tone='bad']) {
+  border-color: var(--bad, #cf222e);
+}

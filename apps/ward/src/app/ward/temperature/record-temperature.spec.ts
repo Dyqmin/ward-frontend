@@ -2,12 +2,16 @@ import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
 
-import { AuthStore } from '@core/auth/auth-store';
-import { commandRetry } from '@core/messaging/command-retry';
-import { MessageBus } from '@core/messaging/contract';
-import { FakeMessageBus } from '@core/messaging/fake-message-bus';
-import { provideStomp, withMockBroker } from '@core/messaging/provide-stomp';
-import { createWardFixtures, MockWard } from '../../testing/ward-fixtures';
+import { AuthStore } from '@wm/shared/data-access-auth';
+import {
+  commandRetry,
+  createWardFixtures,
+  FakeMessageBus,
+  MessageBus,
+  MockWard,
+  provideStomp,
+  withMockBroker,
+} from '@wm/shared/data-access-messaging';
 
 describe('lab: record a temperature', () => {
   let ward: MockWard;

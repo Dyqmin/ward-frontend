@@ -10,11 +10,26 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": ["es2023", "dom", "dom.iterable"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "strict": false,
-    "paths": {}
+    "paths": {
+      "@wm/shared/domain": ["./libs/shared/domain/src/index.ts"],
+      "@wm/shared/util-dates": ["./libs/shared/util-dates/src/index.ts"],
+      "@wm/shared/data-access-logging": [
+        "./libs/shared/data-access-logging/src/index.ts"
+      ],
+      "@wm/shared/data-access-toasts": [
+        "./libs/shared/data-access-toasts/src/index.ts"
+      ],
+      "@wm/shared/data-access-auth": [
+        "./libs/shared/data-access-auth/src/index.ts"
+      ],
+      "@wm/shared/data-access-messaging": [
+        "./libs/shared/data-access-messaging/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

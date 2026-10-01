@@ -1,11 +1,12 @@
 import { computed, inject, type Signal } from '@angular/core';
 
-import { Clock } from '@core/clock';
-import { MessageBus } from '@core/messaging/contract';
+import { MessageBus } from '@wm/shared/data-access-messaging';
+
+import { Clock } from '../../../core/clock';
 import { STALE_AFTER_SEC } from '../../ui/format';
 
 /**
- * 3.3 · How old the newest frame is, and whether it is stale. Call it in an injection context
+ * How old the newest frame is, and whether it is stale. Call it in an injection context
  * (a field initializer): it injects Clock and MessageBus itself.
  */
 export function liveness(lastAt: Signal<number | undefined>): {

@@ -12,9 +12,10 @@ import {
   Routes,
 } from '@angular/router';
 
-import { auditInterceptor } from '@core/http/interceptors';
-import { Reports, isReportKind } from '@core/http/reports';
-import { bedFromSlug } from '@core/messaging/contract';
+import { bedFromSlug } from '@wm/shared/domain';
+
+import { auditInterceptor } from '../core/http/interceptors';
+import { isReportKind, Reports } from '../core/http/reports';
 
 const validReport: CanActivateFn = (route) =>
   (isReportKind(route.params['kind'] ?? '') &&

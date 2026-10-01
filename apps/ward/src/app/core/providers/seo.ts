@@ -1,9 +1,9 @@
 import {
   EnvironmentProviders,
-  InjectionToken,
-  Service,
   inject,
+  InjectionToken,
   makeEnvironmentProviders,
+  Service,
 } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';

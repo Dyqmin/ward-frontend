@@ -6,7 +6,7 @@ import {
   Router,
 } from '@angular/router';
 
-import { bedFromSlug } from '@core/messaging/contract';
+import { bedFromSlug } from '@wm/shared/domain';
 
 /** Yesterday's `bedFromSlug` at the URL boundary: 'icu-3' → 'ICU-3' ✅, 'icu-9' → null → back to /ward. */
 export const validBed: CanActivateFn = (route) =>

@@ -10,12 +10,7 @@
     "target": "es2022",
     "lib": ["es2023", "dom", "dom.iterable"],
     "emitDecoratorMetadata": false,
-    "module": "preserve",
-    "paths": {
-      "@core/*": ["./src/app/core/*"],
-      "@shared/*": ["./src/app/shared/*"],
-      "@env": ["./src/environments/environment.ts"]
-    }
+    "module": "preserve"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

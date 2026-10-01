@@ -1,9 +1,9 @@
 import {
   Component,
-  Resource,
   computed,
   inject,
   input,
+  Resource,
   signal,
 } from '@angular/core';
 
@@ -14,19 +14,20 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs';
 
-import { AuthStore } from '@core/auth/auth-store';
+import { AuthStore } from '@wm/shared/data-access-auth';
 import {
   bedFromSlug,
-  toSlug,
-  wardOf,
   type ManualReading,
   type MedOrder,
   type RpcResult,
+  toSlug,
   type VitalsFrame,
-} from '@core/messaging/contract';
+  wardOf,
+  who,
+} from '@wm/shared/domain';
 import { AlarmsStore } from '../data/alarms-store';
-import { AlarmActions } from '../ui/alarm-actions';
-import { clock, who } from '../ui/format';
+import { AlarmActions } from '../ui/alarm-actions/alarm-actions';
+import { clock } from '@wm/shared/util-dates';
 import { MedicationList } from './components/medication-list/medication-list';
 import { VitalsChart } from './components/vitals-chart/vitals-chart';
 import { VitalsCard } from './vitals/vitals-card/vitals-card';
@@ -56,7 +57,7 @@ export default class BedDetail {
   private readonly auth = inject(AuthStore);
   private readonly alarmsStore = inject(AlarmsStore);
 
-  /** 2.3: the bed screen owns "paused"; 2.4 binds it two-way. */
+  /** The bed screen owns "paused"; the vitals card binds it two-way. */
   protected readonly paused = signal(false);
   protected readonly role = this.auth.role;
   protected readonly clock = clock;

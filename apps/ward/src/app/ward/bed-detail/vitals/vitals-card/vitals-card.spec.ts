@@ -1,12 +1,16 @@
 import { provideHttpClient } from '@angular/common/http';
-import { reflectComponentType, type OutputRef } from '@angular/core';
-import { TestBed, type ComponentFixture } from '@angular/core/testing';
+import { type OutputRef, reflectComponentType } from '@angular/core';
+import { type ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AuthStore } from '@core/auth/auth-store';
-import { MessageBus } from '@core/messaging/contract';
-import { FakeMessageBus } from '@core/messaging/fake-message-bus';
-import { provideStomp, withMockBroker } from '@core/messaging/provide-stomp';
-import { Toasts } from '@core/ui/toasts';
+import { AuthStore } from '@wm/shared/data-access-auth';
+import {
+  FakeMessageBus,
+  MessageBus,
+  provideStomp,
+  withMockBroker,
+} from '@wm/shared/data-access-messaging';
+import { Toasts } from '@wm/shared/data-access-toasts';
+
 import type { AlarmView } from '../../../data/alarms-store';
 import { VitalsCard } from './vitals-card';
 
@@ -73,7 +77,7 @@ beforeEach(async () => {
 
 afterEach(() => vi.useRealTimers());
 
-describe('Exercise 1.1: live data', () => {
+describe('live data', () => {
   it('shows a skeleton until the first frame', () => {
     expect(el.querySelector('ngx-skeleton-loader')).not.toBeNull();
   });
@@ -85,7 +89,7 @@ describe('Exercise 1.1: live data', () => {
   });
 });
 
-describe('Exercise 1.3: stale or live', () => {
+describe('stale or live', () => {
   it('says "live" while frames arrive', async () => {
     await advance(1500);
     expect(chips()).toContain('live');
@@ -118,7 +122,7 @@ describe('Exercise 1.4a + 1.4b: pause', () => {
   });
 });
 
-describe('Exercise 1.5: stale toast', () => {
+describe('stale toast', () => {
   it('shows exactly one warning per outage', async () => {
     await advance(1500);
     const toasts0 = TestBed.inject(Toasts).items().length;
@@ -133,7 +137,7 @@ describe('Exercise 1.5: stale toast', () => {
   });
 });
 
-describe('Exercise 2.2: readings and alarms', () => {
+describe('readings and alarms', () => {
   it('shows the three values as <app-vital-reading>', async () => {
     await advance(1500);
     const readings = el.querySelectorAll('app-vital-reading');
@@ -156,7 +160,7 @@ describe('Exercise 2.2: readings and alarms', () => {
   });
 });
 
-describe('Exercise 2.3: pause, owned by the parent', () => {
+describe('pause, owned by the parent', () => {
   it('emits pausedChange(true) when Pause is clicked', async () => {
     const events: boolean[] = [];
     onOutput<boolean>('pausedChange', (v) => events.push(v));
@@ -166,7 +170,7 @@ describe('Exercise 2.3: pause, owned by the parent', () => {
   });
 });
 
-describe('Exercise 2.4: pause, two-way', () => {
+describe('pause, two-way', () => {
   it('accepts paused from the parent', async () => {
     fixture.componentRef.setInput('paused', true);
     await advance(1500);
@@ -181,7 +185,7 @@ describe('Exercise 2.4: pause, two-way', () => {
   });
 });
 
-describe('Exercise 2.5: full screen', () => {
+describe('full screen', () => {
   it('asks the card\'s own <section class="card vitals"> to go full screen', async () => {
     const calls: Element[] = [];
     const original = HTMLElement.prototype.requestFullscreen;

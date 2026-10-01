@@ -2,16 +2,16 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
+import { commandRetry, MessageBus } from '@wm/shared/data-access-messaging';
+import { Toasts } from '@wm/shared/data-access-toasts';
 import {
-  MessageBus,
   assertNever,
   link,
-  toSlug,
   type RpcResult,
-} from '@core/messaging/contract';
-import { Toasts } from '@core/ui/toasts';
-import { commandRetry } from '@core/messaging/command-retry';
-import { clock, who } from '../ui/format';
+  toSlug,
+  who,
+} from '@wm/shared/domain';
+import { clock } from '@wm/shared/util-dates';
 
 @Component({
   selector: 'app-temperature-form',
