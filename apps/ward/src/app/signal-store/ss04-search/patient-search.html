@@ -1,18 +1,21 @@
 <h2>SS.4–6 · Lab 2: search patients</h2>
 <p class="row">
   <span class="chip requests">Requests sent: {{ directory.requests() }}</span>
-  <!-- SS.4e · replace false with store.loading() -->
-  @if (false) {
+  @if (store.loading()) {
   <span class="muted loading">Loading…</span>
   }
 </p>
 
-<!-- SS.4e · on input, call store.load(input.value) (SS.5d: store.setTerm) -->
-<input #input type="search" class="search" placeholder="Patient name…" />
+<input
+  #input
+  type="search"
+  class="search"
+  placeholder="Patient name…"
+  (input)="store.load(input.value)"
+/>
 
 <ul class="patients">
-  <!-- SS.4e · loop over store.patients() -->
-  @for (p of noPatients; track p.id) {
+  @for (p of store.patients(); track p.id) {
   <li>{{ p.name }} <span class="muted">{{ p.bed }}</span></li>
   }
 </ul>

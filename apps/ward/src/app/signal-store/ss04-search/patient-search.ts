@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 
-import type { Patient } from '@core/messaging/contract';
 import { PatientDirectory } from '../signal-store-data';
+import { PatientSearchStore } from './patient-search.store';
 
 // ============================================================================================
 //  DAY 4 · SS.4–6 · LAB 2: A STORE THAT LOADS ITS OWN DATA
@@ -60,6 +60,5 @@ import { PatientDirectory } from '../signal-store-data';
 export default class PatientSearch {
   protected readonly directory = inject(PatientDirectory);
 
-  /** SS.4e · delete me, loop over the store's patients instead. */
-  protected readonly noPatients: Patient[] = [];
+  protected readonly store = inject(PatientSearchStore); // SS.4e
 }
