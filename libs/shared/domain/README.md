@@ -1,7 +1,9 @@
 # shared-domain
 
-This library was generated with [Nx](https://nx.dev).
+The shared kernel of Ward Monitor: the backend contract (`contract.ts` and `game-contract.ts`, copied unchanged from ward-worker) and the pure helpers every part of the app builds on (`ALL_BEDS`, `wardOf`, `bedsOf`, `toSlug`, `THRESHOLDS`, `link()`, `who()`).
 
-## Running unit tests
+Plain TypeScript, no Angular. Every scope may import it, so keep it small: a change here affects almost every project.
 
-Run `nx test shared-domain` to execute the unit tests.
+- Import path: `@wm/shared/domain`
+- Tags: `scope:shared, type:domain` (added in D5.5)
+- Tests: `pnpm nx test shared-domain`

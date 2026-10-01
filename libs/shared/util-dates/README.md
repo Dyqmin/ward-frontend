@@ -1,7 +1,9 @@
 # shared-util-dates
 
-This library was generated with [Nx](https://nx.dev).
+Date helpers with no business meaning: `clock()` turns an ISO timestamp into a local time of day.
 
-## Running unit tests
+Could be published to npm tomorrow.
 
-Run `nx test shared-util-dates` to execute the unit tests.
+- Import path: `@wm/shared/util-dates`
+- Tags: `scope:shared, type:util` (added in D5.5)
+- Tests: `pnpm nx test shared-util-dates`
