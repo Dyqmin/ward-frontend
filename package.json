@@ -4,9 +4,12 @@
   "license": "MIT",
   "scripts": {
     "start": "nx serve ward",
-    "build": "nx build ward",
-    "test": "nx test ward",
-    "lint": "nx lint ward"
+    "start:pharmacy": "nx serve pharmacy",
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test",
+    "lint": "nx run-many -t lint",
+    "graph": "nx graph",
+    "day5:check": "node tools/day5-check.mjs"
   },
   "private": true,
   "dependencies": {

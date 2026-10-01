@@ -1,7 +1,9 @@
 # shared-data-access-auth
 
-This library was generated with [Nx](https://nx.dev).
+Who is signed in: `AuthStore` (join, token refresh, role, room), the `authGuard` and `hasRole()` route guards, `provideAuth()` and the `STOMP_MODE` switch (`?mock`).
 
-## Running unit tests
+A library cannot read the app's `environment.ts`: the app passes the API URL in with `provideAuth({ apiUrl })`.
 
-Run `nx test shared-data-access-auth` to execute the unit tests.
+- Import path: `@wm/shared/data-access-auth`
+- Tags: `scope:shared, type:data-access` (added in D5.5)
+- Tests: `pnpm nx test shared-data-access-auth`

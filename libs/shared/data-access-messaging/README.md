@@ -1,7 +1,9 @@
 # shared-data-access-messaging
 
-This library was generated with [Nx](https://nx.dev).
+The broker: the `MessageBus` abstraction, `StompMessageBus` (rx-stomp) and `FakeMessageBus` (`?mock` and the tests), `provideStomp()` with its `withX()` features, `commandRetry()` and the mock ward fixtures.
 
-## Running unit tests
+No other library talks to rx-stomp: they all inject `MessageBus`.
 
-Run `nx test shared-data-access-messaging` to execute the unit tests.
+- Import path: `@wm/shared/data-access-messaging`
+- Tags: `scope:shared, type:data-access` (added in D5.5)
+- Tests: `pnpm nx test shared-data-access-messaging`

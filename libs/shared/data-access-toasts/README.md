@@ -1,7 +1,7 @@
 # shared-data-access-toasts
 
-This library was generated with [Nx](https://nx.dev).
+`Toasts`: the short messages at the bottom of the screen. Containers call `show()`; the app shell renders them.
 
-## Running unit tests
-
-Run `nx test shared-data-access-toasts` to execute the unit tests.
+- Import path: `@wm/shared/data-access-toasts`
+- Tags: `scope:shared, type:data-access` (added in D5.5)
+- Tests: `pnpm nx test shared-data-access-toasts`

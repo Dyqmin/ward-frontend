@@ -1,7 +1,7 @@
 # shared-data-access-logging
 
-This library was generated with [Nx](https://nx.dev).
+`Logger`: one place to send log messages. The console today, a log shipper tomorrow.
 
-## Running unit tests
-
-Run `nx test shared-data-access-logging` to execute the unit tests.
+- Import path: `@wm/shared/data-access-logging`
+- Tags: `scope:shared, type:data-access` (added in D5.5)
+- Tests: `pnpm nx test shared-data-access-logging`

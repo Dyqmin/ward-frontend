@@ -1,0 +1,3322 @@
+{
+ "steps": {
+  "1": {
+   "projects": {
+    "pharmacy": {
+     "root": "apps/pharmacy",
+     "tags": []
+    },
+    "ward": {
+     "root": "apps/ward",
+     "tags": []
+    },
+    "shared-data-access-auth": {
+     "root": "libs/shared/data-access-auth",
+     "tags": []
+    },
+    "shared-data-access-logging": {
+     "root": "libs/shared/data-access-logging",
+     "tags": []
+    },
+    "shared-data-access-messaging": {
+     "root": "libs/shared/data-access-messaging",
+     "tags": []
+    },
+    "shared-data-access-toasts": {
+     "root": "libs/shared/data-access-toasts",
+     "tags": []
+    },
+    "shared-domain": {
+     "root": "libs/shared/domain",
+     "tags": []
+    },
+    "shared-util-dates": {
+     "root": "libs/shared/util-dates",
+     "tags": []
+    }
+   },
+   "aliases": {
+    "@wm/shared/domain": "libs/shared/domain/src/index.ts",
+    "@wm/shared/util-dates": "libs/shared/util-dates/src/index.ts",
+    "@wm/shared/data-access-logging": "libs/shared/data-access-logging/src/index.ts",
+    "@wm/shared/data-access-toasts": "libs/shared/data-access-toasts/src/index.ts",
+    "@wm/shared/data-access-auth": "libs/shared/data-access-auth/src/index.ts",
+    "@wm/shared/data-access-messaging": "libs/shared/data-access-messaging/src/index.ts"
+   },
+   "files": [
+    "apps/pharmacy/src/app/app.config.ts",
+    "apps/pharmacy/src/app/app.html",
+    "apps/pharmacy/src/app/app.scss",
+    "apps/pharmacy/src/app/app.spec.ts",
+    "apps/pharmacy/src/app/app.ts",
+    "apps/pharmacy/src/app/dispensing-queue.ts",
+    "apps/pharmacy/src/index.html",
+    "apps/pharmacy/src/main.ts",
+    "apps/pharmacy/src/styles.scss",
+    "apps/ward/src/app/app.config.ts",
+    "apps/ward/src/app/app.html",
+    "apps/ward/src/app/app.routes.ts",
+    "apps/ward/src/app/app.scss",
+    "apps/ward/src/app/app.spec.ts",
+    "apps/ward/src/app/app.ts",
+    "apps/ward/src/app/auth/forbidden.html",
+    "apps/ward/src/app/auth/forbidden.scss",
+    "apps/ward/src/app/auth/forbidden.ts",
+    "apps/ward/src/app/auth/login.html",
+    "apps/ward/src/app/auth/login.scss",
+    "apps/ward/src/app/auth/login.ts",
+    "apps/ward/src/app/core/clock.ts",
+    "apps/ward/src/app/core/http/interceptors.ts",
+    "apps/ward/src/app/core/http/reports.ts",
+    "apps/ward/src/app/core/navigation-errors.ts",
+    "apps/ward/src/app/core/providers/seo.ts",
+    "apps/ward/src/app/core/providers/skeleton.ts",
+    "apps/ward/src/app/core/providers/wifi-aware-preloading.ts",
+    "apps/ward/src/app/core/ui/connection-badge.html",
+    "apps/ward/src/app/core/ui/connection-badge.scss",
+    "apps/ward/src/app/core/ui/connection-badge.ts",
+    "apps/ward/src/app/core/ui/toast-outlet.html",
+    "apps/ward/src/app/core/ui/toast-outlet.scss",
+    "apps/ward/src/app/core/ui/toast-outlet.ts",
+    "apps/ward/src/app/dev/dev-toolbar.html",
+    "apps/ward/src/app/dev/dev-toolbar.scss",
+    "apps/ward/src/app/dev/dev-toolbar.ts",
+    "apps/ward/src/app/reports/report-download.html",
+    "apps/ward/src/app/reports/report-download.scss",
+    "apps/ward/src/app/reports/report-download.ts",
+    "apps/ward/src/app/reports/reports.routes.ts",
+    "apps/ward/src/app/simulator/monitor-simulator.html",
+    "apps/ward/src/app/simulator/monitor-simulator.scss",
+    "apps/ward/src/app/simulator/monitor-simulator.ts",
+    "apps/ward/src/app/ui-kit/badge/badge.scss",
+    "apps/ward/src/app/ui-kit/badge/badge.ts",
+    "apps/ward/src/app/ui-kit/card/card.html",
+    "apps/ward/src/app/ui-kit/card/card.scss",
+    "apps/ward/src/app/ui-kit/card/card.ts",
+    "apps/ward/src/app/ui-kit/empty-state/empty-state.scss",
+    "apps/ward/src/app/ui-kit/empty-state/empty-state.ts",
+    "apps/ward/src/app/ui-kit/page-header/page-header.html",
+    "apps/ward/src/app/ui-kit/page-header/page-header.scss",
+    "apps/ward/src/app/ui-kit/page-header/page-header.ts",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.html",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.scss",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.ts",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.html",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.scss",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.ts",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.html",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.scss",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.ts",
+    "apps/ward/src/app/ward/bed-detail/data/bed-resources.ts",
+    "apps/ward/src/app/ward/bed-detail/data/snapshot-then-stream.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/data/snapshot-then-stream.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/liveness.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.ts",
+    "apps/ward/src/app/ward/data/alarms-store.spec.ts",
+    "apps/ward/src/app/ward/data/alarms-store.ts",
+    "apps/ward/src/app/ward/data/patients-store.ts",
+    "apps/ward/src/app/ward/guards.ts",
+    "apps/ward/src/app/ward/med-order/drug-step.html",
+    "apps/ward/src/app/ward/med-order/drug-step.scss",
+    "apps/ward/src/app/ward/med-order/drug-step.ts",
+    "apps/ward/src/app/ward/med-order/guards.ts",
+    "apps/ward/src/app/ward/med-order/med-order-draft-store.ts",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.html",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.scss",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.ts",
+    "apps/ward/src/app/ward/med-order/patient-step.html",
+    "apps/ward/src/app/ward/med-order/patient-step.scss",
+    "apps/ward/src/app/ward/med-order/patient-step.ts",
+    "apps/ward/src/app/ward/med-order/review-step.html",
+    "apps/ward/src/app/ward/med-order/review-step.scss",
+    "apps/ward/src/app/ward/med-order/review-step.ts",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.html",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.scss",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.ts",
+    "apps/ward/src/app/ward/temperature/record-temperature.spec.ts",
+    "apps/ward/src/app/ward/temperature/temperature-form.html",
+    "apps/ward/src/app/ward/temperature/temperature-form.scss",
+    "apps/ward/src/app/ward/temperature/temperature-form.ts",
+    "apps/ward/src/app/ward/ui/alarm-actions.html",
+    "apps/ward/src/app/ward/ui/alarm-actions.scss",
+    "apps/ward/src/app/ward/ui/alarm-actions.ts",
+    "apps/ward/src/app/ward/ui/bed-tile.html",
+    "apps/ward/src/app/ward/ui/bed-tile.scss",
+    "apps/ward/src/app/ward/ui/bed-tile.ts",
+    "apps/ward/src/app/ward/ui/format.ts",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.html",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.scss",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.ts",
+    "apps/ward/src/app/ward/ward.routes.ts",
+    "apps/ward/src/environments/environment.ts",
+    "apps/ward/src/index.html",
+    "apps/ward/src/main.ts",
+    "apps/ward/src/styles.scss",
+    "libs/shared/data-access-auth/src/index.ts",
+    "libs/shared/data-access-auth/src/lib/auth-store.ts",
+    "libs/shared/data-access-auth/src/lib/guards.ts",
+    "libs/shared/data-access-auth/src/lib/provide-auth.ts",
+    "libs/shared/data-access-auth/src/lib/stomp-mode.ts",
+    "libs/shared/data-access-auth/src/test-setup.ts",
+    "libs/shared/data-access-logging/src/index.ts",
+    "libs/shared/data-access-logging/src/lib/logger.ts",
+    "libs/shared/data-access-logging/src/test-setup.ts",
+    "libs/shared/data-access-messaging/src/index.ts",
+    "libs/shared/data-access-messaging/src/lib/command-retry.ts",
+    "libs/shared/data-access-messaging/src/lib/fake-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.ts",
+    "libs/shared/data-access-messaging/src/lib/message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.ts",
+    "libs/shared/data-access-messaging/src/lib/stomp-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/ward-fixtures.ts",
+    "libs/shared/data-access-messaging/src/test-setup.ts",
+    "libs/shared/data-access-toasts/src/index.ts",
+    "libs/shared/data-access-toasts/src/lib/toasts.ts",
+    "libs/shared/data-access-toasts/src/test-setup.ts",
+    "libs/shared/domain/src/index.ts",
+    "libs/shared/domain/src/lib/contract.ts",
+    "libs/shared/domain/src/lib/game-contract.ts",
+    "libs/shared/domain/src/lib/is-bed-id.spec.ts",
+    "libs/shared/domain/src/lib/links.ts",
+    "libs/shared/domain/src/lib/participants.ts",
+    "libs/shared/domain/src/lib/ward.spec.ts",
+    "libs/shared/domain/src/lib/ward.ts",
+    "libs/shared/domain/src/test-setup.ts",
+    "libs/shared/util-dates/src/index.ts",
+    "libs/shared/util-dates/src/lib/clock.ts",
+    "libs/shared/util-dates/src/test-setup.ts"
+   ],
+   "exports": {
+    "shared-data-access-auth": [
+     "./lib/auth-store",
+     "./lib/guards",
+     "./lib/provide-auth",
+     "./lib/stomp-mode"
+    ],
+    "shared-data-access-logging": [
+     "./lib/logger"
+    ],
+    "shared-data-access-messaging": [
+     "./lib/command-retry",
+     "./lib/fake-message-bus",
+     "./lib/frames",
+     "./lib/message-bus",
+     "./lib/provide-stomp",
+     "./lib/ward-fixtures"
+    ],
+    "shared-data-access-toasts": [
+     "./lib/toasts"
+    ],
+    "shared-domain": [
+     "./lib/contract",
+     "./lib/game-contract",
+     "./lib/links",
+     "./lib/participants",
+     "./lib/ward"
+    ],
+    "shared-util-dates": [
+     "./lib/clock"
+    ]
+   },
+   "constraints": [
+    {
+     "sourceTag": "*",
+     "onlyDependOnLibsWithTags": [
+      "*"
+     ]
+    }
+   ],
+   "allow": [
+    "^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"
+   ],
+   "injectFreeUi": true,
+   "lint": "passes (pnpm lint)"
+  },
+  "2": {
+   "projects": {
+    "pharmacy": {
+     "root": "apps/pharmacy",
+     "tags": []
+    },
+    "ward": {
+     "root": "apps/ward",
+     "tags": []
+    },
+    "shared-data-access-auth": {
+     "root": "libs/shared/data-access-auth",
+     "tags": []
+    },
+    "shared-data-access-logging": {
+     "root": "libs/shared/data-access-logging",
+     "tags": []
+    },
+    "shared-data-access-messaging": {
+     "root": "libs/shared/data-access-messaging",
+     "tags": []
+    },
+    "shared-data-access-toasts": {
+     "root": "libs/shared/data-access-toasts",
+     "tags": []
+    },
+    "shared-domain": {
+     "root": "libs/shared/domain",
+     "tags": []
+    },
+    "shared-ui-design-system": {
+     "root": "libs/shared/ui-design-system",
+     "tags": [
+      "scope:shared",
+      "type:ui"
+     ]
+    },
+    "shared-util-dates": {
+     "root": "libs/shared/util-dates",
+     "tags": []
+    }
+   },
+   "aliases": {
+    "@wm/shared/domain": "libs/shared/domain/src/index.ts",
+    "@wm/shared/util-dates": "libs/shared/util-dates/src/index.ts",
+    "@wm/shared/data-access-logging": "libs/shared/data-access-logging/src/index.ts",
+    "@wm/shared/data-access-toasts": "libs/shared/data-access-toasts/src/index.ts",
+    "@wm/shared/data-access-auth": "libs/shared/data-access-auth/src/index.ts",
+    "@wm/shared/data-access-messaging": "libs/shared/data-access-messaging/src/index.ts",
+    "@wm/shared/ui-design-system": "libs/shared/ui-design-system/src/index.ts"
+   },
+   "files": [
+    "apps/pharmacy/src/app/app.config.ts",
+    "apps/pharmacy/src/app/app.html",
+    "apps/pharmacy/src/app/app.scss",
+    "apps/pharmacy/src/app/app.spec.ts",
+    "apps/pharmacy/src/app/app.ts",
+    "apps/pharmacy/src/app/dispensing-queue.ts",
+    "apps/pharmacy/src/index.html",
+    "apps/pharmacy/src/main.ts",
+    "apps/pharmacy/src/styles.scss",
+    "apps/ward/src/app/app.config.ts",
+    "apps/ward/src/app/app.html",
+    "apps/ward/src/app/app.routes.ts",
+    "apps/ward/src/app/app.scss",
+    "apps/ward/src/app/app.spec.ts",
+    "apps/ward/src/app/app.ts",
+    "apps/ward/src/app/auth/forbidden.html",
+    "apps/ward/src/app/auth/forbidden.scss",
+    "apps/ward/src/app/auth/forbidden.ts",
+    "apps/ward/src/app/auth/login.html",
+    "apps/ward/src/app/auth/login.scss",
+    "apps/ward/src/app/auth/login.ts",
+    "apps/ward/src/app/core/clock.ts",
+    "apps/ward/src/app/core/http/interceptors.ts",
+    "apps/ward/src/app/core/http/reports.ts",
+    "apps/ward/src/app/core/navigation-errors.ts",
+    "apps/ward/src/app/core/providers/seo.ts",
+    "apps/ward/src/app/core/providers/skeleton.ts",
+    "apps/ward/src/app/core/providers/wifi-aware-preloading.ts",
+    "apps/ward/src/app/core/ui/connection-badge.html",
+    "apps/ward/src/app/core/ui/connection-badge.scss",
+    "apps/ward/src/app/core/ui/connection-badge.ts",
+    "apps/ward/src/app/core/ui/toast-outlet.html",
+    "apps/ward/src/app/core/ui/toast-outlet.scss",
+    "apps/ward/src/app/core/ui/toast-outlet.ts",
+    "apps/ward/src/app/dev/dev-toolbar.html",
+    "apps/ward/src/app/dev/dev-toolbar.scss",
+    "apps/ward/src/app/dev/dev-toolbar.ts",
+    "apps/ward/src/app/reports/report-download.html",
+    "apps/ward/src/app/reports/report-download.scss",
+    "apps/ward/src/app/reports/report-download.ts",
+    "apps/ward/src/app/reports/reports.routes.ts",
+    "apps/ward/src/app/simulator/monitor-simulator.html",
+    "apps/ward/src/app/simulator/monitor-simulator.scss",
+    "apps/ward/src/app/simulator/monitor-simulator.ts",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.html",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.scss",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.ts",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.html",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.scss",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.ts",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.html",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.scss",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.ts",
+    "apps/ward/src/app/ward/bed-detail/data/bed-resources.ts",
+    "apps/ward/src/app/ward/bed-detail/data/snapshot-then-stream.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/data/snapshot-then-stream.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/liveness.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.ts",
+    "apps/ward/src/app/ward/data/alarms-store.spec.ts",
+    "apps/ward/src/app/ward/data/alarms-store.ts",
+    "apps/ward/src/app/ward/data/patients-store.ts",
+    "apps/ward/src/app/ward/guards.ts",
+    "apps/ward/src/app/ward/med-order/drug-step.html",
+    "apps/ward/src/app/ward/med-order/drug-step.scss",
+    "apps/ward/src/app/ward/med-order/drug-step.ts",
+    "apps/ward/src/app/ward/med-order/guards.ts",
+    "apps/ward/src/app/ward/med-order/med-order-draft-store.ts",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.html",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.scss",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.ts",
+    "apps/ward/src/app/ward/med-order/patient-step.html",
+    "apps/ward/src/app/ward/med-order/patient-step.scss",
+    "apps/ward/src/app/ward/med-order/patient-step.ts",
+    "apps/ward/src/app/ward/med-order/review-step.html",
+    "apps/ward/src/app/ward/med-order/review-step.scss",
+    "apps/ward/src/app/ward/med-order/review-step.ts",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.html",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.scss",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.ts",
+    "apps/ward/src/app/ward/temperature/record-temperature.spec.ts",
+    "apps/ward/src/app/ward/temperature/temperature-form.html",
+    "apps/ward/src/app/ward/temperature/temperature-form.scss",
+    "apps/ward/src/app/ward/temperature/temperature-form.ts",
+    "apps/ward/src/app/ward/ui/alarm-actions.html",
+    "apps/ward/src/app/ward/ui/alarm-actions.scss",
+    "apps/ward/src/app/ward/ui/alarm-actions.ts",
+    "apps/ward/src/app/ward/ui/bed-tile.html",
+    "apps/ward/src/app/ward/ui/bed-tile.scss",
+    "apps/ward/src/app/ward/ui/bed-tile.ts",
+    "apps/ward/src/app/ward/ui/format.ts",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.html",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.scss",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.ts",
+    "apps/ward/src/app/ward/ward.routes.ts",
+    "apps/ward/src/environments/environment.ts",
+    "apps/ward/src/index.html",
+    "apps/ward/src/main.ts",
+    "apps/ward/src/styles.scss",
+    "libs/shared/data-access-auth/src/index.ts",
+    "libs/shared/data-access-auth/src/lib/auth-store.ts",
+    "libs/shared/data-access-auth/src/lib/guards.ts",
+    "libs/shared/data-access-auth/src/lib/provide-auth.ts",
+    "libs/shared/data-access-auth/src/lib/stomp-mode.ts",
+    "libs/shared/data-access-auth/src/test-setup.ts",
+    "libs/shared/data-access-logging/src/index.ts",
+    "libs/shared/data-access-logging/src/lib/logger.ts",
+    "libs/shared/data-access-logging/src/test-setup.ts",
+    "libs/shared/data-access-messaging/src/index.ts",
+    "libs/shared/data-access-messaging/src/lib/command-retry.ts",
+    "libs/shared/data-access-messaging/src/lib/fake-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.ts",
+    "libs/shared/data-access-messaging/src/lib/message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.ts",
+    "libs/shared/data-access-messaging/src/lib/stomp-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/ward-fixtures.ts",
+    "libs/shared/data-access-messaging/src/test-setup.ts",
+    "libs/shared/data-access-toasts/src/index.ts",
+    "libs/shared/data-access-toasts/src/lib/toasts.ts",
+    "libs/shared/data-access-toasts/src/test-setup.ts",
+    "libs/shared/domain/src/index.ts",
+    "libs/shared/domain/src/lib/contract.ts",
+    "libs/shared/domain/src/lib/game-contract.ts",
+    "libs/shared/domain/src/lib/is-bed-id.spec.ts",
+    "libs/shared/domain/src/lib/links.ts",
+    "libs/shared/domain/src/lib/participants.ts",
+    "libs/shared/domain/src/lib/ward.spec.ts",
+    "libs/shared/domain/src/lib/ward.ts",
+    "libs/shared/domain/src/test-setup.ts",
+    "libs/shared/ui-design-system/src/index.ts",
+    "libs/shared/ui-design-system/src/lib/badge/badge.scss",
+    "libs/shared/ui-design-system/src/lib/badge/badge.ts",
+    "libs/shared/ui-design-system/src/lib/card/card.html",
+    "libs/shared/ui-design-system/src/lib/card/card.scss",
+    "libs/shared/ui-design-system/src/lib/card/card.ts",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.scss",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.ts",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.html",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.scss",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.ts",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.html",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.scss",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.ts",
+    "libs/shared/ui-design-system/src/test-setup.ts",
+    "libs/shared/util-dates/src/index.ts",
+    "libs/shared/util-dates/src/lib/clock.ts",
+    "libs/shared/util-dates/src/test-setup.ts"
+   ],
+   "exports": {
+    "shared-data-access-auth": [
+     "./lib/auth-store",
+     "./lib/guards",
+     "./lib/provide-auth",
+     "./lib/stomp-mode"
+    ],
+    "shared-data-access-logging": [
+     "./lib/logger"
+    ],
+    "shared-data-access-messaging": [
+     "./lib/command-retry",
+     "./lib/fake-message-bus",
+     "./lib/frames",
+     "./lib/message-bus",
+     "./lib/provide-stomp",
+     "./lib/ward-fixtures"
+    ],
+    "shared-data-access-toasts": [
+     "./lib/toasts"
+    ],
+    "shared-domain": [
+     "./lib/contract",
+     "./lib/game-contract",
+     "./lib/links",
+     "./lib/participants",
+     "./lib/ward"
+    ],
+    "shared-ui-design-system": [
+     "./lib/badge/badge",
+     "./lib/card/card",
+     "./lib/empty-state/empty-state",
+     "./lib/page-header/page-header",
+     "./lib/stat-tile/stat-tile"
+    ],
+    "shared-util-dates": [
+     "./lib/clock"
+    ]
+   },
+   "constraints": [
+    {
+     "sourceTag": "*",
+     "onlyDependOnLibsWithTags": [
+      "*"
+     ]
+    }
+   ],
+   "allow": [
+    "^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"
+   ],
+   "injectFreeUi": true,
+   "lint": "passes (pnpm lint)"
+  },
+  "3": {
+   "projects": {
+    "pharmacy": {
+     "root": "apps/pharmacy",
+     "tags": []
+    },
+    "ward": {
+     "root": "apps/ward",
+     "tags": []
+    },
+    "monitoring-data-access": {
+     "root": "libs/monitoring/data-access",
+     "tags": [
+      "scope:monitoring",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-auth": {
+     "root": "libs/shared/data-access-auth",
+     "tags": []
+    },
+    "shared-data-access-logging": {
+     "root": "libs/shared/data-access-logging",
+     "tags": []
+    },
+    "shared-data-access-messaging": {
+     "root": "libs/shared/data-access-messaging",
+     "tags": []
+    },
+    "shared-data-access-toasts": {
+     "root": "libs/shared/data-access-toasts",
+     "tags": []
+    },
+    "shared-domain": {
+     "root": "libs/shared/domain",
+     "tags": []
+    },
+    "shared-ui-design-system": {
+     "root": "libs/shared/ui-design-system",
+     "tags": [
+      "scope:shared",
+      "type:ui"
+     ]
+    },
+    "shared-util-dates": {
+     "root": "libs/shared/util-dates",
+     "tags": []
+    }
+   },
+   "aliases": {
+    "@wm/shared/domain": "libs/shared/domain/src/index.ts",
+    "@wm/shared/util-dates": "libs/shared/util-dates/src/index.ts",
+    "@wm/shared/data-access-logging": "libs/shared/data-access-logging/src/index.ts",
+    "@wm/shared/data-access-toasts": "libs/shared/data-access-toasts/src/index.ts",
+    "@wm/shared/data-access-auth": "libs/shared/data-access-auth/src/index.ts",
+    "@wm/shared/data-access-messaging": "libs/shared/data-access-messaging/src/index.ts",
+    "@wm/shared/ui-design-system": "libs/shared/ui-design-system/src/index.ts",
+    "@wm/monitoring/data-access": "libs/monitoring/data-access/src/index.ts"
+   },
+   "files": [
+    "apps/pharmacy/src/app/app.config.ts",
+    "apps/pharmacy/src/app/app.html",
+    "apps/pharmacy/src/app/app.scss",
+    "apps/pharmacy/src/app/app.spec.ts",
+    "apps/pharmacy/src/app/app.ts",
+    "apps/pharmacy/src/app/dispensing-queue.ts",
+    "apps/pharmacy/src/index.html",
+    "apps/pharmacy/src/main.ts",
+    "apps/pharmacy/src/styles.scss",
+    "apps/ward/src/app/app.config.ts",
+    "apps/ward/src/app/app.html",
+    "apps/ward/src/app/app.routes.ts",
+    "apps/ward/src/app/app.scss",
+    "apps/ward/src/app/app.spec.ts",
+    "apps/ward/src/app/app.ts",
+    "apps/ward/src/app/auth/forbidden.html",
+    "apps/ward/src/app/auth/forbidden.scss",
+    "apps/ward/src/app/auth/forbidden.ts",
+    "apps/ward/src/app/auth/login.html",
+    "apps/ward/src/app/auth/login.scss",
+    "apps/ward/src/app/auth/login.ts",
+    "apps/ward/src/app/core/clock.ts",
+    "apps/ward/src/app/core/http/interceptors.ts",
+    "apps/ward/src/app/core/http/reports.ts",
+    "apps/ward/src/app/core/navigation-errors.ts",
+    "apps/ward/src/app/core/providers/seo.ts",
+    "apps/ward/src/app/core/providers/skeleton.ts",
+    "apps/ward/src/app/core/providers/wifi-aware-preloading.ts",
+    "apps/ward/src/app/core/ui/connection-badge.html",
+    "apps/ward/src/app/core/ui/connection-badge.scss",
+    "apps/ward/src/app/core/ui/connection-badge.ts",
+    "apps/ward/src/app/core/ui/toast-outlet.html",
+    "apps/ward/src/app/core/ui/toast-outlet.scss",
+    "apps/ward/src/app/core/ui/toast-outlet.ts",
+    "apps/ward/src/app/dev/dev-toolbar.html",
+    "apps/ward/src/app/dev/dev-toolbar.scss",
+    "apps/ward/src/app/dev/dev-toolbar.ts",
+    "apps/ward/src/app/reports/report-download.html",
+    "apps/ward/src/app/reports/report-download.scss",
+    "apps/ward/src/app/reports/report-download.ts",
+    "apps/ward/src/app/reports/reports.routes.ts",
+    "apps/ward/src/app/simulator/monitor-simulator.html",
+    "apps/ward/src/app/simulator/monitor-simulator.scss",
+    "apps/ward/src/app/simulator/monitor-simulator.ts",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.html",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.scss",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.ts",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.html",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.scss",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.ts",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.html",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.scss",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.ts",
+    "apps/ward/src/app/ward/bed-detail/data/bed-resources.ts",
+    "apps/ward/src/app/ward/bed-detail/data/snapshot-then-stream.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/data/snapshot-then-stream.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/liveness.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.ts",
+    "apps/ward/src/app/ward/guards.ts",
+    "apps/ward/src/app/ward/med-order/drug-step.html",
+    "apps/ward/src/app/ward/med-order/drug-step.scss",
+    "apps/ward/src/app/ward/med-order/drug-step.ts",
+    "apps/ward/src/app/ward/med-order/guards.ts",
+    "apps/ward/src/app/ward/med-order/med-order-draft-store.ts",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.html",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.scss",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.ts",
+    "apps/ward/src/app/ward/med-order/patient-step.html",
+    "apps/ward/src/app/ward/med-order/patient-step.scss",
+    "apps/ward/src/app/ward/med-order/patient-step.ts",
+    "apps/ward/src/app/ward/med-order/review-step.html",
+    "apps/ward/src/app/ward/med-order/review-step.scss",
+    "apps/ward/src/app/ward/med-order/review-step.ts",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.html",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.scss",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.ts",
+    "apps/ward/src/app/ward/temperature/record-temperature.spec.ts",
+    "apps/ward/src/app/ward/temperature/temperature-form.html",
+    "apps/ward/src/app/ward/temperature/temperature-form.scss",
+    "apps/ward/src/app/ward/temperature/temperature-form.ts",
+    "apps/ward/src/app/ward/ui/alarm-actions.html",
+    "apps/ward/src/app/ward/ui/alarm-actions.scss",
+    "apps/ward/src/app/ward/ui/alarm-actions.ts",
+    "apps/ward/src/app/ward/ui/bed-tile.html",
+    "apps/ward/src/app/ward/ui/bed-tile.scss",
+    "apps/ward/src/app/ward/ui/bed-tile.ts",
+    "apps/ward/src/app/ward/ui/format.ts",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.html",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.scss",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.ts",
+    "apps/ward/src/app/ward/ward.routes.ts",
+    "apps/ward/src/environments/environment.ts",
+    "apps/ward/src/index.html",
+    "apps/ward/src/main.ts",
+    "apps/ward/src/styles.scss",
+    "libs/monitoring/data-access/src/index.ts",
+    "libs/monitoring/data-access/src/lib/alarms-store.spec.ts",
+    "libs/monitoring/data-access/src/lib/alarms-store.ts",
+    "libs/monitoring/data-access/src/lib/patients-store.ts",
+    "libs/monitoring/data-access/src/test-setup.ts",
+    "libs/shared/data-access-auth/src/index.ts",
+    "libs/shared/data-access-auth/src/lib/auth-store.ts",
+    "libs/shared/data-access-auth/src/lib/guards.ts",
+    "libs/shared/data-access-auth/src/lib/provide-auth.ts",
+    "libs/shared/data-access-auth/src/lib/stomp-mode.ts",
+    "libs/shared/data-access-auth/src/test-setup.ts",
+    "libs/shared/data-access-logging/src/index.ts",
+    "libs/shared/data-access-logging/src/lib/logger.ts",
+    "libs/shared/data-access-logging/src/test-setup.ts",
+    "libs/shared/data-access-messaging/src/index.ts",
+    "libs/shared/data-access-messaging/src/lib/command-retry.ts",
+    "libs/shared/data-access-messaging/src/lib/fake-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.ts",
+    "libs/shared/data-access-messaging/src/lib/message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.ts",
+    "libs/shared/data-access-messaging/src/lib/stomp-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/ward-fixtures.ts",
+    "libs/shared/data-access-messaging/src/test-setup.ts",
+    "libs/shared/data-access-toasts/src/index.ts",
+    "libs/shared/data-access-toasts/src/lib/toasts.ts",
+    "libs/shared/data-access-toasts/src/test-setup.ts",
+    "libs/shared/domain/src/index.ts",
+    "libs/shared/domain/src/lib/contract.ts",
+    "libs/shared/domain/src/lib/game-contract.ts",
+    "libs/shared/domain/src/lib/is-bed-id.spec.ts",
+    "libs/shared/domain/src/lib/links.ts",
+    "libs/shared/domain/src/lib/participants.ts",
+    "libs/shared/domain/src/lib/ward.spec.ts",
+    "libs/shared/domain/src/lib/ward.ts",
+    "libs/shared/domain/src/test-setup.ts",
+    "libs/shared/ui-design-system/src/index.ts",
+    "libs/shared/ui-design-system/src/lib/badge/badge.scss",
+    "libs/shared/ui-design-system/src/lib/badge/badge.ts",
+    "libs/shared/ui-design-system/src/lib/card/card.html",
+    "libs/shared/ui-design-system/src/lib/card/card.scss",
+    "libs/shared/ui-design-system/src/lib/card/card.ts",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.scss",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.ts",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.html",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.scss",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.ts",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.html",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.scss",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.ts",
+    "libs/shared/ui-design-system/src/test-setup.ts",
+    "libs/shared/util-dates/src/index.ts",
+    "libs/shared/util-dates/src/lib/clock.ts",
+    "libs/shared/util-dates/src/test-setup.ts"
+   ],
+   "exports": {
+    "monitoring-data-access": [
+     "./lib/alarms-store",
+     "./lib/patients-store"
+    ],
+    "shared-data-access-auth": [
+     "./lib/auth-store",
+     "./lib/guards",
+     "./lib/provide-auth",
+     "./lib/stomp-mode"
+    ],
+    "shared-data-access-logging": [
+     "./lib/logger"
+    ],
+    "shared-data-access-messaging": [
+     "./lib/command-retry",
+     "./lib/fake-message-bus",
+     "./lib/frames",
+     "./lib/message-bus",
+     "./lib/provide-stomp",
+     "./lib/ward-fixtures"
+    ],
+    "shared-data-access-toasts": [
+     "./lib/toasts"
+    ],
+    "shared-domain": [
+     "./lib/contract",
+     "./lib/game-contract",
+     "./lib/links",
+     "./lib/participants",
+     "./lib/ward"
+    ],
+    "shared-ui-design-system": [
+     "./lib/badge/badge",
+     "./lib/card/card",
+     "./lib/empty-state/empty-state",
+     "./lib/page-header/page-header",
+     "./lib/stat-tile/stat-tile"
+    ],
+    "shared-util-dates": [
+     "./lib/clock"
+    ]
+   },
+   "constraints": [
+    {
+     "sourceTag": "*",
+     "onlyDependOnLibsWithTags": [
+      "*"
+     ]
+    }
+   ],
+   "allow": [
+    "^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"
+   ],
+   "injectFreeUi": true,
+   "lint": "passes (pnpm lint)"
+  },
+  "4": {
+   "projects": {
+    "pharmacy": {
+     "root": "apps/pharmacy",
+     "tags": []
+    },
+    "ward": {
+     "root": "apps/ward",
+     "tags": []
+    },
+    "monitoring-data-access": {
+     "root": "libs/monitoring/data-access",
+     "tags": [
+      "scope:monitoring",
+      "type:data-access"
+     ]
+    },
+    "monitoring-ui": {
+     "root": "libs/monitoring/ui",
+     "tags": [
+      "scope:monitoring",
+      "type:ui"
+     ]
+    },
+    "shared-data-access-auth": {
+     "root": "libs/shared/data-access-auth",
+     "tags": []
+    },
+    "shared-data-access-logging": {
+     "root": "libs/shared/data-access-logging",
+     "tags": []
+    },
+    "shared-data-access-messaging": {
+     "root": "libs/shared/data-access-messaging",
+     "tags": []
+    },
+    "shared-data-access-toasts": {
+     "root": "libs/shared/data-access-toasts",
+     "tags": []
+    },
+    "shared-domain": {
+     "root": "libs/shared/domain",
+     "tags": []
+    },
+    "shared-ui-design-system": {
+     "root": "libs/shared/ui-design-system",
+     "tags": [
+      "scope:shared",
+      "type:ui"
+     ]
+    },
+    "shared-util-dates": {
+     "root": "libs/shared/util-dates",
+     "tags": []
+    }
+   },
+   "aliases": {
+    "@wm/shared/domain": "libs/shared/domain/src/index.ts",
+    "@wm/shared/util-dates": "libs/shared/util-dates/src/index.ts",
+    "@wm/shared/data-access-logging": "libs/shared/data-access-logging/src/index.ts",
+    "@wm/shared/data-access-toasts": "libs/shared/data-access-toasts/src/index.ts",
+    "@wm/shared/data-access-auth": "libs/shared/data-access-auth/src/index.ts",
+    "@wm/shared/data-access-messaging": "libs/shared/data-access-messaging/src/index.ts",
+    "@wm/shared/ui-design-system": "libs/shared/ui-design-system/src/index.ts",
+    "@wm/monitoring/data-access": "libs/monitoring/data-access/src/index.ts",
+    "@wm/monitoring/ui": "libs/monitoring/ui/src/index.ts"
+   },
+   "files": [
+    "apps/pharmacy/src/app/app.config.ts",
+    "apps/pharmacy/src/app/app.html",
+    "apps/pharmacy/src/app/app.scss",
+    "apps/pharmacy/src/app/app.spec.ts",
+    "apps/pharmacy/src/app/app.ts",
+    "apps/pharmacy/src/app/dispensing-queue.ts",
+    "apps/pharmacy/src/index.html",
+    "apps/pharmacy/src/main.ts",
+    "apps/pharmacy/src/styles.scss",
+    "apps/ward/src/app/app.config.ts",
+    "apps/ward/src/app/app.html",
+    "apps/ward/src/app/app.routes.ts",
+    "apps/ward/src/app/app.scss",
+    "apps/ward/src/app/app.spec.ts",
+    "apps/ward/src/app/app.ts",
+    "apps/ward/src/app/auth/forbidden.html",
+    "apps/ward/src/app/auth/forbidden.scss",
+    "apps/ward/src/app/auth/forbidden.ts",
+    "apps/ward/src/app/auth/login.html",
+    "apps/ward/src/app/auth/login.scss",
+    "apps/ward/src/app/auth/login.ts",
+    "apps/ward/src/app/core/clock.ts",
+    "apps/ward/src/app/core/http/interceptors.ts",
+    "apps/ward/src/app/core/http/reports.ts",
+    "apps/ward/src/app/core/navigation-errors.ts",
+    "apps/ward/src/app/core/providers/seo.ts",
+    "apps/ward/src/app/core/providers/skeleton.ts",
+    "apps/ward/src/app/core/providers/wifi-aware-preloading.ts",
+    "apps/ward/src/app/core/ui/connection-badge.html",
+    "apps/ward/src/app/core/ui/connection-badge.scss",
+    "apps/ward/src/app/core/ui/connection-badge.ts",
+    "apps/ward/src/app/core/ui/toast-outlet.html",
+    "apps/ward/src/app/core/ui/toast-outlet.scss",
+    "apps/ward/src/app/core/ui/toast-outlet.ts",
+    "apps/ward/src/app/dev/dev-toolbar.html",
+    "apps/ward/src/app/dev/dev-toolbar.scss",
+    "apps/ward/src/app/dev/dev-toolbar.ts",
+    "apps/ward/src/app/reports/report-download.html",
+    "apps/ward/src/app/reports/report-download.scss",
+    "apps/ward/src/app/reports/report-download.ts",
+    "apps/ward/src/app/reports/reports.routes.ts",
+    "apps/ward/src/app/simulator/monitor-simulator.html",
+    "apps/ward/src/app/simulator/monitor-simulator.scss",
+    "apps/ward/src/app/simulator/monitor-simulator.ts",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.html",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.scss",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.ts",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.html",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.scss",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.ts",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.html",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.scss",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.ts",
+    "apps/ward/src/app/ward/bed-detail/data/bed-resources.ts",
+    "apps/ward/src/app/ward/bed-detail/data/snapshot-then-stream.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/data/snapshot-then-stream.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/liveness.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.ts",
+    "apps/ward/src/app/ward/guards.ts",
+    "apps/ward/src/app/ward/med-order/drug-step.html",
+    "apps/ward/src/app/ward/med-order/drug-step.scss",
+    "apps/ward/src/app/ward/med-order/drug-step.ts",
+    "apps/ward/src/app/ward/med-order/guards.ts",
+    "apps/ward/src/app/ward/med-order/med-order-draft-store.ts",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.html",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.scss",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.ts",
+    "apps/ward/src/app/ward/med-order/patient-step.html",
+    "apps/ward/src/app/ward/med-order/patient-step.scss",
+    "apps/ward/src/app/ward/med-order/patient-step.ts",
+    "apps/ward/src/app/ward/med-order/review-step.html",
+    "apps/ward/src/app/ward/med-order/review-step.scss",
+    "apps/ward/src/app/ward/med-order/review-step.ts",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.html",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.scss",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.ts",
+    "apps/ward/src/app/ward/temperature/record-temperature.spec.ts",
+    "apps/ward/src/app/ward/temperature/temperature-form.html",
+    "apps/ward/src/app/ward/temperature/temperature-form.scss",
+    "apps/ward/src/app/ward/temperature/temperature-form.ts",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.html",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.scss",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.ts",
+    "apps/ward/src/app/ward/ward.routes.ts",
+    "apps/ward/src/environments/environment.ts",
+    "apps/ward/src/index.html",
+    "apps/ward/src/main.ts",
+    "apps/ward/src/styles.scss",
+    "libs/monitoring/data-access/src/index.ts",
+    "libs/monitoring/data-access/src/lib/alarms-store.spec.ts",
+    "libs/monitoring/data-access/src/lib/alarms-store.ts",
+    "libs/monitoring/data-access/src/lib/patients-store.ts",
+    "libs/monitoring/data-access/src/test-setup.ts",
+    "libs/monitoring/ui/src/index.ts",
+    "libs/monitoring/ui/src/lib/alarm-actions/alarm-actions.html",
+    "libs/monitoring/ui/src/lib/alarm-actions/alarm-actions.scss",
+    "libs/monitoring/ui/src/lib/alarm-actions/alarm-actions.ts",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.html",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.scss",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.ts",
+    "libs/monitoring/ui/src/lib/format.ts",
+    "libs/monitoring/ui/src/test-setup.ts",
+    "libs/shared/data-access-auth/src/index.ts",
+    "libs/shared/data-access-auth/src/lib/auth-store.ts",
+    "libs/shared/data-access-auth/src/lib/guards.ts",
+    "libs/shared/data-access-auth/src/lib/provide-auth.ts",
+    "libs/shared/data-access-auth/src/lib/stomp-mode.ts",
+    "libs/shared/data-access-auth/src/test-setup.ts",
+    "libs/shared/data-access-logging/src/index.ts",
+    "libs/shared/data-access-logging/src/lib/logger.ts",
+    "libs/shared/data-access-logging/src/test-setup.ts",
+    "libs/shared/data-access-messaging/src/index.ts",
+    "libs/shared/data-access-messaging/src/lib/command-retry.ts",
+    "libs/shared/data-access-messaging/src/lib/fake-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.ts",
+    "libs/shared/data-access-messaging/src/lib/message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.ts",
+    "libs/shared/data-access-messaging/src/lib/stomp-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/ward-fixtures.ts",
+    "libs/shared/data-access-messaging/src/test-setup.ts",
+    "libs/shared/data-access-toasts/src/index.ts",
+    "libs/shared/data-access-toasts/src/lib/toasts.ts",
+    "libs/shared/data-access-toasts/src/test-setup.ts",
+    "libs/shared/domain/src/index.ts",
+    "libs/shared/domain/src/lib/contract.ts",
+    "libs/shared/domain/src/lib/game-contract.ts",
+    "libs/shared/domain/src/lib/is-bed-id.spec.ts",
+    "libs/shared/domain/src/lib/links.ts",
+    "libs/shared/domain/src/lib/participants.ts",
+    "libs/shared/domain/src/lib/ward.spec.ts",
+    "libs/shared/domain/src/lib/ward.ts",
+    "libs/shared/domain/src/test-setup.ts",
+    "libs/shared/ui-design-system/src/index.ts",
+    "libs/shared/ui-design-system/src/lib/badge/badge.scss",
+    "libs/shared/ui-design-system/src/lib/badge/badge.ts",
+    "libs/shared/ui-design-system/src/lib/card/card.html",
+    "libs/shared/ui-design-system/src/lib/card/card.scss",
+    "libs/shared/ui-design-system/src/lib/card/card.ts",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.scss",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.ts",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.html",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.scss",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.ts",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.html",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.scss",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.ts",
+    "libs/shared/ui-design-system/src/test-setup.ts",
+    "libs/shared/util-dates/src/index.ts",
+    "libs/shared/util-dates/src/lib/clock.ts",
+    "libs/shared/util-dates/src/test-setup.ts"
+   ],
+   "exports": {
+    "monitoring-data-access": [
+     "./lib/alarms-store",
+     "./lib/patients-store"
+    ],
+    "monitoring-ui": [
+     "./lib/alarm-actions/alarm-actions",
+     "./lib/bed-tile/bed-tile",
+     "./lib/format"
+    ],
+    "shared-data-access-auth": [
+     "./lib/auth-store",
+     "./lib/guards",
+     "./lib/provide-auth",
+     "./lib/stomp-mode"
+    ],
+    "shared-data-access-logging": [
+     "./lib/logger"
+    ],
+    "shared-data-access-messaging": [
+     "./lib/command-retry",
+     "./lib/fake-message-bus",
+     "./lib/frames",
+     "./lib/message-bus",
+     "./lib/provide-stomp",
+     "./lib/ward-fixtures"
+    ],
+    "shared-data-access-toasts": [
+     "./lib/toasts"
+    ],
+    "shared-domain": [
+     "./lib/contract",
+     "./lib/game-contract",
+     "./lib/links",
+     "./lib/participants",
+     "./lib/ward"
+    ],
+    "shared-ui-design-system": [
+     "./lib/badge/badge",
+     "./lib/card/card",
+     "./lib/empty-state/empty-state",
+     "./lib/page-header/page-header",
+     "./lib/stat-tile/stat-tile"
+    ],
+    "shared-util-dates": [
+     "./lib/clock"
+    ]
+   },
+   "constraints": [
+    {
+     "sourceTag": "*",
+     "onlyDependOnLibsWithTags": [
+      "*"
+     ]
+    }
+   ],
+   "allow": [
+    "^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"
+   ],
+   "injectFreeUi": false,
+   "lint": "passes (pnpm lint)"
+  },
+  "5": {
+   "projects": {
+    "pharmacy": {
+     "root": "apps/pharmacy",
+     "tags": [
+      "scope:pharmacy",
+      "type:app"
+     ]
+    },
+    "ward": {
+     "root": "apps/ward",
+     "tags": [
+      "scope:ward",
+      "type:app"
+     ]
+    },
+    "monitoring-data-access": {
+     "root": "libs/monitoring/data-access",
+     "tags": [
+      "scope:monitoring",
+      "type:data-access"
+     ]
+    },
+    "monitoring-ui": {
+     "root": "libs/monitoring/ui",
+     "tags": [
+      "scope:monitoring",
+      "type:ui"
+     ]
+    },
+    "shared-data-access-auth": {
+     "root": "libs/shared/data-access-auth",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-logging": {
+     "root": "libs/shared/data-access-logging",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-messaging": {
+     "root": "libs/shared/data-access-messaging",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-toasts": {
+     "root": "libs/shared/data-access-toasts",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-domain": {
+     "root": "libs/shared/domain",
+     "tags": [
+      "scope:shared",
+      "type:domain"
+     ]
+    },
+    "shared-ui-design-system": {
+     "root": "libs/shared/ui-design-system",
+     "tags": [
+      "scope:shared",
+      "type:ui"
+     ]
+    },
+    "shared-util-dates": {
+     "root": "libs/shared/util-dates",
+     "tags": [
+      "scope:shared",
+      "type:util"
+     ]
+    }
+   },
+   "aliases": {
+    "@wm/shared/domain": "libs/shared/domain/src/index.ts",
+    "@wm/shared/util-dates": "libs/shared/util-dates/src/index.ts",
+    "@wm/shared/data-access-logging": "libs/shared/data-access-logging/src/index.ts",
+    "@wm/shared/data-access-toasts": "libs/shared/data-access-toasts/src/index.ts",
+    "@wm/shared/data-access-auth": "libs/shared/data-access-auth/src/index.ts",
+    "@wm/shared/data-access-messaging": "libs/shared/data-access-messaging/src/index.ts",
+    "@wm/shared/ui-design-system": "libs/shared/ui-design-system/src/index.ts",
+    "@wm/monitoring/data-access": "libs/monitoring/data-access/src/index.ts",
+    "@wm/monitoring/ui": "libs/monitoring/ui/src/index.ts"
+   },
+   "files": [
+    "apps/pharmacy/src/app/app.config.ts",
+    "apps/pharmacy/src/app/app.html",
+    "apps/pharmacy/src/app/app.scss",
+    "apps/pharmacy/src/app/app.spec.ts",
+    "apps/pharmacy/src/app/app.ts",
+    "apps/pharmacy/src/app/dispensing-queue.ts",
+    "apps/pharmacy/src/index.html",
+    "apps/pharmacy/src/main.ts",
+    "apps/pharmacy/src/styles.scss",
+    "apps/ward/src/app/app.config.ts",
+    "apps/ward/src/app/app.html",
+    "apps/ward/src/app/app.routes.ts",
+    "apps/ward/src/app/app.scss",
+    "apps/ward/src/app/app.spec.ts",
+    "apps/ward/src/app/app.ts",
+    "apps/ward/src/app/auth/forbidden.html",
+    "apps/ward/src/app/auth/forbidden.scss",
+    "apps/ward/src/app/auth/forbidden.ts",
+    "apps/ward/src/app/auth/login.html",
+    "apps/ward/src/app/auth/login.scss",
+    "apps/ward/src/app/auth/login.ts",
+    "apps/ward/src/app/core/clock.ts",
+    "apps/ward/src/app/core/http/interceptors.ts",
+    "apps/ward/src/app/core/http/reports.ts",
+    "apps/ward/src/app/core/navigation-errors.ts",
+    "apps/ward/src/app/core/providers/seo.ts",
+    "apps/ward/src/app/core/providers/skeleton.ts",
+    "apps/ward/src/app/core/providers/wifi-aware-preloading.ts",
+    "apps/ward/src/app/core/ui/connection-badge.html",
+    "apps/ward/src/app/core/ui/connection-badge.scss",
+    "apps/ward/src/app/core/ui/connection-badge.ts",
+    "apps/ward/src/app/core/ui/toast-outlet.html",
+    "apps/ward/src/app/core/ui/toast-outlet.scss",
+    "apps/ward/src/app/core/ui/toast-outlet.ts",
+    "apps/ward/src/app/dev/dev-toolbar.html",
+    "apps/ward/src/app/dev/dev-toolbar.scss",
+    "apps/ward/src/app/dev/dev-toolbar.ts",
+    "apps/ward/src/app/reports/report-download.html",
+    "apps/ward/src/app/reports/report-download.scss",
+    "apps/ward/src/app/reports/report-download.ts",
+    "apps/ward/src/app/reports/reports.routes.ts",
+    "apps/ward/src/app/simulator/monitor-simulator.html",
+    "apps/ward/src/app/simulator/monitor-simulator.scss",
+    "apps/ward/src/app/simulator/monitor-simulator.ts",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.html",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.scss",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.ts",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.html",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.scss",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.ts",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.html",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.scss",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.ts",
+    "apps/ward/src/app/ward/bed-detail/data/bed-resources.ts",
+    "apps/ward/src/app/ward/bed-detail/data/snapshot-then-stream.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/data/snapshot-then-stream.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/liveness.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.ts",
+    "apps/ward/src/app/ward/guards.ts",
+    "apps/ward/src/app/ward/med-order/drug-step.html",
+    "apps/ward/src/app/ward/med-order/drug-step.scss",
+    "apps/ward/src/app/ward/med-order/drug-step.ts",
+    "apps/ward/src/app/ward/med-order/guards.ts",
+    "apps/ward/src/app/ward/med-order/med-order-draft-store.ts",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.html",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.scss",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.ts",
+    "apps/ward/src/app/ward/med-order/patient-step.html",
+    "apps/ward/src/app/ward/med-order/patient-step.scss",
+    "apps/ward/src/app/ward/med-order/patient-step.ts",
+    "apps/ward/src/app/ward/med-order/review-step.html",
+    "apps/ward/src/app/ward/med-order/review-step.scss",
+    "apps/ward/src/app/ward/med-order/review-step.ts",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.html",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.scss",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.ts",
+    "apps/ward/src/app/ward/temperature/record-temperature.spec.ts",
+    "apps/ward/src/app/ward/temperature/temperature-form.html",
+    "apps/ward/src/app/ward/temperature/temperature-form.scss",
+    "apps/ward/src/app/ward/temperature/temperature-form.ts",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.html",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.scss",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.ts",
+    "apps/ward/src/app/ward/ward.routes.ts",
+    "apps/ward/src/environments/environment.ts",
+    "apps/ward/src/index.html",
+    "apps/ward/src/main.ts",
+    "apps/ward/src/styles.scss",
+    "libs/monitoring/data-access/src/index.ts",
+    "libs/monitoring/data-access/src/lib/alarms-store.spec.ts",
+    "libs/monitoring/data-access/src/lib/alarms-store.ts",
+    "libs/monitoring/data-access/src/lib/patients-store.ts",
+    "libs/monitoring/data-access/src/test-setup.ts",
+    "libs/monitoring/ui/src/index.ts",
+    "libs/monitoring/ui/src/lib/alarm-actions/alarm-actions.html",
+    "libs/monitoring/ui/src/lib/alarm-actions/alarm-actions.scss",
+    "libs/monitoring/ui/src/lib/alarm-actions/alarm-actions.ts",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.html",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.scss",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.ts",
+    "libs/monitoring/ui/src/lib/format.ts",
+    "libs/monitoring/ui/src/test-setup.ts",
+    "libs/shared/data-access-auth/src/index.ts",
+    "libs/shared/data-access-auth/src/lib/auth-store.ts",
+    "libs/shared/data-access-auth/src/lib/guards.ts",
+    "libs/shared/data-access-auth/src/lib/provide-auth.ts",
+    "libs/shared/data-access-auth/src/lib/stomp-mode.ts",
+    "libs/shared/data-access-auth/src/test-setup.ts",
+    "libs/shared/data-access-logging/src/index.ts",
+    "libs/shared/data-access-logging/src/lib/logger.ts",
+    "libs/shared/data-access-logging/src/test-setup.ts",
+    "libs/shared/data-access-messaging/src/index.ts",
+    "libs/shared/data-access-messaging/src/lib/command-retry.ts",
+    "libs/shared/data-access-messaging/src/lib/fake-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.ts",
+    "libs/shared/data-access-messaging/src/lib/message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.ts",
+    "libs/shared/data-access-messaging/src/lib/stomp-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/ward-fixtures.ts",
+    "libs/shared/data-access-messaging/src/test-setup.ts",
+    "libs/shared/data-access-toasts/src/index.ts",
+    "libs/shared/data-access-toasts/src/lib/toasts.ts",
+    "libs/shared/data-access-toasts/src/test-setup.ts",
+    "libs/shared/domain/src/index.ts",
+    "libs/shared/domain/src/lib/contract.ts",
+    "libs/shared/domain/src/lib/game-contract.ts",
+    "libs/shared/domain/src/lib/is-bed-id.spec.ts",
+    "libs/shared/domain/src/lib/links.ts",
+    "libs/shared/domain/src/lib/participants.ts",
+    "libs/shared/domain/src/lib/ward.spec.ts",
+    "libs/shared/domain/src/lib/ward.ts",
+    "libs/shared/domain/src/test-setup.ts",
+    "libs/shared/ui-design-system/src/index.ts",
+    "libs/shared/ui-design-system/src/lib/badge/badge.scss",
+    "libs/shared/ui-design-system/src/lib/badge/badge.ts",
+    "libs/shared/ui-design-system/src/lib/card/card.html",
+    "libs/shared/ui-design-system/src/lib/card/card.scss",
+    "libs/shared/ui-design-system/src/lib/card/card.ts",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.scss",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.ts",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.html",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.scss",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.ts",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.html",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.scss",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.ts",
+    "libs/shared/ui-design-system/src/test-setup.ts",
+    "libs/shared/util-dates/src/index.ts",
+    "libs/shared/util-dates/src/lib/clock.ts",
+    "libs/shared/util-dates/src/test-setup.ts"
+   ],
+   "exports": {
+    "monitoring-data-access": [
+     "./lib/alarms-store",
+     "./lib/patients-store"
+    ],
+    "monitoring-ui": [
+     "./lib/alarm-actions/alarm-actions",
+     "./lib/bed-tile/bed-tile",
+     "./lib/format"
+    ],
+    "shared-data-access-auth": [
+     "./lib/auth-store",
+     "./lib/guards",
+     "./lib/provide-auth",
+     "./lib/stomp-mode"
+    ],
+    "shared-data-access-logging": [
+     "./lib/logger"
+    ],
+    "shared-data-access-messaging": [
+     "./lib/command-retry",
+     "./lib/fake-message-bus",
+     "./lib/frames",
+     "./lib/message-bus",
+     "./lib/provide-stomp",
+     "./lib/ward-fixtures"
+    ],
+    "shared-data-access-toasts": [
+     "./lib/toasts"
+    ],
+    "shared-domain": [
+     "./lib/contract",
+     "./lib/game-contract",
+     "./lib/links",
+     "./lib/participants",
+     "./lib/ward"
+    ],
+    "shared-ui-design-system": [
+     "./lib/badge/badge",
+     "./lib/card/card",
+     "./lib/empty-state/empty-state",
+     "./lib/page-header/page-header",
+     "./lib/stat-tile/stat-tile"
+    ],
+    "shared-util-dates": [
+     "./lib/clock"
+    ]
+   },
+   "constraints": [
+    {
+     "sourceTag": "type:app",
+     "onlyDependOnLibsWithTags": [
+      "type:feature",
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "type:feature",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "type:api",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:data-access",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:ui",
+     "onlyDependOnLibsWithTags": [
+      "type:ui",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:domain",
+     "onlyDependOnLibsWithTags": [
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:util",
+     "onlyDependOnLibsWithTags": [
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "scope:ward",
+     "onlyDependOnLibsWithTags": [
+      "scope:ward",
+      "scope:monitoring",
+      "scope:medication",
+      "scope:patient",
+      "scope:shared"
+     ]
+    },
+    {
+     "sourceTag": "scope:pharmacy",
+     "onlyDependOnLibsWithTags": [
+      "scope:pharmacy",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:monitoring",
+     "onlyDependOnLibsWithTags": [
+      "scope:monitoring",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:medication",
+     "onlyDependOnLibsWithTags": [
+      "scope:medication",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:patient",
+     "onlyDependOnLibsWithTags": [
+      "scope:patient",
+      "scope:shared"
+     ]
+    },
+    {
+     "sourceTag": "scope:shared",
+     "onlyDependOnLibsWithTags": [
+      "scope:shared"
+     ]
+    }
+   ],
+   "allow": [
+    "^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"
+   ],
+   "injectFreeUi": false,
+   "lint": "fails on purpose: 5 errors in monitoring-ui (a ui library imports data-access). D5.6 and D5.7 fix them."
+  },
+  "6": {
+   "projects": {
+    "pharmacy": {
+     "root": "apps/pharmacy",
+     "tags": [
+      "scope:pharmacy",
+      "type:app"
+     ]
+    },
+    "ward": {
+     "root": "apps/ward",
+     "tags": [
+      "scope:ward",
+      "type:app"
+     ]
+    },
+    "monitoring-data-access": {
+     "root": "libs/monitoring/data-access",
+     "tags": [
+      "scope:monitoring",
+      "type:data-access"
+     ]
+    },
+    "monitoring-domain": {
+     "root": "libs/monitoring/domain",
+     "tags": [
+      "scope:monitoring",
+      "type:domain"
+     ]
+    },
+    "monitoring-ui": {
+     "root": "libs/monitoring/ui",
+     "tags": [
+      "scope:monitoring",
+      "type:ui"
+     ]
+    },
+    "shared-data-access-auth": {
+     "root": "libs/shared/data-access-auth",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-logging": {
+     "root": "libs/shared/data-access-logging",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-messaging": {
+     "root": "libs/shared/data-access-messaging",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-toasts": {
+     "root": "libs/shared/data-access-toasts",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-domain": {
+     "root": "libs/shared/domain",
+     "tags": [
+      "scope:shared",
+      "type:domain"
+     ]
+    },
+    "shared-ui-design-system": {
+     "root": "libs/shared/ui-design-system",
+     "tags": [
+      "scope:shared",
+      "type:ui"
+     ]
+    },
+    "shared-util-dates": {
+     "root": "libs/shared/util-dates",
+     "tags": [
+      "scope:shared",
+      "type:util"
+     ]
+    }
+   },
+   "aliases": {
+    "@wm/shared/domain": "libs/shared/domain/src/index.ts",
+    "@wm/shared/util-dates": "libs/shared/util-dates/src/index.ts",
+    "@wm/shared/data-access-logging": "libs/shared/data-access-logging/src/index.ts",
+    "@wm/shared/data-access-toasts": "libs/shared/data-access-toasts/src/index.ts",
+    "@wm/shared/data-access-auth": "libs/shared/data-access-auth/src/index.ts",
+    "@wm/shared/data-access-messaging": "libs/shared/data-access-messaging/src/index.ts",
+    "@wm/shared/ui-design-system": "libs/shared/ui-design-system/src/index.ts",
+    "@wm/monitoring/data-access": "libs/monitoring/data-access/src/index.ts",
+    "@wm/monitoring/ui": "libs/monitoring/ui/src/index.ts",
+    "@wm/monitoring/domain": "libs/monitoring/domain/src/index.ts"
+   },
+   "files": [
+    "apps/pharmacy/src/app/app.config.ts",
+    "apps/pharmacy/src/app/app.html",
+    "apps/pharmacy/src/app/app.scss",
+    "apps/pharmacy/src/app/app.spec.ts",
+    "apps/pharmacy/src/app/app.ts",
+    "apps/pharmacy/src/app/dispensing-queue.ts",
+    "apps/pharmacy/src/index.html",
+    "apps/pharmacy/src/main.ts",
+    "apps/pharmacy/src/styles.scss",
+    "apps/ward/src/app/app.config.ts",
+    "apps/ward/src/app/app.html",
+    "apps/ward/src/app/app.routes.ts",
+    "apps/ward/src/app/app.scss",
+    "apps/ward/src/app/app.spec.ts",
+    "apps/ward/src/app/app.ts",
+    "apps/ward/src/app/auth/forbidden.html",
+    "apps/ward/src/app/auth/forbidden.scss",
+    "apps/ward/src/app/auth/forbidden.ts",
+    "apps/ward/src/app/auth/login.html",
+    "apps/ward/src/app/auth/login.scss",
+    "apps/ward/src/app/auth/login.ts",
+    "apps/ward/src/app/core/clock.ts",
+    "apps/ward/src/app/core/http/interceptors.ts",
+    "apps/ward/src/app/core/http/reports.ts",
+    "apps/ward/src/app/core/navigation-errors.ts",
+    "apps/ward/src/app/core/providers/seo.ts",
+    "apps/ward/src/app/core/providers/skeleton.ts",
+    "apps/ward/src/app/core/providers/wifi-aware-preloading.ts",
+    "apps/ward/src/app/core/ui/connection-badge.html",
+    "apps/ward/src/app/core/ui/connection-badge.scss",
+    "apps/ward/src/app/core/ui/connection-badge.ts",
+    "apps/ward/src/app/core/ui/toast-outlet.html",
+    "apps/ward/src/app/core/ui/toast-outlet.scss",
+    "apps/ward/src/app/core/ui/toast-outlet.ts",
+    "apps/ward/src/app/dev/dev-toolbar.html",
+    "apps/ward/src/app/dev/dev-toolbar.scss",
+    "apps/ward/src/app/dev/dev-toolbar.ts",
+    "apps/ward/src/app/reports/report-download.html",
+    "apps/ward/src/app/reports/report-download.scss",
+    "apps/ward/src/app/reports/report-download.ts",
+    "apps/ward/src/app/reports/reports.routes.ts",
+    "apps/ward/src/app/simulator/monitor-simulator.html",
+    "apps/ward/src/app/simulator/monitor-simulator.scss",
+    "apps/ward/src/app/simulator/monitor-simulator.ts",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.html",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.scss",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.ts",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.html",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.scss",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.ts",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.html",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.scss",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.ts",
+    "apps/ward/src/app/ward/bed-detail/data/bed-resources.ts",
+    "apps/ward/src/app/ward/bed-detail/data/snapshot-then-stream.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/data/snapshot-then-stream.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/liveness.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.ts",
+    "apps/ward/src/app/ward/guards.ts",
+    "apps/ward/src/app/ward/med-order/drug-step.html",
+    "apps/ward/src/app/ward/med-order/drug-step.scss",
+    "apps/ward/src/app/ward/med-order/drug-step.ts",
+    "apps/ward/src/app/ward/med-order/guards.ts",
+    "apps/ward/src/app/ward/med-order/med-order-draft-store.ts",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.html",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.scss",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.ts",
+    "apps/ward/src/app/ward/med-order/patient-step.html",
+    "apps/ward/src/app/ward/med-order/patient-step.scss",
+    "apps/ward/src/app/ward/med-order/patient-step.ts",
+    "apps/ward/src/app/ward/med-order/review-step.html",
+    "apps/ward/src/app/ward/med-order/review-step.scss",
+    "apps/ward/src/app/ward/med-order/review-step.ts",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.html",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.scss",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.ts",
+    "apps/ward/src/app/ward/temperature/record-temperature.spec.ts",
+    "apps/ward/src/app/ward/temperature/temperature-form.html",
+    "apps/ward/src/app/ward/temperature/temperature-form.scss",
+    "apps/ward/src/app/ward/temperature/temperature-form.ts",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.html",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.scss",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.ts",
+    "apps/ward/src/app/ward/ward.routes.ts",
+    "apps/ward/src/environments/environment.ts",
+    "apps/ward/src/index.html",
+    "apps/ward/src/main.ts",
+    "apps/ward/src/styles.scss",
+    "libs/monitoring/data-access/src/index.ts",
+    "libs/monitoring/data-access/src/lib/alarms-store.spec.ts",
+    "libs/monitoring/data-access/src/lib/alarms-store.ts",
+    "libs/monitoring/data-access/src/lib/patients-store.ts",
+    "libs/monitoring/data-access/src/test-setup.ts",
+    "libs/monitoring/domain/src/index.ts",
+    "libs/monitoring/domain/src/lib/alarm-rules.ts",
+    "libs/monitoring/domain/src/lib/alarm-view.spec.ts",
+    "libs/monitoring/domain/src/lib/alarm-view.ts",
+    "libs/monitoring/domain/src/test-setup.ts",
+    "libs/monitoring/ui/src/index.ts",
+    "libs/monitoring/ui/src/lib/alarm-actions/alarm-actions.html",
+    "libs/monitoring/ui/src/lib/alarm-actions/alarm-actions.scss",
+    "libs/monitoring/ui/src/lib/alarm-actions/alarm-actions.ts",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.html",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.scss",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.ts",
+    "libs/monitoring/ui/src/test-setup.ts",
+    "libs/shared/data-access-auth/src/index.ts",
+    "libs/shared/data-access-auth/src/lib/auth-store.ts",
+    "libs/shared/data-access-auth/src/lib/guards.ts",
+    "libs/shared/data-access-auth/src/lib/provide-auth.ts",
+    "libs/shared/data-access-auth/src/lib/stomp-mode.ts",
+    "libs/shared/data-access-auth/src/test-setup.ts",
+    "libs/shared/data-access-logging/src/index.ts",
+    "libs/shared/data-access-logging/src/lib/logger.ts",
+    "libs/shared/data-access-logging/src/test-setup.ts",
+    "libs/shared/data-access-messaging/src/index.ts",
+    "libs/shared/data-access-messaging/src/lib/command-retry.ts",
+    "libs/shared/data-access-messaging/src/lib/fake-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.ts",
+    "libs/shared/data-access-messaging/src/lib/message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.ts",
+    "libs/shared/data-access-messaging/src/lib/stomp-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/ward-fixtures.ts",
+    "libs/shared/data-access-messaging/src/test-setup.ts",
+    "libs/shared/data-access-toasts/src/index.ts",
+    "libs/shared/data-access-toasts/src/lib/toasts.ts",
+    "libs/shared/data-access-toasts/src/test-setup.ts",
+    "libs/shared/domain/src/index.ts",
+    "libs/shared/domain/src/lib/contract.ts",
+    "libs/shared/domain/src/lib/game-contract.ts",
+    "libs/shared/domain/src/lib/is-bed-id.spec.ts",
+    "libs/shared/domain/src/lib/links.ts",
+    "libs/shared/domain/src/lib/participants.ts",
+    "libs/shared/domain/src/lib/ward.spec.ts",
+    "libs/shared/domain/src/lib/ward.ts",
+    "libs/shared/domain/src/test-setup.ts",
+    "libs/shared/ui-design-system/src/index.ts",
+    "libs/shared/ui-design-system/src/lib/badge/badge.scss",
+    "libs/shared/ui-design-system/src/lib/badge/badge.ts",
+    "libs/shared/ui-design-system/src/lib/card/card.html",
+    "libs/shared/ui-design-system/src/lib/card/card.scss",
+    "libs/shared/ui-design-system/src/lib/card/card.ts",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.scss",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.ts",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.html",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.scss",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.ts",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.html",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.scss",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.ts",
+    "libs/shared/ui-design-system/src/test-setup.ts",
+    "libs/shared/util-dates/src/index.ts",
+    "libs/shared/util-dates/src/lib/clock.ts",
+    "libs/shared/util-dates/src/test-setup.ts"
+   ],
+   "exports": {
+    "monitoring-data-access": [
+     "./lib/alarms-store",
+     "./lib/patients-store"
+    ],
+    "monitoring-domain": [
+     "./lib/alarm-rules",
+     "./lib/alarm-view"
+    ],
+    "monitoring-ui": [
+     "./lib/alarm-actions/alarm-actions",
+     "./lib/bed-tile/bed-tile"
+    ],
+    "shared-data-access-auth": [
+     "./lib/auth-store",
+     "./lib/guards",
+     "./lib/provide-auth",
+     "./lib/stomp-mode"
+    ],
+    "shared-data-access-logging": [
+     "./lib/logger"
+    ],
+    "shared-data-access-messaging": [
+     "./lib/command-retry",
+     "./lib/fake-message-bus",
+     "./lib/frames",
+     "./lib/message-bus",
+     "./lib/provide-stomp",
+     "./lib/ward-fixtures"
+    ],
+    "shared-data-access-toasts": [
+     "./lib/toasts"
+    ],
+    "shared-domain": [
+     "./lib/contract",
+     "./lib/game-contract",
+     "./lib/links",
+     "./lib/participants",
+     "./lib/ward"
+    ],
+    "shared-ui-design-system": [
+     "./lib/badge/badge",
+     "./lib/card/card",
+     "./lib/empty-state/empty-state",
+     "./lib/page-header/page-header",
+     "./lib/stat-tile/stat-tile"
+    ],
+    "shared-util-dates": [
+     "./lib/clock"
+    ]
+   },
+   "constraints": [
+    {
+     "sourceTag": "type:app",
+     "onlyDependOnLibsWithTags": [
+      "type:feature",
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "type:feature",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "type:api",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:data-access",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:ui",
+     "onlyDependOnLibsWithTags": [
+      "type:ui",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:domain",
+     "onlyDependOnLibsWithTags": [
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:util",
+     "onlyDependOnLibsWithTags": [
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "scope:ward",
+     "onlyDependOnLibsWithTags": [
+      "scope:ward",
+      "scope:monitoring",
+      "scope:medication",
+      "scope:patient",
+      "scope:shared"
+     ]
+    },
+    {
+     "sourceTag": "scope:pharmacy",
+     "onlyDependOnLibsWithTags": [
+      "scope:pharmacy",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:monitoring",
+     "onlyDependOnLibsWithTags": [
+      "scope:monitoring",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:medication",
+     "onlyDependOnLibsWithTags": [
+      "scope:medication",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:patient",
+     "onlyDependOnLibsWithTags": [
+      "scope:patient",
+      "scope:shared"
+     ]
+    },
+    {
+     "sourceTag": "scope:shared",
+     "onlyDependOnLibsWithTags": [
+      "scope:shared"
+     ]
+    }
+   ],
+   "allow": [
+    "^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"
+   ],
+   "injectFreeUi": false,
+   "lint": "fails on purpose: 3 errors in monitoring-ui (AlarmActions injects services). D5.7 fixes them."
+  },
+  "7": {
+   "projects": {
+    "pharmacy": {
+     "root": "apps/pharmacy",
+     "tags": [
+      "scope:pharmacy",
+      "type:app"
+     ]
+    },
+    "ward": {
+     "root": "apps/ward",
+     "tags": [
+      "scope:ward",
+      "type:app"
+     ]
+    },
+    "monitoring-data-access": {
+     "root": "libs/monitoring/data-access",
+     "tags": [
+      "scope:monitoring",
+      "type:data-access"
+     ]
+    },
+    "monitoring-domain": {
+     "root": "libs/monitoring/domain",
+     "tags": [
+      "scope:monitoring",
+      "type:domain"
+     ]
+    },
+    "monitoring-ui": {
+     "root": "libs/monitoring/ui",
+     "tags": [
+      "scope:monitoring",
+      "type:ui"
+     ]
+    },
+    "shared-data-access-auth": {
+     "root": "libs/shared/data-access-auth",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-logging": {
+     "root": "libs/shared/data-access-logging",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-messaging": {
+     "root": "libs/shared/data-access-messaging",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-toasts": {
+     "root": "libs/shared/data-access-toasts",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-domain": {
+     "root": "libs/shared/domain",
+     "tags": [
+      "scope:shared",
+      "type:domain"
+     ]
+    },
+    "shared-ui-design-system": {
+     "root": "libs/shared/ui-design-system",
+     "tags": [
+      "scope:shared",
+      "type:ui"
+     ]
+    },
+    "shared-util-dates": {
+     "root": "libs/shared/util-dates",
+     "tags": [
+      "scope:shared",
+      "type:util"
+     ]
+    }
+   },
+   "aliases": {
+    "@wm/shared/domain": "libs/shared/domain/src/index.ts",
+    "@wm/shared/util-dates": "libs/shared/util-dates/src/index.ts",
+    "@wm/shared/data-access-logging": "libs/shared/data-access-logging/src/index.ts",
+    "@wm/shared/data-access-toasts": "libs/shared/data-access-toasts/src/index.ts",
+    "@wm/shared/data-access-auth": "libs/shared/data-access-auth/src/index.ts",
+    "@wm/shared/data-access-messaging": "libs/shared/data-access-messaging/src/index.ts",
+    "@wm/shared/ui-design-system": "libs/shared/ui-design-system/src/index.ts",
+    "@wm/monitoring/data-access": "libs/monitoring/data-access/src/index.ts",
+    "@wm/monitoring/ui": "libs/monitoring/ui/src/index.ts",
+    "@wm/monitoring/domain": "libs/monitoring/domain/src/index.ts"
+   },
+   "files": [
+    "apps/pharmacy/src/app/app.config.ts",
+    "apps/pharmacy/src/app/app.html",
+    "apps/pharmacy/src/app/app.scss",
+    "apps/pharmacy/src/app/app.spec.ts",
+    "apps/pharmacy/src/app/app.ts",
+    "apps/pharmacy/src/app/dispensing-queue.ts",
+    "apps/pharmacy/src/index.html",
+    "apps/pharmacy/src/main.ts",
+    "apps/pharmacy/src/styles.scss",
+    "apps/ward/src/app/app.config.ts",
+    "apps/ward/src/app/app.html",
+    "apps/ward/src/app/app.routes.ts",
+    "apps/ward/src/app/app.scss",
+    "apps/ward/src/app/app.spec.ts",
+    "apps/ward/src/app/app.ts",
+    "apps/ward/src/app/auth/forbidden.html",
+    "apps/ward/src/app/auth/forbidden.scss",
+    "apps/ward/src/app/auth/forbidden.ts",
+    "apps/ward/src/app/auth/login.html",
+    "apps/ward/src/app/auth/login.scss",
+    "apps/ward/src/app/auth/login.ts",
+    "apps/ward/src/app/core/clock.ts",
+    "apps/ward/src/app/core/http/interceptors.ts",
+    "apps/ward/src/app/core/http/reports.ts",
+    "apps/ward/src/app/core/navigation-errors.ts",
+    "apps/ward/src/app/core/providers/seo.ts",
+    "apps/ward/src/app/core/providers/skeleton.ts",
+    "apps/ward/src/app/core/providers/wifi-aware-preloading.ts",
+    "apps/ward/src/app/core/ui/connection-badge.html",
+    "apps/ward/src/app/core/ui/connection-badge.scss",
+    "apps/ward/src/app/core/ui/connection-badge.ts",
+    "apps/ward/src/app/core/ui/toast-outlet.html",
+    "apps/ward/src/app/core/ui/toast-outlet.scss",
+    "apps/ward/src/app/core/ui/toast-outlet.ts",
+    "apps/ward/src/app/dev/dev-toolbar.html",
+    "apps/ward/src/app/dev/dev-toolbar.scss",
+    "apps/ward/src/app/dev/dev-toolbar.ts",
+    "apps/ward/src/app/reports/report-download.html",
+    "apps/ward/src/app/reports/report-download.scss",
+    "apps/ward/src/app/reports/report-download.ts",
+    "apps/ward/src/app/reports/reports.routes.ts",
+    "apps/ward/src/app/simulator/monitor-simulator.html",
+    "apps/ward/src/app/simulator/monitor-simulator.scss",
+    "apps/ward/src/app/simulator/monitor-simulator.ts",
+    "apps/ward/src/app/ward/alarm-actions/alarm-actions.ts",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.html",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.scss",
+    "apps/ward/src/app/ward/bed-detail/bed-detail.ts",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.html",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.scss",
+    "apps/ward/src/app/ward/bed-detail/components/medication-list/medication-list.ts",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.html",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.scss",
+    "apps/ward/src/app/ward/bed-detail/components/vitals-chart/vitals-chart.ts",
+    "apps/ward/src/app/ward/bed-detail/data/bed-resources.ts",
+    "apps/ward/src/app/ward/bed-detail/data/snapshot-then-stream.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/data/snapshot-then-stream.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/liveness.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vital-reading/vital-reading.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-card/vitals-card.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.html",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.scss",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.spec.ts",
+    "apps/ward/src/app/ward/bed-detail/vitals/vitals-panel/vitals-panel.ts",
+    "apps/ward/src/app/ward/guards.ts",
+    "apps/ward/src/app/ward/med-order/drug-step.html",
+    "apps/ward/src/app/ward/med-order/drug-step.scss",
+    "apps/ward/src/app/ward/med-order/drug-step.ts",
+    "apps/ward/src/app/ward/med-order/guards.ts",
+    "apps/ward/src/app/ward/med-order/med-order-draft-store.ts",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.html",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.scss",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.ts",
+    "apps/ward/src/app/ward/med-order/patient-step.html",
+    "apps/ward/src/app/ward/med-order/patient-step.scss",
+    "apps/ward/src/app/ward/med-order/patient-step.ts",
+    "apps/ward/src/app/ward/med-order/review-step.html",
+    "apps/ward/src/app/ward/med-order/review-step.scss",
+    "apps/ward/src/app/ward/med-order/review-step.ts",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.html",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.scss",
+    "apps/ward/src/app/ward/nurse-station/nurse-station.ts",
+    "apps/ward/src/app/ward/temperature/record-temperature.spec.ts",
+    "apps/ward/src/app/ward/temperature/temperature-form.html",
+    "apps/ward/src/app/ward/temperature/temperature-form.scss",
+    "apps/ward/src/app/ward/temperature/temperature-form.ts",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.html",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.scss",
+    "apps/ward/src/app/ward/ward-rounds/ward-rounds.ts",
+    "apps/ward/src/app/ward/ward.routes.ts",
+    "apps/ward/src/environments/environment.ts",
+    "apps/ward/src/index.html",
+    "apps/ward/src/main.ts",
+    "apps/ward/src/styles.scss",
+    "libs/monitoring/data-access/src/index.ts",
+    "libs/monitoring/data-access/src/lib/alarms-store.spec.ts",
+    "libs/monitoring/data-access/src/lib/alarms-store.ts",
+    "libs/monitoring/data-access/src/lib/patients-store.ts",
+    "libs/monitoring/data-access/src/test-setup.ts",
+    "libs/monitoring/domain/src/index.ts",
+    "libs/monitoring/domain/src/lib/alarm-rules.ts",
+    "libs/monitoring/domain/src/lib/alarm-view.spec.ts",
+    "libs/monitoring/domain/src/lib/alarm-view.ts",
+    "libs/monitoring/domain/src/test-setup.ts",
+    "libs/monitoring/ui/src/index.ts",
+    "libs/monitoring/ui/src/lib/alarm-row/alarm-row.html",
+    "libs/monitoring/ui/src/lib/alarm-row/alarm-row.scss",
+    "libs/monitoring/ui/src/lib/alarm-row/alarm-row.ts",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.html",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.scss",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.ts",
+    "libs/monitoring/ui/src/test-setup.ts",
+    "libs/shared/data-access-auth/src/index.ts",
+    "libs/shared/data-access-auth/src/lib/auth-store.ts",
+    "libs/shared/data-access-auth/src/lib/guards.ts",
+    "libs/shared/data-access-auth/src/lib/provide-auth.ts",
+    "libs/shared/data-access-auth/src/lib/stomp-mode.ts",
+    "libs/shared/data-access-auth/src/test-setup.ts",
+    "libs/shared/data-access-logging/src/index.ts",
+    "libs/shared/data-access-logging/src/lib/logger.ts",
+    "libs/shared/data-access-logging/src/test-setup.ts",
+    "libs/shared/data-access-messaging/src/index.ts",
+    "libs/shared/data-access-messaging/src/lib/command-retry.ts",
+    "libs/shared/data-access-messaging/src/lib/fake-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.ts",
+    "libs/shared/data-access-messaging/src/lib/message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.ts",
+    "libs/shared/data-access-messaging/src/lib/stomp-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/ward-fixtures.ts",
+    "libs/shared/data-access-messaging/src/test-setup.ts",
+    "libs/shared/data-access-toasts/src/index.ts",
+    "libs/shared/data-access-toasts/src/lib/toasts.ts",
+    "libs/shared/data-access-toasts/src/test-setup.ts",
+    "libs/shared/domain/src/index.ts",
+    "libs/shared/domain/src/lib/contract.ts",
+    "libs/shared/domain/src/lib/game-contract.ts",
+    "libs/shared/domain/src/lib/is-bed-id.spec.ts",
+    "libs/shared/domain/src/lib/links.ts",
+    "libs/shared/domain/src/lib/participants.ts",
+    "libs/shared/domain/src/lib/ward.spec.ts",
+    "libs/shared/domain/src/lib/ward.ts",
+    "libs/shared/domain/src/test-setup.ts",
+    "libs/shared/ui-design-system/src/index.ts",
+    "libs/shared/ui-design-system/src/lib/badge/badge.scss",
+    "libs/shared/ui-design-system/src/lib/badge/badge.ts",
+    "libs/shared/ui-design-system/src/lib/card/card.html",
+    "libs/shared/ui-design-system/src/lib/card/card.scss",
+    "libs/shared/ui-design-system/src/lib/card/card.ts",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.scss",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.ts",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.html",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.scss",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.ts",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.html",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.scss",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.ts",
+    "libs/shared/ui-design-system/src/test-setup.ts",
+    "libs/shared/util-dates/src/index.ts",
+    "libs/shared/util-dates/src/lib/clock.ts",
+    "libs/shared/util-dates/src/test-setup.ts"
+   ],
+   "exports": {
+    "monitoring-data-access": [
+     "./lib/alarms-store",
+     "./lib/patients-store"
+    ],
+    "monitoring-domain": [
+     "./lib/alarm-rules",
+     "./lib/alarm-view"
+    ],
+    "monitoring-ui": [
+     "./lib/alarm-row/alarm-row",
+     "./lib/bed-tile/bed-tile"
+    ],
+    "shared-data-access-auth": [
+     "./lib/auth-store",
+     "./lib/guards",
+     "./lib/provide-auth",
+     "./lib/stomp-mode"
+    ],
+    "shared-data-access-logging": [
+     "./lib/logger"
+    ],
+    "shared-data-access-messaging": [
+     "./lib/command-retry",
+     "./lib/fake-message-bus",
+     "./lib/frames",
+     "./lib/message-bus",
+     "./lib/provide-stomp",
+     "./lib/ward-fixtures"
+    ],
+    "shared-data-access-toasts": [
+     "./lib/toasts"
+    ],
+    "shared-domain": [
+     "./lib/contract",
+     "./lib/game-contract",
+     "./lib/links",
+     "./lib/participants",
+     "./lib/ward"
+    ],
+    "shared-ui-design-system": [
+     "./lib/badge/badge",
+     "./lib/card/card",
+     "./lib/empty-state/empty-state",
+     "./lib/page-header/page-header",
+     "./lib/stat-tile/stat-tile"
+    ],
+    "shared-util-dates": [
+     "./lib/clock"
+    ]
+   },
+   "constraints": [
+    {
+     "sourceTag": "type:app",
+     "onlyDependOnLibsWithTags": [
+      "type:feature",
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "type:feature",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "type:api",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:data-access",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:ui",
+     "onlyDependOnLibsWithTags": [
+      "type:ui",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:domain",
+     "onlyDependOnLibsWithTags": [
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:util",
+     "onlyDependOnLibsWithTags": [
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "scope:ward",
+     "onlyDependOnLibsWithTags": [
+      "scope:ward",
+      "scope:monitoring",
+      "scope:medication",
+      "scope:patient",
+      "scope:shared"
+     ]
+    },
+    {
+     "sourceTag": "scope:pharmacy",
+     "onlyDependOnLibsWithTags": [
+      "scope:pharmacy",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:monitoring",
+     "onlyDependOnLibsWithTags": [
+      "scope:monitoring",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:medication",
+     "onlyDependOnLibsWithTags": [
+      "scope:medication",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:patient",
+     "onlyDependOnLibsWithTags": [
+      "scope:patient",
+      "scope:shared"
+     ]
+    },
+    {
+     "sourceTag": "scope:shared",
+     "onlyDependOnLibsWithTags": [
+      "scope:shared"
+     ]
+    }
+   ],
+   "allow": [
+    "^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"
+   ],
+   "injectFreeUi": true,
+   "lint": "passes (pnpm lint)"
+  },
+  "8": {
+   "projects": {
+    "pharmacy": {
+     "root": "apps/pharmacy",
+     "tags": [
+      "scope:pharmacy",
+      "type:app"
+     ]
+    },
+    "ward": {
+     "root": "apps/ward",
+     "tags": [
+      "scope:ward",
+      "type:app"
+     ]
+    },
+    "monitoring-data-access": {
+     "root": "libs/monitoring/data-access",
+     "tags": [
+      "scope:monitoring",
+      "type:data-access"
+     ]
+    },
+    "monitoring-domain": {
+     "root": "libs/monitoring/domain",
+     "tags": [
+      "scope:monitoring",
+      "type:domain"
+     ]
+    },
+    "monitoring-feature-station": {
+     "root": "libs/monitoring/feature-station",
+     "tags": [
+      "scope:monitoring",
+      "type:feature"
+     ]
+    },
+    "monitoring-ui": {
+     "root": "libs/monitoring/ui",
+     "tags": [
+      "scope:monitoring",
+      "type:ui"
+     ]
+    },
+    "shared-data-access-auth": {
+     "root": "libs/shared/data-access-auth",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-logging": {
+     "root": "libs/shared/data-access-logging",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-messaging": {
+     "root": "libs/shared/data-access-messaging",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-toasts": {
+     "root": "libs/shared/data-access-toasts",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-domain": {
+     "root": "libs/shared/domain",
+     "tags": [
+      "scope:shared",
+      "type:domain"
+     ]
+    },
+    "shared-ui-design-system": {
+     "root": "libs/shared/ui-design-system",
+     "tags": [
+      "scope:shared",
+      "type:ui"
+     ]
+    },
+    "shared-util-dates": {
+     "root": "libs/shared/util-dates",
+     "tags": [
+      "scope:shared",
+      "type:util"
+     ]
+    }
+   },
+   "aliases": {
+    "@wm/shared/domain": "libs/shared/domain/src/index.ts",
+    "@wm/shared/util-dates": "libs/shared/util-dates/src/index.ts",
+    "@wm/shared/data-access-logging": "libs/shared/data-access-logging/src/index.ts",
+    "@wm/shared/data-access-toasts": "libs/shared/data-access-toasts/src/index.ts",
+    "@wm/shared/data-access-auth": "libs/shared/data-access-auth/src/index.ts",
+    "@wm/shared/data-access-messaging": "libs/shared/data-access-messaging/src/index.ts",
+    "@wm/shared/ui-design-system": "libs/shared/ui-design-system/src/index.ts",
+    "@wm/monitoring/data-access": "libs/monitoring/data-access/src/index.ts",
+    "@wm/monitoring/ui": "libs/monitoring/ui/src/index.ts",
+    "@wm/monitoring/domain": "libs/monitoring/domain/src/index.ts",
+    "@wm/monitoring/feature-station": "libs/monitoring/feature-station/src/index.ts"
+   },
+   "files": [
+    "apps/pharmacy/src/app/app.config.ts",
+    "apps/pharmacy/src/app/app.html",
+    "apps/pharmacy/src/app/app.scss",
+    "apps/pharmacy/src/app/app.spec.ts",
+    "apps/pharmacy/src/app/app.ts",
+    "apps/pharmacy/src/app/dispensing-queue.ts",
+    "apps/pharmacy/src/index.html",
+    "apps/pharmacy/src/main.ts",
+    "apps/pharmacy/src/styles.scss",
+    "apps/ward/src/app/app.config.ts",
+    "apps/ward/src/app/app.html",
+    "apps/ward/src/app/app.routes.ts",
+    "apps/ward/src/app/app.scss",
+    "apps/ward/src/app/app.spec.ts",
+    "apps/ward/src/app/app.ts",
+    "apps/ward/src/app/auth/forbidden.html",
+    "apps/ward/src/app/auth/forbidden.scss",
+    "apps/ward/src/app/auth/forbidden.ts",
+    "apps/ward/src/app/auth/login.html",
+    "apps/ward/src/app/auth/login.scss",
+    "apps/ward/src/app/auth/login.ts",
+    "apps/ward/src/app/core/http/interceptors.ts",
+    "apps/ward/src/app/core/http/reports.ts",
+    "apps/ward/src/app/core/navigation-errors.ts",
+    "apps/ward/src/app/core/providers/seo.ts",
+    "apps/ward/src/app/core/providers/skeleton.ts",
+    "apps/ward/src/app/core/providers/wifi-aware-preloading.ts",
+    "apps/ward/src/app/core/ui/connection-badge.html",
+    "apps/ward/src/app/core/ui/connection-badge.scss",
+    "apps/ward/src/app/core/ui/connection-badge.ts",
+    "apps/ward/src/app/core/ui/toast-outlet.html",
+    "apps/ward/src/app/core/ui/toast-outlet.scss",
+    "apps/ward/src/app/core/ui/toast-outlet.ts",
+    "apps/ward/src/app/dev/dev-toolbar.html",
+    "apps/ward/src/app/dev/dev-toolbar.scss",
+    "apps/ward/src/app/dev/dev-toolbar.ts",
+    "apps/ward/src/app/reports/report-download.html",
+    "apps/ward/src/app/reports/report-download.scss",
+    "apps/ward/src/app/reports/report-download.ts",
+    "apps/ward/src/app/reports/reports.routes.ts",
+    "apps/ward/src/app/simulator/monitor-simulator.html",
+    "apps/ward/src/app/simulator/monitor-simulator.scss",
+    "apps/ward/src/app/simulator/monitor-simulator.ts",
+    "apps/ward/src/app/ward/med-order/drug-step.html",
+    "apps/ward/src/app/ward/med-order/drug-step.scss",
+    "apps/ward/src/app/ward/med-order/drug-step.ts",
+    "apps/ward/src/app/ward/med-order/guards.ts",
+    "apps/ward/src/app/ward/med-order/med-order-draft-store.ts",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.html",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.scss",
+    "apps/ward/src/app/ward/med-order/med-order-wizard.ts",
+    "apps/ward/src/app/ward/med-order/med-order.routes.ts",
+    "apps/ward/src/app/ward/med-order/patient-step.html",
+    "apps/ward/src/app/ward/med-order/patient-step.scss",
+    "apps/ward/src/app/ward/med-order/patient-step.ts",
+    "apps/ward/src/app/ward/med-order/review-step.html",
+    "apps/ward/src/app/ward/med-order/review-step.scss",
+    "apps/ward/src/app/ward/med-order/review-step.ts",
+    "apps/ward/src/environments/environment.ts",
+    "apps/ward/src/index.html",
+    "apps/ward/src/main.ts",
+    "apps/ward/src/styles.scss",
+    "libs/monitoring/data-access/src/index.ts",
+    "libs/monitoring/data-access/src/lib/alarms-store.spec.ts",
+    "libs/monitoring/data-access/src/lib/alarms-store.ts",
+    "libs/monitoring/data-access/src/lib/bed-resources.ts",
+    "libs/monitoring/data-access/src/lib/clock.ts",
+    "libs/monitoring/data-access/src/lib/liveness.ts",
+    "libs/monitoring/data-access/src/lib/patients-store.ts",
+    "libs/monitoring/data-access/src/lib/snapshot-then-stream.spec.ts",
+    "libs/monitoring/data-access/src/lib/snapshot-then-stream.ts",
+    "libs/monitoring/data-access/src/test-setup.ts",
+    "libs/monitoring/domain/src/index.ts",
+    "libs/monitoring/domain/src/lib/alarm-rules.ts",
+    "libs/monitoring/domain/src/lib/alarm-view.spec.ts",
+    "libs/monitoring/domain/src/lib/alarm-view.ts",
+    "libs/monitoring/domain/src/test-setup.ts",
+    "libs/monitoring/feature-station/src/index.ts",
+    "libs/monitoring/feature-station/src/lib/alarm-actions/alarm-actions.ts",
+    "libs/monitoring/feature-station/src/lib/bed-detail/bed-detail.html",
+    "libs/monitoring/feature-station/src/lib/bed-detail/bed-detail.scss",
+    "libs/monitoring/feature-station/src/lib/bed-detail/bed-detail.ts",
+    "libs/monitoring/feature-station/src/lib/bed-detail/medication-list/medication-list.html",
+    "libs/monitoring/feature-station/src/lib/bed-detail/medication-list/medication-list.scss",
+    "libs/monitoring/feature-station/src/lib/bed-detail/medication-list/medication-list.ts",
+    "libs/monitoring/feature-station/src/lib/bed-detail/vitals-card/vitals-card.html",
+    "libs/monitoring/feature-station/src/lib/bed-detail/vitals-card/vitals-card.scss",
+    "libs/monitoring/feature-station/src/lib/bed-detail/vitals-card/vitals-card.spec.ts",
+    "libs/monitoring/feature-station/src/lib/bed-detail/vitals-card/vitals-card.ts",
+    "libs/monitoring/feature-station/src/lib/guards.ts",
+    "libs/monitoring/feature-station/src/lib/nurse-station/nurse-station.html",
+    "libs/monitoring/feature-station/src/lib/nurse-station/nurse-station.scss",
+    "libs/monitoring/feature-station/src/lib/nurse-station/nurse-station.ts",
+    "libs/monitoring/feature-station/src/lib/temperature/record-temperature.spec.ts",
+    "libs/monitoring/feature-station/src/lib/temperature/temperature-form.html",
+    "libs/monitoring/feature-station/src/lib/temperature/temperature-form.scss",
+    "libs/monitoring/feature-station/src/lib/temperature/temperature-form.ts",
+    "libs/monitoring/feature-station/src/lib/ward-rounds/ward-rounds.html",
+    "libs/monitoring/feature-station/src/lib/ward-rounds/ward-rounds.scss",
+    "libs/monitoring/feature-station/src/lib/ward-rounds/ward-rounds.ts",
+    "libs/monitoring/feature-station/src/lib/ward.routes.ts",
+    "libs/monitoring/feature-station/src/test-setup.ts",
+    "libs/monitoring/ui/src/index.ts",
+    "libs/monitoring/ui/src/lib/alarm-row/alarm-row.html",
+    "libs/monitoring/ui/src/lib/alarm-row/alarm-row.scss",
+    "libs/monitoring/ui/src/lib/alarm-row/alarm-row.ts",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.html",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.scss",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.ts",
+    "libs/monitoring/ui/src/lib/vital-reading/vital-reading.html",
+    "libs/monitoring/ui/src/lib/vital-reading/vital-reading.scss",
+    "libs/monitoring/ui/src/lib/vital-reading/vital-reading.spec.ts",
+    "libs/monitoring/ui/src/lib/vital-reading/vital-reading.ts",
+    "libs/monitoring/ui/src/lib/vitals-chart/vitals-chart.html",
+    "libs/monitoring/ui/src/lib/vitals-chart/vitals-chart.scss",
+    "libs/monitoring/ui/src/lib/vitals-chart/vitals-chart.ts",
+    "libs/monitoring/ui/src/lib/vitals-panel/vitals-panel.html",
+    "libs/monitoring/ui/src/lib/vitals-panel/vitals-panel.scss",
+    "libs/monitoring/ui/src/lib/vitals-panel/vitals-panel.spec.ts",
+    "libs/monitoring/ui/src/lib/vitals-panel/vitals-panel.ts",
+    "libs/monitoring/ui/src/test-setup.ts",
+    "libs/shared/data-access-auth/src/index.ts",
+    "libs/shared/data-access-auth/src/lib/auth-store.ts",
+    "libs/shared/data-access-auth/src/lib/guards.ts",
+    "libs/shared/data-access-auth/src/lib/provide-auth.ts",
+    "libs/shared/data-access-auth/src/lib/stomp-mode.ts",
+    "libs/shared/data-access-auth/src/test-setup.ts",
+    "libs/shared/data-access-logging/src/index.ts",
+    "libs/shared/data-access-logging/src/lib/logger.ts",
+    "libs/shared/data-access-logging/src/test-setup.ts",
+    "libs/shared/data-access-messaging/src/index.ts",
+    "libs/shared/data-access-messaging/src/lib/command-retry.ts",
+    "libs/shared/data-access-messaging/src/lib/fake-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.ts",
+    "libs/shared/data-access-messaging/src/lib/message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.ts",
+    "libs/shared/data-access-messaging/src/lib/stomp-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/ward-fixtures.ts",
+    "libs/shared/data-access-messaging/src/test-setup.ts",
+    "libs/shared/data-access-toasts/src/index.ts",
+    "libs/shared/data-access-toasts/src/lib/toasts.ts",
+    "libs/shared/data-access-toasts/src/test-setup.ts",
+    "libs/shared/domain/src/index.ts",
+    "libs/shared/domain/src/lib/contract.ts",
+    "libs/shared/domain/src/lib/game-contract.ts",
+    "libs/shared/domain/src/lib/is-bed-id.spec.ts",
+    "libs/shared/domain/src/lib/links.ts",
+    "libs/shared/domain/src/lib/participants.ts",
+    "libs/shared/domain/src/lib/ward.spec.ts",
+    "libs/shared/domain/src/lib/ward.ts",
+    "libs/shared/domain/src/test-setup.ts",
+    "libs/shared/ui-design-system/src/index.ts",
+    "libs/shared/ui-design-system/src/lib/badge/badge.scss",
+    "libs/shared/ui-design-system/src/lib/badge/badge.ts",
+    "libs/shared/ui-design-system/src/lib/card/card.html",
+    "libs/shared/ui-design-system/src/lib/card/card.scss",
+    "libs/shared/ui-design-system/src/lib/card/card.ts",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.scss",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.ts",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.html",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.scss",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.ts",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.html",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.scss",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.ts",
+    "libs/shared/ui-design-system/src/test-setup.ts",
+    "libs/shared/util-dates/src/index.ts",
+    "libs/shared/util-dates/src/lib/clock.ts",
+    "libs/shared/util-dates/src/test-setup.ts"
+   ],
+   "exports": {
+    "monitoring-data-access": [
+     "./lib/alarms-store",
+     "./lib/bed-resources",
+     "./lib/clock",
+     "./lib/liveness",
+     "./lib/patients-store",
+     "./lib/snapshot-then-stream"
+    ],
+    "monitoring-domain": [
+     "./lib/alarm-rules",
+     "./lib/alarm-view"
+    ],
+    "monitoring-feature-station": [
+     "./lib/ward.routes"
+    ],
+    "monitoring-ui": [
+     "./lib/alarm-row/alarm-row",
+     "./lib/bed-tile/bed-tile",
+     "./lib/vital-reading/vital-reading",
+     "./lib/vitals-chart/vitals-chart",
+     "./lib/vitals-panel/vitals-panel"
+    ],
+    "shared-data-access-auth": [
+     "./lib/auth-store",
+     "./lib/guards",
+     "./lib/provide-auth",
+     "./lib/stomp-mode"
+    ],
+    "shared-data-access-logging": [
+     "./lib/logger"
+    ],
+    "shared-data-access-messaging": [
+     "./lib/command-retry",
+     "./lib/fake-message-bus",
+     "./lib/frames",
+     "./lib/message-bus",
+     "./lib/provide-stomp",
+     "./lib/ward-fixtures"
+    ],
+    "shared-data-access-toasts": [
+     "./lib/toasts"
+    ],
+    "shared-domain": [
+     "./lib/contract",
+     "./lib/game-contract",
+     "./lib/links",
+     "./lib/participants",
+     "./lib/ward"
+    ],
+    "shared-ui-design-system": [
+     "./lib/badge/badge",
+     "./lib/card/card",
+     "./lib/empty-state/empty-state",
+     "./lib/page-header/page-header",
+     "./lib/stat-tile/stat-tile"
+    ],
+    "shared-util-dates": [
+     "./lib/clock"
+    ]
+   },
+   "constraints": [
+    {
+     "sourceTag": "type:app",
+     "onlyDependOnLibsWithTags": [
+      "type:feature",
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "type:feature",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "type:api",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:data-access",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:ui",
+     "onlyDependOnLibsWithTags": [
+      "type:ui",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:domain",
+     "onlyDependOnLibsWithTags": [
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:util",
+     "onlyDependOnLibsWithTags": [
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "scope:ward",
+     "onlyDependOnLibsWithTags": [
+      "scope:ward",
+      "scope:monitoring",
+      "scope:medication",
+      "scope:patient",
+      "scope:shared"
+     ]
+    },
+    {
+     "sourceTag": "scope:pharmacy",
+     "onlyDependOnLibsWithTags": [
+      "scope:pharmacy",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:monitoring",
+     "onlyDependOnLibsWithTags": [
+      "scope:monitoring",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:medication",
+     "onlyDependOnLibsWithTags": [
+      "scope:medication",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:patient",
+     "onlyDependOnLibsWithTags": [
+      "scope:patient",
+      "scope:shared"
+     ]
+    },
+    {
+     "sourceTag": "scope:shared",
+     "onlyDependOnLibsWithTags": [
+      "scope:shared"
+     ]
+    }
+   ],
+   "allow": [
+    "^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"
+   ],
+   "injectFreeUi": true,
+   "lint": "passes (pnpm lint)"
+  },
+  "9": {
+   "projects": {
+    "pharmacy": {
+     "root": "apps/pharmacy",
+     "tags": [
+      "scope:pharmacy",
+      "type:app"
+     ]
+    },
+    "ward": {
+     "root": "apps/ward",
+     "tags": [
+      "scope:ward",
+      "type:app"
+     ]
+    },
+    "medication-feature-order": {
+     "root": "libs/medication/feature-order",
+     "tags": [
+      "scope:medication",
+      "type:feature"
+     ]
+    },
+    "monitoring-data-access": {
+     "root": "libs/monitoring/data-access",
+     "tags": [
+      "scope:monitoring",
+      "type:data-access"
+     ]
+    },
+    "monitoring-domain": {
+     "root": "libs/monitoring/domain",
+     "tags": [
+      "scope:monitoring",
+      "type:domain"
+     ]
+    },
+    "monitoring-feature-station": {
+     "root": "libs/monitoring/feature-station",
+     "tags": [
+      "scope:monitoring",
+      "type:feature"
+     ]
+    },
+    "monitoring-ui": {
+     "root": "libs/monitoring/ui",
+     "tags": [
+      "scope:monitoring",
+      "type:ui"
+     ]
+    },
+    "patient-api": {
+     "root": "libs/patient/api",
+     "tags": [
+      "scope:patient",
+      "type:api"
+     ]
+    },
+    "patient-data-access": {
+     "root": "libs/patient/data-access",
+     "tags": [
+      "scope:patient",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-auth": {
+     "root": "libs/shared/data-access-auth",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-logging": {
+     "root": "libs/shared/data-access-logging",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-messaging": {
+     "root": "libs/shared/data-access-messaging",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-data-access-toasts": {
+     "root": "libs/shared/data-access-toasts",
+     "tags": [
+      "scope:shared",
+      "type:data-access"
+     ]
+    },
+    "shared-domain": {
+     "root": "libs/shared/domain",
+     "tags": [
+      "scope:shared",
+      "type:domain"
+     ]
+    },
+    "shared-ui-design-system": {
+     "root": "libs/shared/ui-design-system",
+     "tags": [
+      "scope:shared",
+      "type:ui"
+     ]
+    },
+    "shared-util-dates": {
+     "root": "libs/shared/util-dates",
+     "tags": [
+      "scope:shared",
+      "type:util"
+     ]
+    }
+   },
+   "aliases": {
+    "@wm/shared/domain": "libs/shared/domain/src/index.ts",
+    "@wm/shared/util-dates": "libs/shared/util-dates/src/index.ts",
+    "@wm/shared/data-access-logging": "libs/shared/data-access-logging/src/index.ts",
+    "@wm/shared/data-access-toasts": "libs/shared/data-access-toasts/src/index.ts",
+    "@wm/shared/data-access-auth": "libs/shared/data-access-auth/src/index.ts",
+    "@wm/shared/data-access-messaging": "libs/shared/data-access-messaging/src/index.ts",
+    "@wm/shared/ui-design-system": "libs/shared/ui-design-system/src/index.ts",
+    "@wm/monitoring/data-access": "libs/monitoring/data-access/src/index.ts",
+    "@wm/monitoring/ui": "libs/monitoring/ui/src/index.ts",
+    "@wm/monitoring/domain": "libs/monitoring/domain/src/index.ts",
+    "@wm/monitoring/feature-station": "libs/monitoring/feature-station/src/index.ts",
+    "@wm/medication/feature-order": "libs/medication/feature-order/src/index.ts",
+    "@wm/patient/data-access": "libs/patient/data-access/src/index.ts",
+    "@wm/patient/api": "libs/patient/api/src/index.ts"
+   },
+   "files": [
+    "apps/pharmacy/src/app/app.config.ts",
+    "apps/pharmacy/src/app/app.html",
+    "apps/pharmacy/src/app/app.scss",
+    "apps/pharmacy/src/app/app.spec.ts",
+    "apps/pharmacy/src/app/app.ts",
+    "apps/pharmacy/src/app/dispensing-queue.ts",
+    "apps/pharmacy/src/index.html",
+    "apps/pharmacy/src/main.ts",
+    "apps/pharmacy/src/styles.scss",
+    "apps/ward/src/app/app.config.ts",
+    "apps/ward/src/app/app.html",
+    "apps/ward/src/app/app.routes.ts",
+    "apps/ward/src/app/app.scss",
+    "apps/ward/src/app/app.spec.ts",
+    "apps/ward/src/app/app.ts",
+    "apps/ward/src/app/auth/forbidden.html",
+    "apps/ward/src/app/auth/forbidden.scss",
+    "apps/ward/src/app/auth/forbidden.ts",
+    "apps/ward/src/app/auth/login.html",
+    "apps/ward/src/app/auth/login.scss",
+    "apps/ward/src/app/auth/login.ts",
+    "apps/ward/src/app/core/http/interceptors.ts",
+    "apps/ward/src/app/core/http/reports.ts",
+    "apps/ward/src/app/core/navigation-errors.ts",
+    "apps/ward/src/app/core/providers/seo.ts",
+    "apps/ward/src/app/core/providers/skeleton.ts",
+    "apps/ward/src/app/core/providers/wifi-aware-preloading.ts",
+    "apps/ward/src/app/core/ui/connection-badge.html",
+    "apps/ward/src/app/core/ui/connection-badge.scss",
+    "apps/ward/src/app/core/ui/connection-badge.ts",
+    "apps/ward/src/app/core/ui/toast-outlet.html",
+    "apps/ward/src/app/core/ui/toast-outlet.scss",
+    "apps/ward/src/app/core/ui/toast-outlet.ts",
+    "apps/ward/src/app/dev/dev-toolbar.html",
+    "apps/ward/src/app/dev/dev-toolbar.scss",
+    "apps/ward/src/app/dev/dev-toolbar.ts",
+    "apps/ward/src/app/reports/report-download.html",
+    "apps/ward/src/app/reports/report-download.scss",
+    "apps/ward/src/app/reports/report-download.ts",
+    "apps/ward/src/app/reports/reports.routes.ts",
+    "apps/ward/src/app/simulator/monitor-simulator.html",
+    "apps/ward/src/app/simulator/monitor-simulator.scss",
+    "apps/ward/src/app/simulator/monitor-simulator.ts",
+    "apps/ward/src/environments/environment.ts",
+    "apps/ward/src/index.html",
+    "apps/ward/src/main.ts",
+    "apps/ward/src/styles.scss",
+    "libs/medication/feature-order/src/index.ts",
+    "libs/medication/feature-order/src/lib/drug-step.html",
+    "libs/medication/feature-order/src/lib/drug-step.scss",
+    "libs/medication/feature-order/src/lib/drug-step.ts",
+    "libs/medication/feature-order/src/lib/guards.ts",
+    "libs/medication/feature-order/src/lib/med-order-draft-store.ts",
+    "libs/medication/feature-order/src/lib/med-order-wizard.html",
+    "libs/medication/feature-order/src/lib/med-order-wizard.scss",
+    "libs/medication/feature-order/src/lib/med-order-wizard.ts",
+    "libs/medication/feature-order/src/lib/med-order.routes.ts",
+    "libs/medication/feature-order/src/lib/patient-step.html",
+    "libs/medication/feature-order/src/lib/patient-step.scss",
+    "libs/medication/feature-order/src/lib/patient-step.ts",
+    "libs/medication/feature-order/src/lib/review-step.html",
+    "libs/medication/feature-order/src/lib/review-step.scss",
+    "libs/medication/feature-order/src/lib/review-step.ts",
+    "libs/medication/feature-order/src/test-setup.ts",
+    "libs/monitoring/data-access/src/index.ts",
+    "libs/monitoring/data-access/src/lib/alarms-store.spec.ts",
+    "libs/monitoring/data-access/src/lib/alarms-store.ts",
+    "libs/monitoring/data-access/src/lib/bed-resources.ts",
+    "libs/monitoring/data-access/src/lib/clock.ts",
+    "libs/monitoring/data-access/src/lib/liveness.ts",
+    "libs/monitoring/data-access/src/lib/snapshot-then-stream.spec.ts",
+    "libs/monitoring/data-access/src/lib/snapshot-then-stream.ts",
+    "libs/monitoring/data-access/src/test-setup.ts",
+    "libs/monitoring/domain/src/index.ts",
+    "libs/monitoring/domain/src/lib/alarm-rules.ts",
+    "libs/monitoring/domain/src/lib/alarm-view.spec.ts",
+    "libs/monitoring/domain/src/lib/alarm-view.ts",
+    "libs/monitoring/domain/src/test-setup.ts",
+    "libs/monitoring/feature-station/src/index.ts",
+    "libs/monitoring/feature-station/src/lib/alarm-actions/alarm-actions.ts",
+    "libs/monitoring/feature-station/src/lib/bed-detail/bed-detail.html",
+    "libs/monitoring/feature-station/src/lib/bed-detail/bed-detail.scss",
+    "libs/monitoring/feature-station/src/lib/bed-detail/bed-detail.ts",
+    "libs/monitoring/feature-station/src/lib/bed-detail/medication-list/medication-list.html",
+    "libs/monitoring/feature-station/src/lib/bed-detail/medication-list/medication-list.scss",
+    "libs/monitoring/feature-station/src/lib/bed-detail/medication-list/medication-list.ts",
+    "libs/monitoring/feature-station/src/lib/bed-detail/vitals-card/vitals-card.html",
+    "libs/monitoring/feature-station/src/lib/bed-detail/vitals-card/vitals-card.scss",
+    "libs/monitoring/feature-station/src/lib/bed-detail/vitals-card/vitals-card.spec.ts",
+    "libs/monitoring/feature-station/src/lib/bed-detail/vitals-card/vitals-card.ts",
+    "libs/monitoring/feature-station/src/lib/guards.ts",
+    "libs/monitoring/feature-station/src/lib/nurse-station/nurse-station.html",
+    "libs/monitoring/feature-station/src/lib/nurse-station/nurse-station.scss",
+    "libs/monitoring/feature-station/src/lib/nurse-station/nurse-station.ts",
+    "libs/monitoring/feature-station/src/lib/temperature/record-temperature.spec.ts",
+    "libs/monitoring/feature-station/src/lib/temperature/temperature-form.html",
+    "libs/monitoring/feature-station/src/lib/temperature/temperature-form.scss",
+    "libs/monitoring/feature-station/src/lib/temperature/temperature-form.ts",
+    "libs/monitoring/feature-station/src/lib/ward-rounds/ward-rounds.html",
+    "libs/monitoring/feature-station/src/lib/ward-rounds/ward-rounds.scss",
+    "libs/monitoring/feature-station/src/lib/ward-rounds/ward-rounds.ts",
+    "libs/monitoring/feature-station/src/lib/ward.routes.ts",
+    "libs/monitoring/feature-station/src/test-setup.ts",
+    "libs/monitoring/ui/src/index.ts",
+    "libs/monitoring/ui/src/lib/alarm-row/alarm-row.html",
+    "libs/monitoring/ui/src/lib/alarm-row/alarm-row.scss",
+    "libs/monitoring/ui/src/lib/alarm-row/alarm-row.ts",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.html",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.scss",
+    "libs/monitoring/ui/src/lib/bed-tile/bed-tile.ts",
+    "libs/monitoring/ui/src/lib/vital-reading/vital-reading.html",
+    "libs/monitoring/ui/src/lib/vital-reading/vital-reading.scss",
+    "libs/monitoring/ui/src/lib/vital-reading/vital-reading.spec.ts",
+    "libs/monitoring/ui/src/lib/vital-reading/vital-reading.ts",
+    "libs/monitoring/ui/src/lib/vitals-chart/vitals-chart.html",
+    "libs/monitoring/ui/src/lib/vitals-chart/vitals-chart.scss",
+    "libs/monitoring/ui/src/lib/vitals-chart/vitals-chart.ts",
+    "libs/monitoring/ui/src/lib/vitals-panel/vitals-panel.html",
+    "libs/monitoring/ui/src/lib/vitals-panel/vitals-panel.scss",
+    "libs/monitoring/ui/src/lib/vitals-panel/vitals-panel.spec.ts",
+    "libs/monitoring/ui/src/lib/vitals-panel/vitals-panel.ts",
+    "libs/monitoring/ui/src/test-setup.ts",
+    "libs/patient/api/src/index.ts",
+    "libs/patient/api/src/test-setup.ts",
+    "libs/patient/data-access/src/index.ts",
+    "libs/patient/data-access/src/lib/patient-resource.ts",
+    "libs/patient/data-access/src/lib/patients-store.ts",
+    "libs/patient/data-access/src/test-setup.ts",
+    "libs/shared/data-access-auth/src/index.ts",
+    "libs/shared/data-access-auth/src/lib/auth-store.ts",
+    "libs/shared/data-access-auth/src/lib/guards.ts",
+    "libs/shared/data-access-auth/src/lib/provide-auth.ts",
+    "libs/shared/data-access-auth/src/lib/stomp-mode.ts",
+    "libs/shared/data-access-auth/src/test-setup.ts",
+    "libs/shared/data-access-logging/src/index.ts",
+    "libs/shared/data-access-logging/src/lib/logger.ts",
+    "libs/shared/data-access-logging/src/test-setup.ts",
+    "libs/shared/data-access-messaging/src/index.ts",
+    "libs/shared/data-access-messaging/src/lib/command-retry.ts",
+    "libs/shared/data-access-messaging/src/lib/fake-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/frames.ts",
+    "libs/shared/data-access-messaging/src/lib/message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.spec.ts",
+    "libs/shared/data-access-messaging/src/lib/provide-stomp.ts",
+    "libs/shared/data-access-messaging/src/lib/stomp-message-bus.ts",
+    "libs/shared/data-access-messaging/src/lib/ward-fixtures.ts",
+    "libs/shared/data-access-messaging/src/test-setup.ts",
+    "libs/shared/data-access-toasts/src/index.ts",
+    "libs/shared/data-access-toasts/src/lib/toasts.ts",
+    "libs/shared/data-access-toasts/src/test-setup.ts",
+    "libs/shared/domain/src/index.ts",
+    "libs/shared/domain/src/lib/contract.ts",
+    "libs/shared/domain/src/lib/game-contract.ts",
+    "libs/shared/domain/src/lib/is-bed-id.spec.ts",
+    "libs/shared/domain/src/lib/links.ts",
+    "libs/shared/domain/src/lib/participants.ts",
+    "libs/shared/domain/src/lib/ward.spec.ts",
+    "libs/shared/domain/src/lib/ward.ts",
+    "libs/shared/domain/src/test-setup.ts",
+    "libs/shared/ui-design-system/src/index.ts",
+    "libs/shared/ui-design-system/src/lib/badge/badge.scss",
+    "libs/shared/ui-design-system/src/lib/badge/badge.ts",
+    "libs/shared/ui-design-system/src/lib/card/card.html",
+    "libs/shared/ui-design-system/src/lib/card/card.scss",
+    "libs/shared/ui-design-system/src/lib/card/card.ts",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.scss",
+    "libs/shared/ui-design-system/src/lib/empty-state/empty-state.ts",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.html",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.scss",
+    "libs/shared/ui-design-system/src/lib/page-header/page-header.ts",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.html",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.scss",
+    "libs/shared/ui-design-system/src/lib/stat-tile/stat-tile.ts",
+    "libs/shared/ui-design-system/src/test-setup.ts",
+    "libs/shared/util-dates/src/index.ts",
+    "libs/shared/util-dates/src/lib/clock.ts",
+    "libs/shared/util-dates/src/test-setup.ts"
+   ],
+   "exports": {
+    "medication-feature-order": [
+     "./lib/med-order.routes"
+    ],
+    "monitoring-data-access": [
+     "./lib/alarms-store",
+     "./lib/bed-resources",
+     "./lib/clock",
+     "./lib/liveness",
+     "./lib/snapshot-then-stream"
+    ],
+    "monitoring-domain": [
+     "./lib/alarm-rules",
+     "./lib/alarm-view"
+    ],
+    "monitoring-feature-station": [
+     "./lib/ward.routes"
+    ],
+    "monitoring-ui": [
+     "./lib/alarm-row/alarm-row",
+     "./lib/bed-tile/bed-tile",
+     "./lib/vital-reading/vital-reading",
+     "./lib/vitals-chart/vitals-chart",
+     "./lib/vitals-panel/vitals-panel"
+    ],
+    "patient-api": [
+     "@wm/patient/data-access"
+    ],
+    "patient-data-access": [
+     "./lib/patient-resource",
+     "./lib/patients-store"
+    ],
+    "shared-data-access-auth": [
+     "./lib/auth-store",
+     "./lib/guards",
+     "./lib/provide-auth",
+     "./lib/stomp-mode"
+    ],
+    "shared-data-access-logging": [
+     "./lib/logger"
+    ],
+    "shared-data-access-messaging": [
+     "./lib/command-retry",
+     "./lib/fake-message-bus",
+     "./lib/frames",
+     "./lib/message-bus",
+     "./lib/provide-stomp",
+     "./lib/ward-fixtures"
+    ],
+    "shared-data-access-toasts": [
+     "./lib/toasts"
+    ],
+    "shared-domain": [
+     "./lib/contract",
+     "./lib/game-contract",
+     "./lib/links",
+     "./lib/participants",
+     "./lib/ward"
+    ],
+    "shared-ui-design-system": [
+     "./lib/badge/badge",
+     "./lib/card/card",
+     "./lib/empty-state/empty-state",
+     "./lib/page-header/page-header",
+     "./lib/stat-tile/stat-tile"
+    ],
+    "shared-util-dates": [
+     "./lib/clock"
+    ]
+   },
+   "constraints": [
+    {
+     "sourceTag": "type:app",
+     "onlyDependOnLibsWithTags": [
+      "type:feature",
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "type:feature",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "type:api",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:ui",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:data-access",
+     "onlyDependOnLibsWithTags": [
+      "type:data-access",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:ui",
+     "onlyDependOnLibsWithTags": [
+      "type:ui",
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:domain",
+     "onlyDependOnLibsWithTags": [
+      "type:domain",
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "type:util",
+     "onlyDependOnLibsWithTags": [
+      "type:util"
+     ]
+    },
+    {
+     "sourceTag": "scope:ward",
+     "onlyDependOnLibsWithTags": [
+      "scope:ward",
+      "scope:monitoring",
+      "scope:medication",
+      "scope:patient",
+      "scope:shared"
+     ]
+    },
+    {
+     "sourceTag": "scope:pharmacy",
+     "onlyDependOnLibsWithTags": [
+      "scope:pharmacy",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:monitoring",
+     "onlyDependOnLibsWithTags": [
+      "scope:monitoring",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:medication",
+     "onlyDependOnLibsWithTags": [
+      "scope:medication",
+      "scope:shared",
+      "type:api"
+     ]
+    },
+    {
+     "sourceTag": "scope:patient",
+     "onlyDependOnLibsWithTags": [
+      "scope:patient",
+      "scope:shared"
+     ]
+    },
+    {
+     "sourceTag": "scope:shared",
+     "onlyDependOnLibsWithTags": [
+      "scope:shared"
+     ]
+    }
+   ],
+   "allow": [
+    "^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"
+   ],
+   "injectFreeUi": true,
+   "lint": "passes (pnpm lint)"
+  }
+ }
+}
