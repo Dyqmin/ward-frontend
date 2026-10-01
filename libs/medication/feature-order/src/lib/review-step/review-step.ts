@@ -2,7 +2,7 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
-import { PatientsStore } from '@wm/monitoring/data-access';
+import { PatientsStore } from '@wm/patient/api';
 import { commandRetry, MessageBus } from '@wm/shared/data-access-messaging';
 import { Toasts } from '@wm/shared/data-access-toasts';
 import { assertNever, link, who } from '@wm/shared/domain';
@@ -10,7 +10,7 @@ import { assertNever, link, who } from '@wm/shared/domain';
 import { MedOrderDraftStore } from '../med-order-draft-store';
 
 @Component({
-  selector: 'app-review-step',
+  selector: 'wm-review-step',
   templateUrl: './review-step.html',
   styleUrl: './review-step.scss',
 })

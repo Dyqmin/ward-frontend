@@ -8,9 +8,9 @@ import {
 import {
   manualReadingsResource,
   medicationResource,
-  patientResource,
   vitalsResource,
 } from '@wm/monitoring/data-access';
+import { patientResource } from '@wm/patient/api';
 import { hasRole } from '@wm/shared/data-access-auth';
 import { bedFromSlug } from '@wm/shared/domain';
 

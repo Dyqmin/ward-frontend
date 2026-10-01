@@ -1,0 +1,13 @@
+{
+  "name": "patient-api",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/patient/api/src",
+  "prefix": "wm",
+  "projectType": "library",
+  "tags": ["scope:patient", "type:api"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

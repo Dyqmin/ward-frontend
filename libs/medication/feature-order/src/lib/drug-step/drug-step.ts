@@ -6,7 +6,7 @@ import { link, MED_ROUTES, type MedOrder } from '@wm/shared/domain';
 import { MedOrderDraftStore } from '../med-order-draft-store';
 
 @Component({
-  selector: 'app-drug-step',
+  selector: 'wm-drug-step',
   templateUrl: './drug-step.html',
   styleUrl: './drug-step.scss',
 })

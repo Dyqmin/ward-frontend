@@ -5,7 +5,7 @@ import { MedOrderDraftStore, type WizardStep } from '../med-order-draft-store';
 
 /** Header + stepper + <router-outlet>; the steps are child routes. */
 @Component({
-  selector: 'app-med-order-wizard',
+  selector: 'wm-med-order-wizard',
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './med-order-wizard.html',
   styleUrl: './med-order-wizard.scss',

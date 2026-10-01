@@ -100,3 +100,20 @@ The 5 errors, all in `monitoring-ui`:
    could become libraries of their own later.
 3. It injects `Clock` and `MessageBus` and reads the connection state and the time: it talks to
    the outside world. A `ui` library injects nothing.
+
+## D5.9 · A second bounded context and a published API
+
+1. Lint showed the type rule: a `type:feature` may not import another `type:feature`. The scope
+   rule forbids it too: `scope:monitoring` may not import `scope:medication`. Features are
+   composed by the app, through routes, so removing or replacing one never breaks another, and
+   monitoring does not need to know that medication exists.
+2. The scope rules of `scope:monitoring` and `scope:medication` allow `type:api`. `patient-api`
+   is `type:api`; `patient-data-access` is `scope:patient` and `type:data-access`, which neither
+   rule allows.
+3. Everything except the two exported names and what they do: the file names, the `bedOf`
+   helper, how the patients are loaded and cached, any new internal function. `index.ts` of
+   `patient-api` is the whole contract.
+4. When the copies have to change together, or a third context needs the same guard. It is
+   Angular code (it injects the `Router`), so not `shared-domain`: a small shared library of
+   routing helpers, for example `libs/shared/data-access-routing` (`scope:shared`,
+   `type:data-access`).

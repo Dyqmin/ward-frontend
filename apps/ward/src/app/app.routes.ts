@@ -19,7 +19,8 @@ export const routes: Routes = [
   {
     path: 'ward/:bed/meds/new',
     canMatch: [authGuard],
-    loadChildren: () => import('./ward/med-order/med-order.routes'),
+    loadChildren: () =>
+      import('@wm/medication/feature-order').then((m) => m.medOrderRoutes),
   },
   {
     path: 'ward',

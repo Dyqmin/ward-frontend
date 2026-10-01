@@ -24,7 +24,7 @@ const validBed: CanActivateFn = (route) =>
   new RedirectCommand(inject(Router).parseUrl('/ward'));
 
 /** Mounted by the app at `ward/:bed/meds/new`. */
-export default [
+export const medOrderRoutes = [
   // medication order wizard – doctors only, one draft per wizard
   {
     path: '',

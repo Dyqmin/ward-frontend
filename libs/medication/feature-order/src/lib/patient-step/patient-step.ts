@@ -1,7 +1,7 @@
 import { Component, computed, effect, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { PatientsStore } from '@wm/monitoring/data-access';
+import { PatientsStore } from '@wm/patient/api';
 import {
   bedFromSlug,
   bedsOf,
@@ -13,7 +13,7 @@ import {
 import { MedOrderDraftStore } from '../med-order-draft-store';
 
 @Component({
-  selector: 'app-patient-step',
+  selector: 'wm-patient-step',
   templateUrl: './patient-step.html',
   styleUrl: './patient-step.scss',
 })

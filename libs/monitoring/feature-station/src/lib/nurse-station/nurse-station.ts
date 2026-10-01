@@ -2,9 +2,10 @@ import { Component, computed, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
-import { AlarmsStore, PatientsStore } from '@wm/monitoring/data-access';
+import { AlarmsStore } from '@wm/monitoring/data-access';
 import { alarmsByBed, isUrgent } from '@wm/monitoring/domain';
 import { BedTile } from '@wm/monitoring/ui';
+import { PatientsStore } from '@wm/patient/api';
 import { bedsOf, isWardName, type Ward, WARDS } from '@wm/shared/domain';
 import {
   Badge,

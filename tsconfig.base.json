@@ -39,7 +39,12 @@
       "@wm/monitoring/domain": ["./libs/monitoring/domain/src/index.ts"],
       "@wm/monitoring/feature-station": [
         "./libs/monitoring/feature-station/src/index.ts"
-      ]
+      ],
+      "@wm/medication/feature-order": [
+        "./libs/medication/feature-order/src/index.ts"
+      ],
+      "@wm/patient/data-access": ["./libs/patient/data-access/src/index.ts"],
+      "@wm/patient/api": ["./libs/patient/api/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
