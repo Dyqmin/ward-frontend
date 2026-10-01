@@ -48,11 +48,28 @@ export const LiveAlarmsStore = signalStore(
       );
       patchState(store, { alarms, loading: false });
     },
+    // SS.11a
+    apply(event: AlarmEvent): void {
+      patchState(store, (state) => ({
+        alarms: state.alarms.some((a) => a.alarmId === event.alarmId)
+          ? state.alarms.map((a) => (a.alarmId === event.alarmId ? event : a))
+          : [...state.alarms, event],
+      }));
+    },
   })),
-
+  // SS.11b · a second withMethods: it sees apply() from the block above
+  withMethods((store) => ({
+    follow: rxMethod<Ward>(
+      pipe(
+        switchMap((ward) => store._bus.watch(`/topic/alarms.${ward}`)),
+        tap((event) => store.apply(event)),
+      ),
+    ),
+  })),
   withHooks({
     onInit(store) {
       void store.load(); // SS.10c
+      store.follow(store.ward); // SS.11c
     },
   }),
 );
