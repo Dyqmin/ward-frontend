@@ -11,7 +11,7 @@
   type="search"
   class="search"
   placeholder="Patient name…"
-  (input)="store.load(input.value)"
+  (input)="store.setTerm(input.value)"
 />
 
 <ul class="patients">

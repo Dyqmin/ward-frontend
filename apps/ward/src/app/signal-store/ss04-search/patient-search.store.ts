@@ -43,11 +43,20 @@ export const PatientSearchStore = signalStore(
       const patients = await store._directory.search(term);
       patchState(store, { patients, loading: false });
     },
+    // SS.5a
+    setTerm(term: string): void {
+      patchState(store, { term });
+    },
   })),
-  // SS.4d
+  // SS.5b · a second withMethods: it sees load() from the block above
+  withMethods((store) => ({
+    followTerm: signalMethod<string>((term) => {
+      void store.load(term);
+    }),
+  })),
   withHooks({
     onInit(store) {
-      void store.load('');
+      store.followTerm(store.term); // SS.5c · the signal, no ()
     },
   }),
 );
