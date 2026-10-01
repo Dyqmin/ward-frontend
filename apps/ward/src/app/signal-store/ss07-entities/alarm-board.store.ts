@@ -4,6 +4,7 @@ import {
   signalStore,
   withComputed,
   withHooks,
+  withLinkedState,
   withMethods,
 } from '@ngrx/signals';
 import {
@@ -24,10 +25,18 @@ export const AlarmBoardStore = signalStore(
     // SS.7c
     openCount: computed(() => entities().filter((a) => !a.acknowledged).length),
   })),
+  // SS.8
+  withLinkedState(({ entities }) => ({
+    selectedId: () => entities().find((a) => !a.acknowledged)?.id ?? null,
+  })),
   withMethods((store) => ({
     // SS.7b
     acknowledge(id: string): void {
       patchState(store, updateEntity({ id, changes: { acknowledged: true } }));
+    },
+    // SS.8
+    select(id: string): void {
+      patchState(store, { selectedId: id });
     },
     /** Back to the demo alarms, after a slow "server". */
     async reload(): Promise<void> {

@@ -14,10 +14,14 @@
 
 <ul class="alarms">
   @for (a of store.entities(); track a.id) {
-  <!-- SS.8 · class selected when a.id === store.selectedId() -->
-  <li class="row" [class.high]="a.severity === 'high'">
-    <!-- SS.8 · on click, call store.select(a.id) -->
-    <button type="button" class="small select">Select</button>
+  <li
+    class="row"
+    [class.high]="a.severity === 'high'"
+    [class.selected]="a.id === store.selectedId()"
+  >
+    <button type="button" class="small select" (click)="store.select(a.id)">
+      Select
+    </button>
     <strong>{{ a.bed }}</strong>
     <span>{{ a.title }}</span>
     <span class="spacer"></span>
