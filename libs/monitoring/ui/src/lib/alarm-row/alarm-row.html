@@ -6,12 +6,12 @@
   <div class="row actions">
     @if (pending()) {
     <span class="chip warn">pending sync…</span>
-    } @if (isNurse()) { @if (canAck()) {
+    } @if (canAct()) { @if (urgent()) {
     <button
       type="button"
       class="primary small"
       [disabled]="pending()"
-      (click)="ack()"
+      (click)="acknowledge.emit()"
     >
       Acknowledge
     </button>
@@ -20,7 +20,7 @@
       type="button"
       class="small"
       [disabled]="pending()"
-      (click)="snooze(m)"
+      (click)="snooze.emit(m)"
     >
       Snooze {{ m }}′
     </button>

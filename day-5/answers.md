@@ -80,3 +80,11 @@ The 5 errors, all in `monitoring-ui`:
 2. No. `alarm-actions.ts` does not need a type from data-access, it needs to **act**: send
    commands with `MessageBus`, read the role from `AuthStore`, show `Toasts`. It is a container,
    so it must be split (D5.7).
+
+## D5.7 · Container and presentational
+
+1. `TestBed.createComponent(AlarmRow)`, then `setInput('alarm', …)`, `setInput('canAct', true)`.
+   No providers at all. Clicks are checked by subscribing to the `acknowledge` and `snooze`
+   outputs.
+2. No. It is a container of the monitoring pages, so it goes with them into the monitoring
+   feature library in D5.8. The app was a parking place for one step.

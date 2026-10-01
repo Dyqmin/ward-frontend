@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 
 import { AlarmsStore, PatientsStore } from '@wm/monitoring/data-access';
 import { alarmsByBed, isUrgent } from '@wm/monitoring/domain';
-import { AlarmActions, BedTile } from '@wm/monitoring/ui';
+import { BedTile } from '@wm/monitoring/ui';
 import { bedsOf, isWardName, type Ward, WARDS } from '@wm/shared/domain';
 import {
   Badge,
@@ -12,6 +12,8 @@ import {
   EmptyState,
   PageHeader,
 } from '@wm/shared/ui-design-system';
+
+import { AlarmActions } from '../alarm-actions/alarm-actions';
 
 /** The nurse station: every bed, live, with the alarms to act on. */
 @Component({

@@ -1,28 +1,30 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { finalize, Observable } from 'rxjs';
 
-import {
-  alarmStatus,
-  alarmTitle,
-  type AlarmView,
-  isUrgent,
-} from '@wm/monitoring/domain';
+import type { AlarmView } from '@wm/monitoring/domain';
+import { AlarmRow } from '@wm/monitoring/ui';
 import { AuthStore } from '@wm/shared/data-access-auth';
 import { commandRetry, MessageBus } from '@wm/shared/data-access-messaging';
 import { Toasts } from '@wm/shared/data-access-toasts';
 import {
   assertNever,
   type CommandResult,
-  SNOOZE_MINUTES,
   type SnoozeMinutes,
   who,
 } from '@wm/shared/domain';
 import { clock } from '@wm/shared/util-dates';
 
+/** The container of one alarm: sends the nurse's commands. AlarmRow draws it. */
 @Component({
-  selector: 'wm-alarm-actions',
-  templateUrl: './alarm-actions.html',
-  styleUrl: './alarm-actions.scss',
+  selector: 'app-alarm-actions',
+  imports: [AlarmRow],
+  template: `<wm-alarm-row
+    [alarm]="alarm()"
+    [canAct]="isNurse()"
+    [pending]="pending()"
+    (acknowledge)="ack()"
+    (snooze)="snooze($event)"
+  />`,
 })
 export class AlarmActions {
   readonly alarm = input.required<AlarmView>();
@@ -31,17 +33,9 @@ export class AlarmActions {
   private readonly toasts = inject(Toasts);
   private readonly auth = inject(AuthStore);
   protected readonly isNurse = computed(() => this.auth.role() === 'nurse');
-  protected readonly snoozeOptions = SNOOZE_MINUTES;
 
   /** "pending sync" chip, visible until the server confirms. */
   protected readonly pending = signal(false);
-  protected readonly title = computed(() => alarmTitle(this.alarm()));
-  protected readonly status = computed(() => alarmStatus(this.alarm()));
-  protected readonly urgent = computed(() => isUrgent(this.alarm()));
-  protected readonly canAck = computed(() => isUrgent(this.alarm()));
-  protected readonly canSnooze = computed(
-    () => this.alarm().event.status !== 'snoozed',
-  );
 
   ack(): void {
     const { alarmId } = this.alarm().event;

@@ -4,9 +4,11 @@ import { RouterLink } from '@angular/router';
 
 import { AlarmsStore, PatientsStore } from '@wm/monitoring/data-access';
 import { alarmsByBed } from '@wm/monitoring/domain';
-import { AlarmActions, BedTile } from '@wm/monitoring/ui';
+import { BedTile } from '@wm/monitoring/ui';
 import { bedsOf, toSlug, WARDS } from '@wm/shared/domain';
 import { Card, EmptyState, PageHeader } from '@wm/shared/ui-design-system';
+
+import { AlarmActions } from '../alarm-actions/alarm-actions';
 
 /** The doctor's view of the same URL: escalations first, and the way into the medication wizard. */
 @Component({

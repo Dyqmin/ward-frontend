@@ -3,7 +3,7 @@
 
   <wm-card class="escalations" heading="Escalated to doctor">
     @for (a of escalated(); track a.event.alarmId) {
-    <wm-alarm-actions [alarm]="a" />
+    <app-alarm-actions [alarm]="a" />
     } @empty {
     <wm-empty-state
       message="Nothing escalated. Nurses acknowledge alarms within 20 s, or they come here."
