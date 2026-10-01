@@ -1,0 +1,53 @@
+<section #card class="card vitals">
+  <h2 class="row">
+    Vitals
+    <span class="spacer"></span>
+
+    @if (frame()) { @if (paused()) {
+    <span class="chip">paused</span>
+    } @else if (stale()) {
+    <span class="chip warn">no data for {{ ageSec() }} s</span>
+    } @else {
+    <span class="chip ok">live</span>
+    } } @for (a of alarms(); track a.event.alarmId) {
+    <span class="chip" [class.bad]="isUrgent(a)"
+      >{{ alarmTitle(a) }} · {{ a.event.status }}</span
+    >
+    }
+
+    <button type="button" (click)="paused.set(!paused())">
+      {{ paused() ? 'Resume' : 'Pause' }}
+    </button>
+    <button type="button" (click)="fullscreen()">Full screen</button>
+  </h2>
+
+  @if (frame(); as f) {
+  <div class="now">
+    <wm-vital-reading
+      label="HR"
+      vital="hr"
+      [value]="f.hr"
+      unit="bpm"
+      [stale]="stale()"
+    />
+    <wm-vital-reading
+      label="SpO₂"
+      vital="spo2"
+      [value]="f.spo2"
+      unit="%"
+      [stale]="stale()"
+    />
+    <wm-vital-reading
+      label="RR"
+      vital="rr"
+      [value]="f.rr"
+      unit="/min"
+      [stale]="stale()"
+    />
+  </div>
+  } @else {
+  <ngx-skeleton-loader count="3" />
+  }
+
+  <ng-content />
+</section>

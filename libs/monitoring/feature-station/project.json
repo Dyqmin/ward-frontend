@@ -1,0 +1,13 @@
+{
+  "name": "monitoring-feature-station",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/monitoring/feature-station/src",
+  "prefix": "wm",
+  "projectType": "library",
+  "tags": ["scope:monitoring", "type:feature"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

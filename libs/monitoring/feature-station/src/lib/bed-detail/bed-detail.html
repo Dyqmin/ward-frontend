@@ -1,0 +1,90 @@
+<section class="page">
+  <a class="back" routerLink="/ward">← Ward</a>
+
+  <!-- blocking: always there, no @if -->
+  <header class="head">
+    <div>
+      <h1>{{ patient().name }} · {{ patient().bed }}</h1>
+      <p class="muted">
+        Patient {{ patient().id }} · admitted {{ admitted() }}
+      </p>
+    </div>
+    <div class="row actions">
+      @if (role() === 'nurse') {
+      <a class="button primary" [routerLink]="['temperature']"
+        >Record temperature</a
+      >
+      } @if (role() === 'doctor') {
+      <a class="button primary" [routerLink]="['meds', 'new']"
+        >Order medication</a
+      >
+      }
+      <a class="button" [routerLink]="['/reports', 'lab', slug()]"
+        >Lab report (PDF)</a
+      >
+      <a class="button" [routerLink]="['/reports', 'discharge', slug()]"
+        >Discharge summary</a
+      >
+      <button type="button" (click)="refreshRecord()">Refresh record</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <wm-vitals-card
+      [bed]="patient().bed"
+      [alarms]="alarms()"
+      [(paused)]="paused"
+    >
+      <!-- the chart: ready-made, it gets the last ten minutes from the route -->
+      @if (vitals().hasValue()) {
+      <wm-vitals-chart [frames]="vitals().value() ?? []" />
+      } @else if (vitals().error()) {
+      <p class="warn">Vitals history unavailable.</p>
+      } @else {
+      <ngx-skeleton-loader count="4" />
+      }
+    </wm-vitals-card>
+
+    <aside class="side">
+      <section class="card stack">
+        <h2>Alarms</h2>
+        @for (a of alarms(); track a.event.alarmId) {
+        <wm-alarm-actions [alarm]="a" />
+        } @empty {
+        <p class="muted">No active alarms for this bed.</p>
+        }
+      </section>
+
+      <section class="card stack">
+        <h2>Temperature</h2>
+        @if (readings().hasValue()) { @for (r of readings().value(); track r.at)
+        {
+        <div class="row">
+          <strong>{{ r.value.toFixed(1) }} °C</strong>
+          <span class="muted">{{ who(r.by) }}, {{ clock(r.at) }}</span>
+        </div>
+        } @empty {
+        <p class="muted">No temperature recorded yet.</p>
+        } } @else if (readings().error()) {
+        <p class="warn">Recorded temperatures unavailable.</p>
+        } @else {
+        <ngx-skeleton-loader count="1" />
+        }
+      </section>
+
+      <section class="card stack">
+        <h2>Medication</h2>
+        @if (meds().hasValue()) {
+        <wm-medication-list
+          [orders]="meds().value() ?? []"
+          (changed)="reloadMeds()"
+        />
+        } @else if (meds().error()) {
+        <p class="warn">Medication orders unavailable.</p>
+        } @else {
+        <ngx-skeleton-loader count="2" />
+        }
+      </section>
+    </aside>
+  </div>
+</section>

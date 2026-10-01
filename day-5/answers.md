@@ -88,3 +88,15 @@ The 5 errors, all in `monitoring-ui`:
    outputs.
 2. No. It is a container of the monitoring pages, so it goes with them into the monitoring
    feature library in D5.8. The app was a parking place for one step.
+
+## D5.8 · The feature library
+
+1. Its import path and the name of its routes: `import('@wm/monitoring/feature-station')`, then
+   `wardRoutes`. Nothing about pages, stores or files.
+2. The shell (`app.ts`), the composition (`app.config.ts`, `app.routes.ts`), the sign-in pages
+   (`auth/`), the app-wide providers and shell components (`core/`), the mock toolbar (`dev/`),
+   the reports and the phone simulator, and `ward/med-order/` until D5.9. Bootstrapping and
+   composing belong to the app. The others are app pages outside the monitoring context; they
+   could become libraries of their own later.
+3. It injects `Clock` and `MessageBus` and reads the connection state and the time: it talks to
+   the outside world. A `ui` library injects nothing.

@@ -1,0 +1,9 @@
+<wm-vitals-panel
+  [frame]="shown()"
+  [stale]="stale()"
+  [ageSec]="ageSec()"
+  [alarms]="alarms()"
+  [(paused)]="paused"
+>
+  <ng-content />
+</wm-vitals-panel>
