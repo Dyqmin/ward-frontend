@@ -1,15 +1,15 @@
 <section class="page">
-  <app-page-header heading="Ward rounds" />
+  <wm-page-header heading="Ward rounds" />
 
-  <app-card class="escalations" heading="Escalated to doctor">
+  <wm-card class="escalations" heading="Escalated to doctor">
     @for (a of escalated(); track a.event.alarmId) {
     <app-alarm-actions [alarm]="a" />
     } @empty {
-    <app-empty-state
+    <wm-empty-state
       message="Nothing escalated. Nurses acknowledge alarms within 20 s, or they come here."
     />
     }
-  </app-card>
+  </wm-card>
 
   @for (w of wards; track w) {
   <h2 class="ward-title">{{ w }}</h2>

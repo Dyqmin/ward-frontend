@@ -3,10 +3,10 @@ import { Component, input } from '@angular/core';
 /**
  * A surface for one block of a page: border, background, padding and an optional heading.
  * Put a badge next to the heading with the `cardAside` attribute:
- *   <app-card heading="Active alarms"><app-badge cardAside tone="bad">2</app-badge>…</app-card>
+ *   <wm-card heading="Active alarms"><wm-badge cardAside tone="bad">2</app-badge>…</app-card>
  */
 @Component({
-  selector: 'app-card',
+  selector: 'wm-card',
   templateUrl: './card.html',
   styleUrl: './card.scss',
   host: { '[class.alert]': "tone() === 'alert'" },

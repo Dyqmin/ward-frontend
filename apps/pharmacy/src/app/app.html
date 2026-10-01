@@ -1,30 +1,18 @@
 <main class="page">
-  <header class="page-header">
-    <div>
-      <h1>Pharmacy desk</h1>
-      <p>Medication ordered on the wards, waiting to be prepared</p>
-    </div>
-  </header>
+  <wm-page-header
+    heading="Pharmacy desk"
+    subtitle="Medication ordered on the wards, waiting to be prepared"
+  />
 
   <div class="stats">
-    <div class="stat">
-      <span class="label">To prepare</span>
-      <span class="value">{{ toPrepare().length }}</span>
-    </div>
-    <div class="stat">
-      <span class="label">Prepared today</span>
-      <span class="value">{{ done() }}</span>
-    </div>
+    <wm-stat-tile label="To prepare" [value]="toPrepare().length" />
+    <wm-stat-tile label="Prepared today" [value]="done()" />
   </div>
 
-  <section class="card">
-    <header>
-      <h2>Orders to prepare</h2>
-      @if (toPrepare().length) {
-      <span class="badge" data-tone="warn">{{ toPrepare().length }} open</span>
-      }
-    </header>
-    @for (o of toPrepare(); track o.id) {
+  <wm-card heading="Orders to prepare">
+    @if (toPrepare().length) {
+    <wm-badge cardAside tone="warn">{{ toPrepare().length }} open</wm-badge>
+    } @for (o of toPrepare(); track o.id) {
     <div class="order">
       <strong>{{ o.drug }} {{ o.doseMg }} mg</strong>
       <span
@@ -34,7 +22,7 @@
       <span class="muted">ordered {{ time(o.createdAt) }}</span>
     </div>
     } @empty {
-    <p class="empty">Nothing to prepare.</p>
+    <wm-empty-state message="Nothing to prepare." />
     }
-  </section>
+  </wm-card>
 </main>

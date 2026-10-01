@@ -1,5 +1,5 @@
 <section class="page">
-  <app-page-header heading="Nurse station">
+  <wm-page-header heading="Nurse station">
     <nav class="row" aria-label="Ward filter">
       <a class="button small" routerLink="/ward" [class.primary]="!selected()"
         >All wards</a
@@ -14,7 +14,7 @@
       >
       }
     </nav>
-  </app-page-header>
+  </wm-page-header>
 
   @if (empty(); as bed) {
   <p class="card notice">
@@ -22,20 +22,20 @@
   </p>
   }
 
-  <app-card
+  <wm-card
     class="alarms"
     heading="Active alarms"
     [tone]="urgentCount() > 0 ? 'alert' : 'neutral'"
     aria-live="polite"
   >
     @if (urgentCount()) {
-    <app-badge cardAside tone="bad">{{ urgentCount() }} need action</app-badge>
+    <wm-badge cardAside tone="bad">{{ urgentCount() }} need action</wm-badge>
     } @for (a of alarms(); track a.event.alarmId) {
     <app-alarm-actions [alarm]="a" />
     } @empty {
-    <app-empty-state message="No active alarms." />
+    <wm-empty-state message="No active alarms." />
     }
-  </app-card>
+  </wm-card>
 
   @for (w of visibleWards(); track w) {
   <h2 class="ward-title">{{ w }}</h2>

@@ -2,7 +2,7 @@ import { Component, input } from '@angular/core';
 
 /** What a list shows when it has nothing to show. */
 @Component({
-  selector: 'app-empty-state',
+  selector: 'wm-empty-state',
   template: '<p>{{ message() }}</p>',
   styleUrl: './empty-state.scss',
 })

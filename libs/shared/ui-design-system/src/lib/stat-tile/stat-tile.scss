@@ -1,0 +1,18 @@
+:host {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+
+  .label {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .value {
+    font-size: 1.6rem;
+    font-weight: 600;
+  }
+}

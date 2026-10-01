@@ -28,6 +28,9 @@
       ],
       "@wm/shared/data-access-messaging": [
         "./libs/shared/data-access-messaging/src/index.ts"
+      ],
+      "@wm/shared/ui-design-system": [
+        "./libs/shared/ui-design-system/src/index.ts"
       ]
     }
   },

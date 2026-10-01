@@ -2,7 +2,7 @@ import { Component, input } from '@angular/core';
 
 /** The title row of a page. Anything inside it (buttons, filters) goes to the right. */
 @Component({
-  selector: 'app-page-header',
+  selector: 'wm-page-header',
   templateUrl: './page-header.html',
   styleUrl: './page-header.scss',
 })

@@ -1,14 +1,22 @@
 import { Component, computed, signal } from '@angular/core';
 
+import {
+  Badge,
+  Card,
+  EmptyState,
+  PageHeader,
+  StatTile,
+} from '@wm/shared/ui-design-system';
+
 import { DISPENSING_QUEUE } from './dispensing-queue';
 
 /**
  * Pharmacy desk: another team's app in the same monorepo. It prepares the medication that
- * doctors order in Ward Monitor. It has no libraries of its own yet: the card, the badge and
- * the page header in app.html are copied by hand, with their styles in app.scss.
+ * doctors order in Ward Monitor, with the same design system as the ward app.
  */
 @Component({
   selector: 'ph-root',
+  imports: [Badge, Card, EmptyState, PageHeader, StatTile],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

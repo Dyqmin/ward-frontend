@@ -3,11 +3,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
 import { bedsOf, isWardName, type Ward, WARDS } from '@wm/shared/domain';
+import {
+  Badge,
+  Card,
+  EmptyState,
+  PageHeader,
+} from '@wm/shared/ui-design-system';
 
-import { Badge } from '../../ui-kit/badge/badge';
-import { Card } from '../../ui-kit/card/card';
-import { EmptyState } from '../../ui-kit/empty-state/empty-state';
-import { PageHeader } from '../../ui-kit/page-header/page-header';
 import { AlarmsStore } from '../data/alarms-store';
 import { PatientsStore } from '../data/patients-store';
 import { AlarmActions } from '../ui/alarm-actions/alarm-actions';
