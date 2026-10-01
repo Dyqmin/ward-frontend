@@ -1,14 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+
+import { MyBedsStore } from './my-beds.store';
 
 /** SS.1d · A second component that reads the same store. */
 @Component({
   selector: 'app-my-beds-count',
-  // SS.1d · show store.count() in the <strong>
-  template: `<p class="count">My beds: <strong></strong></p>`,
+  template: `<p class="count">
+    My beds: <strong>{{ store.count() }}</strong>
+  </p>`,
   styles: `
     p {
       margin: 0;
     }
   `,
 })
-export default class MyBedsCount {}
+export default class MyBedsCount {
+  protected readonly store = inject(MyBedsStore);
+}

@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { WARDS, bedsOf } from '@core/messaging/contract';
 import MyBedsCount from './my-beds-count';
+import { MyBedsStore } from './my-beds.store';
 
 // ============================================================================================
 //  DAY 4 · SS.1 · YOUR FIRST STORE: MY BEDS
@@ -47,6 +48,7 @@ import MyBedsCount from './my-beds-count';
   styleUrl: './my-beds.scss',
 })
 export default class MyBeds {
+  protected readonly store = inject(MyBedsStore); // SS.1b
   protected readonly wards = WARDS;
   protected readonly bedsOf = bedsOf;
 }
