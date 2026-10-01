@@ -25,7 +25,7 @@ import {
   wardOf,
   who,
 } from '@wm/shared/domain';
-import { AlarmsStore } from '../data/alarms-store';
+import { AlarmsStore } from '@wm/monitoring/data-access';
 import { AlarmActions } from '../ui/alarm-actions/alarm-actions';
 import { clock } from '@wm/shared/util-dates';
 import { MedicationList } from './components/medication-list/medication-list';

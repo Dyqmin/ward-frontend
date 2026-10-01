@@ -1,6 +1,7 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { finalize, Observable } from 'rxjs';
 
+import type { AlarmView } from '@wm/monitoring/data-access';
 import { AuthStore } from '@wm/shared/data-access-auth';
 import { commandRetry, MessageBus } from '@wm/shared/data-access-messaging';
 import { Toasts } from '@wm/shared/data-access-toasts';
@@ -13,7 +14,6 @@ import {
 } from '@wm/shared/domain';
 import { clock } from '@wm/shared/util-dates';
 
-import type { AlarmView } from '../../data/alarms-store';
 import { alarmStatus, alarmTitle, isUrgent } from '../format';
 
 @Component({

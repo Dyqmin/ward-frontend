@@ -1,9 +1,9 @@
 import { Component, ElementRef, input, model, viewChild } from '@angular/core';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 
+import type { AlarmView } from '@wm/monitoring/data-access';
 import type { VitalsFrame } from '@wm/shared/domain';
 
-import type { AlarmView } from '../../../data/alarms-store';
 import { alarmTitle, isUrgent } from '../../../ui/format';
 import { VitalReading } from '../vital-reading/vital-reading';
 

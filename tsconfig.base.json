@@ -31,6 +31,9 @@
       ],
       "@wm/shared/ui-design-system": [
         "./libs/shared/ui-design-system/src/index.ts"
+      ],
+      "@wm/monitoring/data-access": [
+        "./libs/monitoring/data-access/src/index.ts"
       ]
     }
   },

@@ -1,6 +1,7 @@
 import { Component, computed, effect, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { PatientsStore } from '@wm/monitoring/data-access';
 import {
   bedFromSlug,
   bedsOf,
@@ -9,7 +10,6 @@ import {
   wardOf,
 } from '@wm/shared/domain';
 
-import { PatientsStore } from '../../data/patients-store';
 import { MedOrderDraftStore } from '../med-order-draft-store';
 
 @Component({

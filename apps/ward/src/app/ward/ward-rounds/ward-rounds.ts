@@ -2,11 +2,10 @@ import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
+import { AlarmsStore, PatientsStore } from '@wm/monitoring/data-access';
 import { bedsOf, toSlug, WARDS } from '@wm/shared/domain';
 import { Card, EmptyState, PageHeader } from '@wm/shared/ui-design-system';
 
-import { AlarmsStore } from '../data/alarms-store';
-import { PatientsStore } from '../data/patients-store';
 import { AlarmActions } from '../ui/alarm-actions/alarm-actions';
 import { BedTile } from '../ui/bed-tile/bed-tile';
 import { alarmsByBed } from '../ui/format';

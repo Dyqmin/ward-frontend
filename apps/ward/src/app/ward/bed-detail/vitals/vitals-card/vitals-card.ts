@@ -11,11 +11,11 @@ import {
 import { rxResource } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 
+import type { AlarmView } from '@wm/monitoring/data-access';
 import { MessageBus } from '@wm/shared/data-access-messaging';
 import { Toasts } from '@wm/shared/data-access-toasts';
 import type { BedId, VitalsFrame } from '@wm/shared/domain';
 
-import type { AlarmView } from '../../../data/alarms-store';
 import { liveness } from '../liveness';
 import { VitalsPanel } from '../vitals-panel/vitals-panel';
 

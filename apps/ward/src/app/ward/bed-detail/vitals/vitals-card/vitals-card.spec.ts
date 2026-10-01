@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { type OutputRef, reflectComponentType } from '@angular/core';
 import { type ComponentFixture, TestBed } from '@angular/core/testing';
 
+import type { AlarmView } from '@wm/monitoring/data-access';
 import { AuthStore } from '@wm/shared/data-access-auth';
 import {
   FakeMessageBus,
@@ -11,7 +12,6 @@ import {
 } from '@wm/shared/data-access-messaging';
 import { Toasts } from '@wm/shared/data-access-toasts';
 
-import type { AlarmView } from '../../../data/alarms-store';
 import { VitalsCard } from './vitals-card';
 
 // DAY 2 · THE VITALS CARD, Parts 1 and 2.

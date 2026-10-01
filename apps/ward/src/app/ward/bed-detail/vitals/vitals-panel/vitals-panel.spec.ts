@@ -7,9 +7,9 @@ import {
 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
+import type { AlarmView } from '@wm/monitoring/data-access';
 import type { VitalsFrame } from '@wm/shared/domain';
 
-import type { AlarmView } from '../../../data/alarms-store';
 import { VitalsPanel } from './vitals-panel';
 
 // The panel is created WITHOUT any providers: a presentational component must not need them.

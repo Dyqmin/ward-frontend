@@ -36,3 +36,9 @@ The answers to the questions at the end of each step. Compare them with yours af
    belong in `shared`. It moves to the monitoring scope in D5.4.
 3. Both teams, because `nx show projects --affected` lists both apps. Give the library one owner
    (the stretch: `CODEOWNERS`) who reviews every change with both apps in mind.
+
+## D5.3 · The first library of the monitoring scope
+
+1. Only `ward`: the app is the only project that uses the stores so far.
+2. No. Who lies in which bed is not about monitoring vitals and alarms: the medication wizard
+   needs it too. It came along because it was in the same folder. D5.9 gives it its own scope.

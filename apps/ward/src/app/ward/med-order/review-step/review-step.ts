@@ -2,11 +2,11 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
+import { PatientsStore } from '@wm/monitoring/data-access';
 import { commandRetry, MessageBus } from '@wm/shared/data-access-messaging';
 import { Toasts } from '@wm/shared/data-access-toasts';
 import { assertNever, link, who } from '@wm/shared/domain';
 
-import { PatientsStore } from '../../data/patients-store';
 import { MedOrderDraftStore } from '../med-order-draft-store';
 
 @Component({
