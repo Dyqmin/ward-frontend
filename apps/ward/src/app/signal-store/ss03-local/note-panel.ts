@@ -5,6 +5,7 @@ import { NoteStore } from './note.store';
 /** SS.3 · A shift note. SS.3b: give every panel its own NoteStore. */
 @Component({
   selector: 'app-note-panel',
+  providers: [NoteStore], // SS.3b
   template: `
     <section class="card panel">
       <h3>{{ label() }}</h3>
