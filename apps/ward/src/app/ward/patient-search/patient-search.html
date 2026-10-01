@@ -1,0 +1,51 @@
+<button
+  type="button"
+  class="small"
+  aria-label="Search patients"
+  (click)="open()"
+>
+  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+    <circle
+      cx="11"
+      cy="11"
+      r="7"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    />
+    <line
+      x1="16.5"
+      y1="16.5"
+      x2="21"
+      y2="21"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+  </svg>
+</button>
+
+<dialog #dialog closedby="any">
+  <form method="dialog" class="head">
+    <h2>Search patients</h2>
+    <button class="small" aria-label="Close">✕</button>
+  </form>
+
+  <!-- STEP 3 · [value]="store.term()" (input)="store.search(input.value)" -->
+  <input #input type="search" placeholder="Patient name…" />
+
+  <ul>
+    <!-- STEP 2 · loop over store.patients() instead of patients -->
+    @for (patient of patients; track patient.id) {
+    <li>
+      <strong>{{ patient.name }}</strong>
+      <span class="muted">{{ patient.bed }}</span>
+      @if (patient.openAlarms) {
+      <span class="alarms">{{ patient.openAlarms }} alarms</span>
+      }
+    </li>
+    } @empty {
+    <li class="muted">No patients</li>
+    }
+  </ul>
+</dialog>

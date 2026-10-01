@@ -30,7 +30,9 @@ solution up to and including that exercise (S.1 … S.7), to catch up mid-day.
 
 In the afternoon they build NgRx SignalStores on the **Signal Store** page (`/signal-store`), on
 fixed data: section 4 of [DAY-4.md](DAY-4.md). That half is on `day-4-signals`, its solutions on
-`day-4-signals-solution` (one commit per exercise).
+`day-4-signals-solution` (one commit per exercise). The instructor's demo for that half, a patient
+search in the header built live as a SignalStore, is on `day-4-instructor`: the steps are commented
+out in order in `ward/patient-search/patient-search.store.ts` (STEP 1 … 4).
 
 ## Run it
 

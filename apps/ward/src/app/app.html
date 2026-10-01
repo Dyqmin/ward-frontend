@@ -13,6 +13,7 @@
     <a routerLink="/signal-store" routerLinkActive="active">Signal Store</a>
   </nav>
   <span class="spacer"></span>
+  <app-patient-search />
   <app-connection-badge />
   <span class="user" [title]="auth.participantId() ?? ''">
     {{ displayName() }} @if (auth.session()?.useSandbox) {
