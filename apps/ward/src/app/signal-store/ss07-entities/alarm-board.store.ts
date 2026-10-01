@@ -4,9 +4,7 @@ import {
   signalStore,
   withComputed,
   withHooks,
-  withLinkedState,
   withMethods,
-  withState,
 } from '@ngrx/signals';
 import {
   setAllEntities,
@@ -21,22 +19,26 @@ import { DEMO_ALARMS, pause, type DemoAlarm } from '../signal-store-data';
 
 export const AlarmBoardStore = signalStore(
   { providedIn: 'root' },
-  withState({ alarms: [...DEMO_ALARMS] as DemoAlarm[] }),
-  withComputed(({ alarms }) => ({
-    openCount: computed(() => alarms().filter((a) => !a.acknowledged).length),
+  withEntities<DemoAlarm>(), // SS.7a
+  withComputed(({ entities }) => ({
+    // SS.7c
+    openCount: computed(() => entities().filter((a) => !a.acknowledged).length),
   })),
   withMethods((store) => ({
+    // SS.7b
     acknowledge(id: string): void {
-      patchState(store, (state) => ({
-        alarms: state.alarms.map((a) =>
-          a.id === id ? { ...a, acknowledged: true } : a,
-        ),
-      }));
+      patchState(store, updateEntity({ id, changes: { acknowledged: true } }));
     },
     /** Back to the demo alarms, after a slow "server". */
     async reload(): Promise<void> {
       await pause(500);
-      patchState(store, { alarms: [...DEMO_ALARMS] });
+      patchState(store, setAllEntities([...DEMO_ALARMS])); // SS.7a
     },
   })),
+  // SS.7a
+  withHooks({
+    onInit(store) {
+      patchState(store, setAllEntities([...DEMO_ALARMS]));
+    },
+  }),
 );

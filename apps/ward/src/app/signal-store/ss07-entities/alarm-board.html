@@ -13,8 +13,7 @@
 </p>
 
 <ul class="alarms">
-  <!-- SS.7c · loop over store.entities() -->
-  @for (a of store.alarms(); track a.id) {
+  @for (a of store.entities(); track a.id) {
   <!-- SS.8 · class selected when a.id === store.selectedId() -->
   <li class="row" [class.high]="a.severity === 'high'">
     <!-- SS.8 · on click, call store.select(a.id) -->
