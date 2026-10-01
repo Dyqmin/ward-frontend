@@ -28,6 +28,10 @@ carries its own exercises. A Store inspector on the page shows the last actions 
 state. Solutions are on `day-4-solution`; `day-4-solution-1` … `day-4-solution-7` hold the
 solution up to and including that exercise (S.1 … S.7), to catch up mid-day.
 
+In the afternoon they build NgRx SignalStores on the **Signal Store** page (`/signal-store`), on
+fixed data: section 4 of [DAY-4.md](DAY-4.md). That half is on `day-4-signals`, its solutions on
+`day-4-signals-solution` (one commit per exercise).
+
 ## Run it
 
 ```sh

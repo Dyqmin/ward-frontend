@@ -1,0 +1,25 @@
+<h2>SS.2 · Lab 1: the alarms store</h2>
+<app-alarm-counter />
+
+<label class="row only-high">
+  <!-- SS.2e · on change, call store.toggleOnlyHigh() -->
+  <input type="checkbox" />
+  Only high
+</label>
+
+<ul class="alarms">
+  <!-- SS.2b · loop over store.alarms() (SS.2e: store.visibleAlarms()) -->
+  @for (a of noAlarms; track a.id) {
+  <li class="row" [class.high]="a.severity === 'high'">
+    <strong>{{ a.bed }}</strong>
+    <span>{{ a.title }}</span>
+    <span class="spacer"></span>
+    @if (a.acknowledged) {
+    <span class="chip ok">acknowledged</span>
+    } @else {
+    <!-- SS.2d · on click, call store.acknowledge(a.id) -->
+    <button type="button" class="small">Acknowledge</button>
+    }
+  </li>
+  }
+</ul>

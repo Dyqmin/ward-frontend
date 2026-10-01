@@ -78,3 +78,32 @@ pnpm nx test ward --include='**/ward-picker.spec.ts' --reporters=verbose
 - The Store checks its own rules while you work. An error that says *state* or *action* is
   frozen, or not serializable, means a reducer changed the old state instead of returning a new
   object, or you put something that is not plain JSON into the Store.
+
+## 4. Afternoon: NgRx SignalStore
+
+Same idea, a lighter tool: one store per feature, built from blocks (`withState`, `withComputed`,
+`withMethods`, `withHooks`, …). No actions, no reducers.
+
+Click **Signal Store** in the header. All files are in `apps/ward/src/app/signal-store/`; the
+steps are at the top of the file in the table.
+
+| Tab | Open this file | Exercises | Topic |
+| --- | --- | --- | --- |
+| SS.1 | `ss01-my-beds/my-beds.ts` | SS.1a–e | your first store: state, a method, a computed |
+| SS.2 | `ss02-alarms/alarms-page.ts` | SS.2a–e | **Lab 1**: the alarms store, `patchState` with an updater |
+| SS.3 | `ss03-local/notes-page.ts` | SS.3a–c | one store for the app vs one per component; `withHooks` |
+| SS.4–6 | `ss04-search/patient-search.ts` | SS.4a–e, SS.5, SS.6 | **Lab 2**: `withProps`, async load, `signalMethod`, `rxMethod` (extra) |
+| SS.7–9 | `ss07-entities/alarm-board.ts` | SS.7a–c, SS.8, SS.9 | **Lab 3**: `withEntities`; extras: `withLinkedState`, your own feature |
+| SS.10–12 | `ss10-live/live-alarms.ts` | SS.10a–d, SS.11a–c, SS.12a–b | **The real ward**: load, follow and acknowledge alarms over `MessageBus` |
+
+SS.1–SS.9 run on fixed data (`signal-store-data.ts`, you don't change it). SS.10–12 talk to the
+broker: the real ward, or the in-memory one with `?mock`. Run the spec named in each file, e.g.:
+
+```sh
+pnpm nx test ward --include='**/my-beds.spec.ts' --reporters=verbose
+```
+
+- Brackets confusing? Write the empty shape first — `withMethods((store) => ({ }))` — check it
+  compiles, then fill it in.
+- "Property … does not exist"? A block only sees the blocks above it: move it lower.
+- The SS.6 test stays red after SS.5 on purpose: three keys, three requests. `rxMethod` fixes it.

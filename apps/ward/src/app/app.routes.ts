@@ -41,6 +41,13 @@ export const routes: Routes = [
     canMatch: [authGuard],
     loadChildren: () => import('./state/state.routes'),
   },
+  // Day 4 afternoon: NgRx SignalStore, one tab per exercise
+  {
+    path: 'signal-store',
+    title: 'Signal Store',
+    canMatch: [authGuard],
+    loadChildren: () => import('./signal-store/signal-store.routes'),
+  },
   {
     path: 'reports',
     canMatch: [authGuard],

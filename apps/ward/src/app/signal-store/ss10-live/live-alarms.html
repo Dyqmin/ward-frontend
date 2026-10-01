@@ -1,0 +1,48 @@
+<h2>SS.10–12 · The real ward: live alarms</h2>
+
+<p class="row helpers">
+  <span class="muted">Test alarm</span>
+  <select
+    #bedSelect
+    aria-label="Bed for the test alarm"
+    (change)="pickBed(bedSelect.value)"
+  >
+    @for (b of beds; track b) {
+    <option [value]="b" [selected]="b === testBed()">{{ b }}</option>
+    }
+  </select>
+  <button type="button" class="small" (click)="setHr(140)">
+    Raise HR to 140
+  </button>
+  <button type="button" class="small" (click)="setHr(72)">Back to 72</button>
+</p>
+
+<p class="row">
+  <strong>ICU</strong>
+  <!-- SS.10d · on click, call store.load() -->
+  <button type="button" class="small reload">Reload</button>
+  <!-- SS.10d · replace false with store.loading() -->
+  @if (false) {
+  <span class="muted loading">Loading…</span>
+  }
+</p>
+
+<ul class="alarms">
+  <!-- SS.10d · loop over store.alarms() -->
+  @for (a of noAlarms; track a.alarmId) {
+  <li class="row">
+    <strong>{{ a.bed }}</strong>
+    @if (a.status === 'raised') {
+    <span>{{ a.code }} · {{ a.value }}</span>
+    }
+    <span class="spacer"></span>
+    <span class="chip status">{{ a.status }}</span>
+    @if (a.status === 'raised' || a.status === 'escalated') {
+    <!-- SS.12b · on click, call store.acknowledge(a.alarmId) -->
+    <button type="button" class="small ack">Acknowledge</button>
+    }
+  </li>
+  } @empty {
+  <li class="muted">No active alarms on ICU.</li>
+  }
+</ul>

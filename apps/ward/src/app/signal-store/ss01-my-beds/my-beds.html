@@ -1,0 +1,15 @@
+<h2>SS.1 · My beds</h2>
+<app-my-beds-count />
+
+<!-- SS.1b · show store.beds(), joined with ', ' -->
+<p class="mine">Mine:</p>
+
+@for (w of wards; track w) {
+<div class="row beds">
+  <span class="muted ward">{{ w }}</span>
+  @for (bed of bedsOf(w); track bed) {
+  <!-- SS.1c · on click, call store.toggle(bed) -->
+  <button type="button" class="small">{{ bed }}</button>
+  }
+</div>
+}
