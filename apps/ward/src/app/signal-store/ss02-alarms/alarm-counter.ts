@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+
+import { AlarmsStore } from './alarms.store';
 
 /** SS.2c · The counter: a second component that reads the same store. */
 @Component({
   selector: 'app-alarm-counter',
-  // SS.2c · store.openCount() in the <strong> · SS.2e · store.highCount() in the <span>
   template: `<p class="count">
-    Open alarms: <strong></strong> · high: <span class="high"></span>
+    Open alarms: <strong>{{ store.openCount() }}</strong> · high:
+    <span class="high">{{ store.highCount() }}</span>
   </p>`,
   styles: `
     p {
@@ -13,4 +15,6 @@ import { Component } from '@angular/core';
     }
   `,
 })
-export default class AlarmCounter {}
+export default class AlarmCounter {
+  protected readonly store = inject(AlarmsStore);
+}

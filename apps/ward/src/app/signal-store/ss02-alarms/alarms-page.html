@@ -2,14 +2,16 @@
 <app-alarm-counter />
 
 <label class="row only-high">
-  <!-- SS.2e · on change, call store.toggleOnlyHigh() -->
-  <input type="checkbox" />
+  <input
+    type="checkbox"
+    [checked]="store.onlyHigh()"
+    (change)="store.toggleOnlyHigh()"
+  />
   Only high
 </label>
 
 <ul class="alarms">
-  <!-- SS.2b · loop over store.alarms() (SS.2e: store.visibleAlarms()) -->
-  @for (a of noAlarms; track a.id) {
+  @for (a of store.visibleAlarms(); track a.id) {
   <li class="row" [class.high]="a.severity === 'high'">
     <strong>{{ a.bed }}</strong>
     <span>{{ a.title }}</span>
@@ -17,8 +19,9 @@
     @if (a.acknowledged) {
     <span class="chip ok">acknowledged</span>
     } @else {
-    <!-- SS.2d · on click, call store.acknowledge(a.id) -->
-    <button type="button" class="small">Acknowledge</button>
+    <button type="button" class="small" (click)="store.acknowledge(a.id)">
+      Acknowledge
+    </button>
     }
   </li>
   }

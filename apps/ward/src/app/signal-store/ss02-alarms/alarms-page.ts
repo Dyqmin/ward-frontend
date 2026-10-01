@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
-import type { DemoAlarm } from '../signal-store-data';
 import AlarmCounter from './alarm-counter';
+import { AlarmsStore } from './alarms.store';
 
 // ============================================================================================
 //  DAY 4 · SS.2 · LAB 1: THE ALARMS STORE
@@ -50,6 +50,5 @@ import AlarmCounter from './alarm-counter';
   styleUrl: './alarms-page.scss',
 })
 export default class AlarmsPage {
-  /** SS.2b · delete me, loop over the store's alarms instead. */
-  protected readonly noAlarms: DemoAlarm[] = [];
+  protected readonly store = inject(AlarmsStore); // SS.2b
 }
