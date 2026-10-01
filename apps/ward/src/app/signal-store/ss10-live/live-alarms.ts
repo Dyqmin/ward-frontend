@@ -7,12 +7,12 @@ import {
   MessageBus,
   bedsOf,
   isBedId,
-  type AlarmEvent,
   type BedId,
 } from '@core/messaging/contract';
 import { FakeMessageBus } from '@core/messaging/fake-message-bus';
 import { Toasts } from '@core/ui/toasts';
 import { MOCK_EMPTY_BEDS } from '../../testing/ward-fixtures';
+import { LiveAlarmsStore } from './live-alarms.store';
 
 // ============================================================================================
 //  DAY 4 · SS.10–12 · THE REAL WARD: LIVE ALARMS
@@ -62,8 +62,7 @@ import { MOCK_EMPTY_BEDS } from '../../testing/ward-fixtures';
   styleUrl: './live-alarms.scss',
 })
 export default class LiveAlarms {
-  /** SS.10d · delete me, loop over the store's alarms instead. */
-  protected readonly noAlarms: AlarmEvent[] = [];
+  protected readonly store = inject(LiveAlarmsStore); // SS.10d
 
   // ---------- ready-made: the test alarm ----------
   private readonly bus = inject(MessageBus);

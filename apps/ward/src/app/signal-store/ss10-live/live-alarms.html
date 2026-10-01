@@ -19,17 +19,16 @@
 
 <p class="row">
   <strong>ICU</strong>
-  <!-- SS.10d · on click, call store.load() -->
-  <button type="button" class="small reload">Reload</button>
-  <!-- SS.10d · replace false with store.loading() -->
-  @if (false) {
+  <button type="button" class="small reload" (click)="store.load()">
+    Reload
+  </button>
+  @if (store.loading()) {
   <span class="muted loading">Loading…</span>
   }
 </p>
 
 <ul class="alarms">
-  <!-- SS.10d · loop over store.alarms() -->
-  @for (a of noAlarms; track a.alarmId) {
+  @for (a of store.alarms(); track a.alarmId) {
   <li class="row">
     <strong>{{ a.bed }}</strong>
     @if (a.status === 'raised') {
