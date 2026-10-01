@@ -11,27 +11,28 @@ import {
   withPreloading,
   withRouterResources,
 } from '@angular/router';
-import { environment } from '@env';
 
+import { provideAuth } from '@wm/shared/data-access-auth';
+import {
+  provideStomp,
+  withAuthToken,
+  withErrorLogging,
+  withExponentialReconnect,
+} from '@wm/shared/data-access-messaging';
+
+import { environment } from '../environments/environment';
+import { routes } from './app.routes';
 import {
   authInterceptor,
   errorLogInterceptor,
   localeInterceptor,
   mockInterceptor,
   retryInterceptor,
-} from '@core/http/interceptors';
-import { handleNavigationError } from '@core/navigation-errors';
-import {
-  provideStomp,
-  withAuthToken,
-  withErrorLogging,
-  withExponentialReconnect,
-} from '@core/messaging/provide-stomp';
-import { provideAppSeo } from '@core/providers/seo';
-import { provideSkeletonConfig } from '@core/providers/skeleton';
-import { provideAppStore } from '@core/providers/store';
-import { WifiAwarePreloading } from '@core/providers/wifi-aware-preloading';
-import { routes } from './app.routes';
+} from './core/http/interceptors';
+import { handleNavigationError } from './core/navigation-errors';
+import { provideAppSeo } from './core/providers/seo';
+import { provideSkeletonConfig } from './core/providers/skeleton';
+import { WifiAwarePreloading } from './core/providers/wifi-aware-preloading';
 
 // Reads like a table of contents: one provideX() per concern, each in its own file.
 export const appConfig: ApplicationConfig = {
@@ -55,6 +56,8 @@ export const appConfig: ApplicationConfig = {
         errorLogInterceptor,
       ]),
     ),
+    // join and token refresh over HTTP; the library gets the URL from here, not from environment.ts
+    provideAuth({ apiUrl: environment.apiUrl }),
     // everything live
     provideStomp(
       {
@@ -65,8 +68,6 @@ export const appConfig: ApplicationConfig = {
       withExponentialReconnect({ initialMs: 500, maxMs: 15_000 }),
       withErrorLogging(),
     ),
-    // Day 4: one global NgRx Store; features register their slices on their routes
-    provideAppStore(),
     provideAppSeo({ siteName: 'Ward Monitor' }),
     provideSkeletonConfig(),
   ],

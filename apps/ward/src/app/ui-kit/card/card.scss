@@ -1,0 +1,27 @@
+// The app's colour tokens when it defines them, neutral defaults when it does not.
+:host {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  padding: 1rem;
+  border: 1px solid var(--border, #d0d7de);
+  border-radius: var(--radius, 10px);
+  background: var(--card, #ffffff);
+  color: var(--text, #1f2328);
+}
+
+:host(.alert) {
+  border-color: var(--bad, #cf222e);
+}
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}

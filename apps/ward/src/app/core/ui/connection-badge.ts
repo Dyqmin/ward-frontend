@@ -1,7 +1,7 @@
 import { Component, computed, inject, linkedSignal } from '@angular/core';
 
-import { MessageBus } from '../messaging/contract';
-import { STOMP_MODE } from '../messaging/stomp-mode';
+import { STOMP_MODE } from '@wm/shared/data-access-auth';
+import { MessageBus } from '@wm/shared/data-access-messaging';
 
 @Component({
   selector: 'app-connection-badge',

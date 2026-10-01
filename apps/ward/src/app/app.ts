@@ -9,10 +9,10 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 
-import { AuthStore } from '@core/auth/auth-store';
-import { STOMP_MODE } from '@core/messaging/stomp-mode';
-import { ConnectionBadge } from '@core/ui/connection-badge';
-import { ToastOutlet } from '@core/ui/toast-outlet';
+import { AuthStore, STOMP_MODE } from '@wm/shared/data-access-auth';
+
+import { ConnectionBadge } from './core/ui/connection-badge';
+import { ToastOutlet } from './core/ui/toast-outlet';
 import { DevToolbar } from './dev/dev-toolbar';
 
 @Component({

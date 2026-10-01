@@ -1,7 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { toSlug, type BedId } from '@core/messaging/contract';
+import { type BedId, toSlug } from '@wm/shared/domain';
 
 /**
  * The bed tile of the nurse station, built live on stage during Day 2.

@@ -1,7 +1,8 @@
 import { Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { MED_ROUTES, link, type MedOrder } from '@core/messaging/contract';
+import { link, MED_ROUTES, type MedOrder } from '@wm/shared/domain';
+
 import { MedOrderDraftStore } from './med-order-draft-store';
 
 @Component({

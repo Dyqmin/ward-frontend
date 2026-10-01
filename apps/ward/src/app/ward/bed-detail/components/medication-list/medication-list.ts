@@ -8,16 +8,16 @@ import {
 } from '@angular/core';
 import { finalize } from 'rxjs';
 
-import { AuthStore } from '@core/auth/auth-store';
+import { AuthStore } from '@wm/shared/data-access-auth';
+import { commandRetry, MessageBus } from '@wm/shared/data-access-messaging';
+import { Toasts } from '@wm/shared/data-access-toasts';
 import {
-  MessageBus,
   assertNever,
   type MedOrder,
   type MedOrderId,
-} from '@core/messaging/contract';
-import { Toasts } from '@core/ui/toasts';
-import { commandRetry } from '@core/messaging/command-retry';
-import { clock, who } from '../../../ui/format';
+  who,
+} from '@wm/shared/domain';
+import { clock } from '@wm/shared/util-dates';
 
 @Component({
   selector: 'app-medication-list',

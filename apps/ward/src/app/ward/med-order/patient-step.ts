@@ -5,9 +5,10 @@ import {
   bedFromSlug,
   bedsOf,
   link,
-  wardOf,
   type Patient,
-} from '@core/messaging/contract';
+  wardOf,
+} from '@wm/shared/domain';
+
 import { PatientsStore } from '../data/patients-store';
 import { MedOrderDraftStore } from './med-order-draft-store';
 

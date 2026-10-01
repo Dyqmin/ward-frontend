@@ -1,17 +1,17 @@
 import {
   ApplicationRef,
-  EnvironmentInjector,
   createComponent,
-  reflectComponentType,
+  EnvironmentInjector,
   type OutputRef,
+  reflectComponentType,
 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import type { VitalsFrame } from '@core/messaging/contract';
+import type { VitalsFrame } from '@wm/shared/domain';
+
 import type { AlarmView } from '../../../data/alarms-store';
 import { VitalsPanel } from './vitals-panel';
 
-// DAY 2 · EXERCISE 3.1. Run: pnpm nx test ward --include='**/vitals-panel.spec.ts'
 // The panel is created WITHOUT any providers: a presentational component must not need them.
 
 const FRAME: VitalsFrame = { bed: 'ICU-3', ts: 1, hr: 72, spo2: 97, rr: 14 };
@@ -42,7 +42,7 @@ async function render(inputs: Record<string, unknown>) {
   return { fixture, el, chips, button };
 }
 
-describe('Exercise 3.1: VitalsPanel', () => {
+describe('VitalsPanel', () => {
   it('shows the three readings of the frame it is given', async () => {
     const { el } = await render({ frame: FRAME });
     const values = [...el.querySelectorAll('app-vital-reading .value')].map(

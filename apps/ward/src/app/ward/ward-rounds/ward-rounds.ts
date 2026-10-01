@@ -2,7 +2,11 @@ import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
-import { WARDS, bedsOf, toSlug } from '@core/messaging/contract';
+import { bedsOf, toSlug, WARDS } from '@wm/shared/domain';
+
+import { Card } from '../../ui-kit/card/card';
+import { EmptyState } from '../../ui-kit/empty-state/empty-state';
+import { PageHeader } from '../../ui-kit/page-header/page-header';
 import { AlarmsStore } from '../data/alarms-store';
 import { PatientsStore } from '../data/patients-store';
 import { AlarmActions } from '../ui/alarm-actions';
@@ -12,7 +16,7 @@ import { alarmsByBed } from '../ui/format';
 /** The doctor's view of the same URL: escalations first, and the way into the medication wizard. */
 @Component({
   selector: 'app-ward-rounds',
-  imports: [RouterLink, BedTile, AlarmActions],
+  imports: [RouterLink, BedTile, AlarmActions, Card, EmptyState, PageHeader],
   templateUrl: './ward-rounds.html',
   styleUrl: './ward-rounds.scss',
 })

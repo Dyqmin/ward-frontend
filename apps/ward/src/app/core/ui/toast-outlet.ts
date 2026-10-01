@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { Toasts } from './toasts';
+
+import { Toasts } from '@wm/shared/data-access-toasts';
 
 @Component({
   selector: 'app-toast-outlet',

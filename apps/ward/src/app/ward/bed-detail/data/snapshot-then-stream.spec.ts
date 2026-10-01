@@ -1,6 +1,8 @@
-import { Subject, of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 
-import type { MessageBus, VitalsFrame } from '@core/messaging/contract';
+import type { MessageBus } from '@wm/shared/data-access-messaging';
+import type { VitalsFrame } from '@wm/shared/domain';
+
 import { snapshotThenStream } from './snapshot-then-stream';
 
 const frame = (ts: number): VitalsFrame => ({

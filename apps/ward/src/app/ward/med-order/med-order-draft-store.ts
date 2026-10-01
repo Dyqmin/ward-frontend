@@ -1,6 +1,6 @@
-import { Service, computed, signal } from '@angular/core';
+import { computed, Service, signal } from '@angular/core';
 
-import type { MedOrderDraft } from '@core/messaging/contract';
+import type { MedOrderDraft } from '@wm/shared/domain';
 
 export type WizardStep = 'patient' | 'drug' | 'review';
 

@@ -2,7 +2,12 @@ import { Component, computed, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
-import { WARDS, bedsOf, isWardName, type Ward } from '@core/messaging/contract';
+import { bedsOf, isWardName, type Ward, WARDS } from '@wm/shared/domain';
+
+import { Badge } from '../../ui-kit/badge/badge';
+import { Card } from '../../ui-kit/card/card';
+import { EmptyState } from '../../ui-kit/empty-state/empty-state';
+import { PageHeader } from '../../ui-kit/page-header/page-header';
 import { AlarmsStore } from '../data/alarms-store';
 import { PatientsStore } from '../data/patients-store';
 import { AlarmActions } from '../ui/alarm-actions';
@@ -12,7 +17,15 @@ import { alarmsByBed, isUrgent } from '../ui/format';
 /** The nurse station: every bed, live, with the alarms to act on. */
 @Component({
   selector: 'app-nurse-station',
-  imports: [RouterLink, BedTile, AlarmActions],
+  imports: [
+    RouterLink,
+    BedTile,
+    AlarmActions,
+    Badge,
+    Card,
+    EmptyState,
+    PageHeader,
+  ],
   templateUrl: './nurse-station.html',
   styleUrl: './nurse-station.scss',
 })

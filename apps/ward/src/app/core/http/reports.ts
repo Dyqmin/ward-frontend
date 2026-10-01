@@ -1,10 +1,11 @@
 import { HttpClient, HttpEventType } from '@angular/common/http';
-import { Service, inject } from '@angular/core';
-import { environment } from '@env';
-import { Observable, filter, map } from 'rxjs';
+import { inject, Service } from '@angular/core';
+import { filter, map, Observable } from 'rxjs';
 
-import { AuthStore } from '../auth/auth-store';
-import type { BedId } from '../messaging/contract';
+import { AuthStore } from '@wm/shared/data-access-auth';
+import type { BedId } from '@wm/shared/domain';
+
+import { environment } from '../../../environments/environment';
 
 export type ReportKind = 'lab' | 'discharge';
 export const REPORT_KINDS: readonly ReportKind[] = ['lab', 'discharge'];

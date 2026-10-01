@@ -1,11 +1,7 @@
-import { Observable, map, merge, scan } from 'rxjs';
+import { map, merge, Observable, scan } from 'rxjs';
 
-import {
-  assertNever,
-  type BedId,
-  type MessageBus,
-  type VitalsFrame,
-} from '@core/messaging/contract';
+import type { MessageBus } from '@wm/shared/data-access-messaging';
+import { assertNever, type BedId, type VitalsFrame } from '@wm/shared/domain';
 
 type VitalsEvent =
   | { kind: 'snapshot'; frames: VitalsFrame[] }

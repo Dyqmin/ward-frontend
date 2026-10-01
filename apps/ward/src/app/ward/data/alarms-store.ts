@@ -1,7 +1,6 @@
-import { Service, inject } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import {
-  Observable,
   catchError,
   distinctUntilChanged,
   filter,
@@ -9,6 +8,7 @@ import {
   interval,
   map,
   merge,
+  Observable,
   of,
   scan,
   shareReplay,
@@ -16,15 +16,15 @@ import {
   switchMap,
 } from 'rxjs';
 
-import { Logger } from '@core/logger';
+import { Logger } from '@wm/shared/data-access-logging';
+import { MessageBus } from '@wm/shared/data-access-messaging';
 import {
-  MessageBus,
-  WARDS,
   type AlarmCode,
   type AlarmEvent,
   type AlarmId,
   type Ward,
-} from '@core/messaging/contract';
+  WARDS,
+} from '@wm/shared/domain';
 
 /** The latest event of an alarm, plus what only its `raised` event carried. */
 export interface AlarmView {

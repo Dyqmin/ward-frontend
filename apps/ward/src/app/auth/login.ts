@@ -1,11 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { environment } from '@env';
 
-import { AuthStore } from '@core/auth/auth-store';
-import type { Role } from '@core/messaging/contract';
-import { STOMP_MODE } from '@core/messaging/stomp-mode';
+import { AuthStore, STOMP_MODE } from '@wm/shared/data-access-auth';
+import type { Role } from '@wm/shared/domain';
+
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-login',

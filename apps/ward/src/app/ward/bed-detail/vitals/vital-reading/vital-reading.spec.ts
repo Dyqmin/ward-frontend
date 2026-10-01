@@ -2,8 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { VitalReading } from './vital-reading';
 
-// DAY 2 · EXERCISE 2.1. Run: pnpm nx test ward --include='**/vital-reading.spec.ts'
-describe('Exercise 2.1: VitalReading', () => {
+describe('VitalReading', () => {
   async function render(inputs: Record<string, unknown>) {
     const fixture = TestBed.createComponent(VitalReading);
     for (const [name, value] of Object.entries(inputs))

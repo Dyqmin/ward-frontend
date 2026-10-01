@@ -1,11 +1,17 @@
 import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
-import { MessageBus, type AlarmEvent } from '@core/messaging/contract';
-import { FakeMessageBus } from '@core/messaging/fake-message-bus';
-import { provideStomp, withMockBroker } from '@core/messaging/provide-stomp';
-import { createWardFixtures, MockWard } from '../../testing/ward-fixtures';
-import { AlarmsStore, reduceAlarms, type AlarmView } from './alarms-store';
+import {
+  createWardFixtures,
+  FakeMessageBus,
+  MessageBus,
+  MockWard,
+  provideStomp,
+  withMockBroker,
+} from '@wm/shared/data-access-messaging';
+import type { AlarmEvent } from '@wm/shared/domain';
+
+import { AlarmsStore, type AlarmView, reduceAlarms } from './alarms-store';
 
 const raised: AlarmEvent = {
   status: 'raised',

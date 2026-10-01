@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AuthStore } from '@core/auth/auth-store';
-import { MessageBus, type Role } from '@core/messaging/contract';
-import { FakeMessageBus } from '@core/messaging/fake-message-bus';
+import { AuthStore } from '@wm/shared/data-access-auth';
+import { FakeMessageBus, MessageBus } from '@wm/shared/data-access-messaging';
+import type { Role } from '@wm/shared/domain';
 
 /** Lab helper, mock mode only: switch role, pull the plug, watch every command the fake broker saw. */
 @Component({

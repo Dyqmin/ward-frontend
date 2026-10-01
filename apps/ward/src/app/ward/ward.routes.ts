@@ -1,12 +1,13 @@
 import {
   ActivatedRouteSnapshot,
+  nonBlocking,
   ResolveFn,
   Routes,
-  nonBlocking,
 } from '@angular/router';
 
-import { hasRole } from '@core/auth/guards';
-import { bedFromSlug } from '@core/messaging/contract';
+import { hasRole } from '@wm/shared/data-access-auth';
+import { bedFromSlug } from '@wm/shared/domain';
+
 import {
   manualReadingsResource,
   medicationResource,

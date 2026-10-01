@@ -1,8 +1,8 @@
 import { inject } from '@angular/core';
 import { NavigationError, RedirectCommand } from '@angular/router';
 
-import { Logger } from './logger';
-import { Toasts } from './ui/toasts';
+import { Logger } from '@wm/shared/data-access-logging';
+import { Toasts } from '@wm/shared/data-access-toasts';
 
 /**
  * A resource loader that throws `RedirectCommand` (e.g. an empty bed) fails its resource; Angular

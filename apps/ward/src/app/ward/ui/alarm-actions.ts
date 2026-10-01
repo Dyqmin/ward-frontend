@@ -1,18 +1,20 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
-import { Observable, finalize } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 
-import { commandRetry } from '@core/messaging/command-retry';
-import { AuthStore } from '@core/auth/auth-store';
+import { AuthStore } from '@wm/shared/data-access-auth';
+import { commandRetry, MessageBus } from '@wm/shared/data-access-messaging';
+import { Toasts } from '@wm/shared/data-access-toasts';
 import {
-  MessageBus,
   assertNever,
   type CommandResult,
-  type SnoozeMinutes,
   SNOOZE_MINUTES,
-} from '@core/messaging/contract';
-import { Toasts } from '@core/ui/toasts';
+  type SnoozeMinutes,
+  who,
+} from '@wm/shared/domain';
+import { clock } from '@wm/shared/util-dates';
+
 import type { AlarmView } from '../data/alarms-store';
-import { alarmStatus, alarmTitle, clock, isUrgent, who } from './format';
+import { alarmStatus, alarmTitle, isUrgent } from './format';
 
 @Component({
   selector: 'app-alarm-actions',

@@ -1,10 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Subscription, finalize } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 
-import { Reports, isReportKind, saveBlob } from '@core/http/reports';
-import { bedFromSlug } from '@core/messaging/contract';
+import { bedFromSlug } from '@wm/shared/domain';
+
+import { isReportKind, Reports, saveBlob } from '../core/http/reports';
 
 @Component({
   selector: 'app-report-download',

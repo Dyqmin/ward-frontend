@@ -2,11 +2,11 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
-import { MessageBus, assertNever, link } from '@core/messaging/contract';
-import { Toasts } from '@core/ui/toasts';
+import { commandRetry, MessageBus } from '@wm/shared/data-access-messaging';
+import { Toasts } from '@wm/shared/data-access-toasts';
+import { assertNever, link, who } from '@wm/shared/domain';
+
 import { PatientsStore } from '../data/patients-store';
-import { commandRetry } from '@core/messaging/command-retry';
-import { who } from '../ui/format';
 import { MedOrderDraftStore } from './med-order-draft-store';
 
 @Component({

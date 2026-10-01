@@ -1,14 +1,10 @@
-import { Service, computed, inject } from '@angular/core';
+import { computed, inject, Service } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { EMPTY, catchError, filter, forkJoin, map, switchMap } from 'rxjs';
+import { catchError, EMPTY, filter, forkJoin, map, switchMap } from 'rxjs';
 
-import { Logger } from '@core/logger';
-import {
-  ALL_BEDS,
-  MessageBus,
-  type BedId,
-  type Patient,
-} from '@core/messaging/contract';
+import { Logger } from '@wm/shared/data-access-logging';
+import { MessageBus } from '@wm/shared/data-access-messaging';
+import { ALL_BEDS, type BedId, type Patient } from '@wm/shared/domain';
 
 /**
  * Who lies in which bed, for the overview screens. Loaded once per (re)connect: an instructor
