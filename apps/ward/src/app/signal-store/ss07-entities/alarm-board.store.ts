@@ -14,6 +14,7 @@ import {
 } from '@ngrx/signals/entities';
 
 import { DEMO_ALARMS, pause, type DemoAlarm } from '../signal-store-data';
+import { withLoading } from './with-loading';
 
 // SS.7–9 · AlarmBoardStore: ready-made with a plain array. You turn it into entities.
 // The steps are in alarm-board.ts.
@@ -21,6 +22,7 @@ import { DEMO_ALARMS, pause, type DemoAlarm } from '../signal-store-data';
 export const AlarmBoardStore = signalStore(
   { providedIn: 'root' },
   withEntities<DemoAlarm>(), // SS.7a
+  withLoading(), // SS.9
   withComputed(({ entities }) => ({
     // SS.7c
     openCount: computed(() => entities().filter((a) => !a.acknowledged).length),
@@ -40,8 +42,10 @@ export const AlarmBoardStore = signalStore(
     },
     /** Back to the demo alarms, after a slow "server". */
     async reload(): Promise<void> {
+      store.setLoading(true); // SS.9
       await pause(500);
       patchState(store, setAllEntities([...DEMO_ALARMS])); // SS.7a
+      store.setLoading(false); // SS.9
     },
   })),
   // SS.7a

@@ -6,8 +6,7 @@
   <button type="button" class="small reload" (click)="store.reload()">
     Reload
   </button>
-  <!-- SS.9 · replace false with store.loading() -->
-  @if (false) {
+  @if (store.loading()) {
   <span class="muted loading">Reloading…</span>
   }
 </p>
