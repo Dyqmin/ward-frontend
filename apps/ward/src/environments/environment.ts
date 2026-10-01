@@ -3,7 +3,7 @@
 const host = typeof location === 'undefined' ? 'localhost' : location.hostname;
 
 export const environment = {
-  apiUrl: `http://${host}:8787`,
-  wsUrl: `ws://${host}:8787`,
+  apiUrl: `https://ward-worker.teesdomin.workers.dev`,
+  wsUrl: `ws://ward-worker.teesdomin.workers.dev`,
   defaultRoomCode: 'ward-demo',
 };
