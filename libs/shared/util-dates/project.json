@@ -4,7 +4,7 @@
   "sourceRoot": "libs/shared/util-dates/src",
   "prefix": "wm",
   "projectType": "library",
-  "tags": [],
+  "tags": ["scope:shared", "type:util"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"

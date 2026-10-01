@@ -50,3 +50,23 @@ The answers to the questions at the end of each step. Compare them with yours af
    `Toasts` and sends commands: it is a container. The folder name said `ui`; the code did not.
 2. Rules: tags on the projects, and a constraint saying that a `type:ui` project may not import
    a `type:data-access` one. That is D5.5.
+
+## D5.5 · Tags and rules
+
+The 5 errors, all in `monitoring-ui`:
+
+- `format.ts` imports `AlarmView` from `@wm/monitoring/data-access`;
+- `alarm-actions.ts` imports `AlarmView` from `@wm/monitoring/data-access`, `AuthStore` from
+  `@wm/shared/data-access-auth`, `commandRetry` and `MessageBus` from
+  `@wm/shared/data-access-messaging`, and `Toasts` from `@wm/shared/data-access-toasts`.
+
+1. Two errors (`format.ts`, and one line of `alarm-actions.ts`) import the **type**
+   `AlarmView`: a model, which can live where `ui` may import it. The other three import
+   **services**, to do something: send a command, read the role, show a toast. Moving a type
+   cannot fix those.
+2. Both rules must pass. The type rule allows `type:app` → `type:ui`, but the scope rule of
+   `scope:pharmacy` allows only `scope:pharmacy`, `scope:shared` and `type:api`, and
+   `monitoring-ui` is `scope:monitoring`. `BedTile` is the internal UI of another team's context.
+3. Its own imports would not be checked at all: no rule names it. And every tagged project that
+   imported it would fail, because it has none of the tags they may import. That is why the
+   generator adds the tags.

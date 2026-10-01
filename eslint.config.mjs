@@ -16,9 +16,99 @@ export default [
           enforceBuildableLibDependency: true,
           allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
           depConstraints: [
+            // TYPE RULES: a project of this type may import projects of these types
             {
-              sourceTag: '*',
-              onlyDependOnLibsWithTags: ['*'],
+              sourceTag: 'type:app',
+              onlyDependOnLibsWithTags: [
+                'type:feature',
+                'type:data-access',
+                'type:ui',
+                'type:domain',
+                'type:util',
+                'type:api',
+              ],
+            },
+            {
+              sourceTag: 'type:feature',
+              onlyDependOnLibsWithTags: [
+                'type:data-access',
+                'type:ui',
+                'type:domain',
+                'type:util',
+                'type:api',
+              ],
+            },
+            {
+              sourceTag: 'type:api',
+              onlyDependOnLibsWithTags: [
+                'type:data-access',
+                'type:ui',
+                'type:domain',
+                'type:util',
+              ],
+            },
+            {
+              sourceTag: 'type:data-access',
+              onlyDependOnLibsWithTags: [
+                'type:data-access',
+                'type:domain',
+                'type:util',
+              ],
+            },
+            {
+              sourceTag: 'type:ui',
+              onlyDependOnLibsWithTags: ['type:ui', 'type:domain', 'type:util'],
+            },
+            {
+              sourceTag: 'type:domain',
+              onlyDependOnLibsWithTags: ['type:domain', 'type:util'],
+            },
+            {
+              sourceTag: 'type:util',
+              onlyDependOnLibsWithTags: ['type:util'],
+            },
+            // SCOPE RULES: the context map. A scope may import itself, shared, and a type:api library
+            {
+              sourceTag: 'scope:ward',
+              onlyDependOnLibsWithTags: [
+                'scope:ward',
+                'scope:monitoring',
+                'scope:medication',
+                'scope:patient',
+                'scope:shared',
+              ],
+            },
+            {
+              sourceTag: 'scope:pharmacy',
+              onlyDependOnLibsWithTags: [
+                'scope:pharmacy',
+                'scope:shared',
+                'type:api',
+              ],
+            },
+            {
+              sourceTag: 'scope:monitoring',
+              onlyDependOnLibsWithTags: [
+                'scope:monitoring',
+                'scope:shared',
+                'type:api',
+              ],
+            },
+            {
+              sourceTag: 'scope:medication',
+              onlyDependOnLibsWithTags: [
+                'scope:medication',
+                'scope:shared',
+                'type:api',
+              ],
+            },
+            {
+              sourceTag: 'scope:patient',
+              onlyDependOnLibsWithTags: ['scope:patient', 'scope:shared'],
+            },
+            {
+              sourceTag: 'scope:shared',
+              onlyDependOnLibsWithTags: ['scope:shared'],
             },
           ],
         },

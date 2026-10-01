@@ -4,7 +4,7 @@
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "apps/ward/src",
-  "tags": [],
+  "tags": ["scope:ward", "type:app"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",
