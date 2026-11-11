@@ -11,34 +11,34 @@ in this app. The course order is in [PERFORMANCE.md](../PERFORMANCE.md), and the
   → [Change detection](02-change-detection.md)
 - **Use OnPush everywhere.** It is the default since v22, and the old "Default" strategy is now called
   `Eager`. For legacy apps, moving everything to OnPush while still on zone.js is a good step toward
-  zoneless. → [Change detection](02-change-detection.md)
+  zoneless. → [Change detection](02-change-detection.md), [Zone.js apps: STOMP](03-zone-js-stomp.md)
 - **Keep inputs immutable.** Inputs are compared with `Object.is`. Mutate an object but keep its
   reference, and no check runs. A new reference on every check means a check every time.
-  → [Computation in templates](03-template-computation.md)
+  → [Computation in templates](04-template-computation.md)
 - **Don't call methods or getters in templates.** Every template expression runs on every check, so one
   slow expression slows everything. Use `computed()` or a pure pipe.
-  → [Computation in templates](03-template-computation.md)
+  → [Computation in templates](04-template-computation.md)
 - **Cache with pure pipes or memoization.** A pure pipe re-runs only when its inputs change.
   Memoization can store several results, but it costs memory.
-  → [Computation in templates](03-template-computation.md)
+  → [Computation in templates](04-template-computation.md)
 - **Keep lifecycle hooks light.** `ngDoCheck`, `ngAfterContentChecked`, `ngAfterViewChecked` and
   `ngOnChanges` run on every cycle. Don't force reflows or repaints in them.
 - **Use `afterNextRender` / `afterRenderEffect` for DOM reads and writes.** Their read and write phases
-  prevent layout thrashing. → [Hot events](05-hot-events.md),
-  [Timers and window listeners](09-listeners-timers.md)
+  prevent layout thrashing. → [Hot events](06-hot-events.md),
+  [Timers and window listeners](11-listeners-timers.md)
 - **Prefer `markForCheck()` over `detectChanges()`, and signals over both.**
   → [Change detection](02-change-detection.md)
 - **Split big components into small ones**, so a state change dirties only a small view.
 - **Zone-based apps: fix zone pollution.** Run timers and third-party setup (charts, maps) in
-  `ngZone.runOutsideAngular()`, and re-enter the zone only when the view needs an update.
-- **Zone-based apps: turn on event coalescing.** Use `provideZoneChangeDetection({ eventCoalescing: true })`.
+  `ngZone.runOutsideAngular()`, and re-enter the zone only when the view needs an update. → [Zone.js apps: STOMP](03-zone-js-stomp.md)
+- **Zone-based apps: turn on event coalescing.** Use `provideZoneChangeDetection({ eventCoalescing: true })`. → [Zone.js apps: STOMP](03-zone-js-stomp.md)
 
 ## Signals
 
 - **Derive state with `computed()`**, which is lazy and memoized. Don't copy state in an `effect()`.
-  → [Computation in templates](03-template-computation.md)
+  → [Computation in templates](04-template-computation.md)
 - **Use effects for side effects only** (logging, storage, imperative DOM). Use `untracked()` to avoid
-  accidental dependencies. → [Forgotten subscribe()](08-forgotten-subscribe.md)
+  accidental dependencies. → [Forgotten subscribe()](09-forgotten-subscribe.md)
 - **Use `linkedSignal`** for derived state that can be reset, instead of syncing it with an effect.
 - **Use signal inputs, `model()` and signal queries** (`viewChild`, `contentChild`), so change
   detection can target only the views that read them.
@@ -48,46 +48,46 @@ in this app. The course order is in [PERFORMANCE.md](../PERFORMANCE.md), and the
   everything.
 - **Use `resource` / `httpResource` / `rxResource` for async data.** They are stable in v22, and
   `chain()` lets one resource feed another without `switchMap` + `toSignal`.
-  → [Forgotten subscribe()](08-forgotten-subscribe.md)
-- **Try `debounced()` for search inputs.** It is still experimental. → [Hot events](05-hot-events.md)
+  → [Forgotten subscribe()](09-forgotten-subscribe.md)
+- **Try `debounced()` for search inputs.** It is still experimental. → [Hot events](06-hot-events.md)
 
 ## Templates and rendering
 
 - **Use the built-in control flow** (`@if`, `@for`, `@switch`) instead of structural directives. It is
   faster and needs no imports.
 - **Give `@for` a stable, unique `track`**: an id. Not the object, and not `$index` for dynamic lists.
-  → [@for and track](04-for-track.md)
+  → [@for and track](05-for-track.md)
 - **Virtualize long lists** with CDK virtual scroll, or paginate.
-  → [Live buffer that only grows](11-growing-buffer.md), [cheatsheet](cheatsheet.md)
+  → [Live buffer that only grows](13-growing-buffer.md), [cheatsheet](cheatsheet.md)
 - **Prefer `@if` over `[hidden]` for heavy subtrees**, so they aren't created at all.
 - **Use `@let`** so a template doesn't evaluate the same expression several times.
-  → [Computation in templates](03-template-computation.md)
+  → [Computation in templates](04-template-computation.md)
 - **Throttle high-frequency events** (scroll, mousemove, resize), and use passive listeners.
-  → [Hot events](05-hot-events.md), [Timers and window listeners](09-listeners-timers.md)
+  → [Hot events](06-hot-events.md), [Timers and window listeners](11-listeners-timers.md)
 - **Use native CSS animations** or `animate.enter` / `animate.leave` instead of the legacy animations
-  package, which adds bundle weight. → [Hot events](05-hot-events.md)
+  package, which adds bundle weight. → [Hot events](06-hot-events.md)
 - **Use CSS `content-visibility` and `contain`** for large off-screen sections.
   → [cheatsheet](cheatsheet.md)
 - **Move CPU-heavy work to Web Workers** (`ng generate web-worker`). → [cheatsheet](cheatsheet.md)
 
 ## Loading and bundle size
 
-- **Lazy-load routes** with `loadComponent` / `loadChildren`. → [Load less](06-lazy-loading.md)
+- **Lazy-load routes** with `loadComponent` / `loadChildren`. → [Load less](07-lazy-loading.md)
 - **Use `@defer`** for components that aren't visible on first render, heavy libraries and
   below-the-fold content. Pick the trigger on purpose (`on viewport`, `on interaction`, `on idle`,
-  `on timer`, `when`), and add `prefetch`. → [Load less](06-lazy-loading.md)
+  `on timer`, `when`), and add `prefetch`. → [Load less](07-lazy-loading.md)
 - **Give `@placeholder` fixed dimensions and a minimum time**, so there is no layout shift or flicker.
-  → [Load less](06-lazy-loading.md)
+  → [Load less](07-lazy-loading.md)
 - **Lazy-load services with `injectAsync`.** Rarely used services, or services backed by big
-  libraries, get their own chunks. → [Load less](06-lazy-loading.md)
+  libraries, get their own chunks. → [Load less](07-lazy-loading.md)
 - **Choose a preloading strategy** (`withPreloading(PreloadAllModules)` or a custom one), so lazy chunks
-  are ready before the user navigates. → [Load less](06-lazy-loading.md)
+  are ready before the user navigates. → [Load less](07-lazy-loading.md)
 - **Use standalone components**, and avoid shared "barrel" modules that drag in unused code.
 - **Use `providedIn: 'root'`** (tree-shakable) or route-level providers, not eager module providers.
 - **Use the esbuild/Vite application builder**, and keep production optimizations on.
-- **Set bundle budgets** and fail CI when they're exceeded. → [Load less](06-lazy-loading.md)
+- **Set bundle budgets** and fail CI when they're exceeded. → [Load less](07-lazy-loading.md)
 - **Analyze bundles** with the esbuild stats analyzer or source-map-explorer.
-  → [Measure first](01-measure.md), [Load less](06-lazy-loading.md)
+  → [Measure first](01-measure.md), [Load less](07-lazy-loading.md)
 - **Audit dependencies.** Import only what you use (`date-fns` over `moment`, `lodash-es` per
   function), and avoid CommonJS packages, which block tree-shaking. → [cheatsheet](cheatsheet.md)
 - **Inline critical CSS and fonts** (the CLI default), self-host fonts, and use `font-display: swap`.
@@ -99,9 +99,9 @@ in this app. The course order is in [PERFORMANCE.md](../PERFORMANCE.md), and the
 ## Images
 
 - **Use `NgOptimizedImage` (`ngSrc`).** It prioritizes the LCP image, lazy-loads the rest and
-  generates responsive `srcset`s. → [Load less](06-lazy-loading.md)
+  generates responsive `srcset`s. → [Load less](07-lazy-loading.md)
 - **Mark the LCP image `priority`**, and always set `width`/`height` or `fill` to prevent layout shift.
-  → [Load less](06-lazy-loading.md)
+  → [Load less](07-lazy-loading.md)
 - **Configure an image loader or CDN**, use `sizes`, serve AVIF/WebP, and `preconnect` to the image
   origin.
 - **Use `placeholder` (blur-up)** for large images.
@@ -123,56 +123,59 @@ timer | immediate`, `hydrate when` and `hydrate never`. Use `hydrate never` for 
 ## RxJS
 
 - **Never nest subscriptions.** A `subscribe()` inside a `subscribe()` can't be cancelled. Use a
-  flattening operator.
+  flattening operator. → [mergeMap vs switchMap](10-switch-streams.md)
 - **Pick the right flattening operator.**
   - `switchMap` for search and navigation: it cancels stale requests.
   - `exhaustMap` for form submits.
   - `concatMap` for ordered writes.
   - `mergeMap` only when you want parallelism. On a typeahead it causes race conditions.
+
+  → [mergeMap vs switchMap](10-switch-streams.md)
+
 - **Always clean up.** Use the `async` pipe, `toSignal`, or `takeUntilDestroyed()`.
-  → [Forgotten subscribe()](08-forgotten-subscribe.md),
-  [Timers and window listeners](09-listeners-timers.md)
-- **Put `takeUntilDestroyed` last in the pipe**, so it also tears down inner observables.
+  → [Forgotten subscribe()](09-forgotten-subscribe.md),
+  [Timers and window listeners](11-listeners-timers.md)
+- **Put `takeUntilDestroyed` last in the pipe**, so it also tears down inner observables. → [mergeMap vs switchMap](10-switch-streams.md)
 - **Share expensive sources** with `shareReplay({ bufferSize: 1, refCount: true })`. Without
   `refCount`, the source subscription outlives its consumers and leaks.
-  → [shareReplay without refCount](12-share-replay.md)
+  → [shareReplay without refCount](14-share-replay.md)
 - **Avoid several `async` pipes on the same cold observable**, because each one subscribes again. Use
-  one `@if (x$ | async; as x)`, or convert it to a signal.
+  one `@if (x$ | async; as x)`, or convert it to a signal. → [shareReplay without refCount](14-share-replay.md)
 - **Debounce user input** with `debounceTime()` + `distinctUntilChanged()`.
-  → [Hot events](05-hot-events.md)
+  → [Hot events](06-hot-events.md)
 - **Rate-limit event streams.**
   - `throttleTime` / `auditTime` for scroll and resize.
   - `animationFrameScheduler` for visual updates.
   - `bufferTime` to batch WebSocket bursts.
 
-  → [Timers and window listeners](09-listeners-timers.md)
+  → [Timers and window listeners](11-listeners-timers.md)
 
 - **Filter early, map late.** Put `filter`, `distinctUntilChanged` and `take` before expensive
   operators.
 - **Handle errors inside the inner observable.** A `catchError` inside the `switchMap` keeps the
-  outer stream alive.
+  outer stream alive. → [mergeMap vs switchMap](10-switch-streams.md)
 - **Use `forkJoin` for parallel one-shot requests**, and `combineLatest` only when you need live
   recombination.
 - **Use `distinctUntilChanged`** with a comparator, or `distinctUntilKeyChanged`, on store selectors
   to cut emissions.
 - **Call `toSignal` once and share the result.** It subscribes immediately, so calling it repeatedly
-  multiplies subscriptions.
+  multiplies subscriptions. → [shareReplay without refCount](14-share-replay.md)
 - **Use signals for state and RxJS for events.** Signals hold synchronous view state. RxJS handles
   time and events (debounce, retry, cancellation, WebSockets). Bridge them with `toSignal`,
-  `toObservable` and `rxResource`.
+  `toObservable` and `rxResource`. → [Zone.js apps: STOMP](03-zone-js-stomp.md)
 - **Don't expose Subjects.** Expose `asObservable()` or read-only signals.
 - **Use `take(1)` / `first()` for one-shot reads**, and `finalize` for cleanup.
 
 ## HTTP and data
 
 - **Cache responses** (shared observables, resources, or a caching interceptor) and dedupe in-flight
-  requests. → [shareReplay without refCount](12-share-replay.md)
-- **Cancel stale requests** with `switchMap` or resource reloads.
+  requests. → [shareReplay without refCount](14-share-replay.md)
+- **Cancel stale requests** with `switchMap` or resource reloads. → [mergeMap vs switchMap](10-switch-streams.md)
 - **Paginate, and request only the fields you need.** Large payloads cost parse and render time.
 - **Use functional interceptors and keep them cheap**, because they run on every request.
 - **HttpClient uses the Fetch API by default in v22**, which also helps SSR.
 - **Avoid blocking route resolvers for non-critical data.** Render the shell, and load data with
-  resources or `@defer`.
+  resources or `@defer`. → [Load less](07-lazy-loading.md)
 - **Normalize state in stores** (NgRx SignalStore or similar), and select narrowly.
 
 ## Forms
@@ -185,16 +188,16 @@ timer | immediate`, `hydrate when` and `hydrate never`. Use `hydrate never` for 
 ## Memory
 
 - **Find leaks with the tools.** Watch for detached DOM nodes and growing heaps in Chrome's Memory
-  tab. → [Finding leaks](07-find-leaks.md)
-- **End every subscription to a stream.** → [Forgotten subscribe()](08-forgotten-subscribe.md)
+  tab. → [Finding leaks](08-find-leaks.md)
+- **End every subscription to a stream.** → [Forgotten subscribe()](09-forgotten-subscribe.md)
 - **Remove manual listeners, timers and observers in `DestroyRef.onDestroy`**, or let RxJS do it.
-  → [Timers and window listeners](09-listeners-timers.md)
+  → [Timers and window listeners](11-listeners-timers.md)
 - **Don't let a root service keep components.** Unregister on destroy, or expose signals instead.
-  → [Root service keeps components](10-root-service.md)
+  → [Root service keeps components](12-root-service.md)
 - **Give every buffer and cache a limit**: live streams, logs, `ReplaySubject()`, `Map` caches.
-  → [Live buffer that only grows](11-growing-buffer.md)
+  → [Live buffer that only grows](13-growing-buffer.md)
 - **Use `refCount: true` on shared long-lived streams.**
-  → [shareReplay without refCount](12-share-replay.md)
+  → [shareReplay without refCount](14-share-replay.md)
 - **Destroy third-party instances** (charts, maps, editors) when the component is destroyed.
 
 ## Measure first
@@ -209,6 +212,6 @@ timer | immediate`, `hydrate when` and `hydrate never`. Use `hydrate never` for 
 - **Track Core Web Vitals** (LCP, INP, CLS) with Lighthouse, WebPageTest and real-user monitoring.
   → [Measure first](01-measure.md)
 - **Add Lighthouse CI and bundle budgets to the pipeline** to catch regressions.
-  → [Load less](06-lazy-loading.md)
+  → [Load less](07-lazy-loading.md)
 - **Keep Angular up to date.** Each major version brings performance improvements and automated
   migrations (control flow, signal inputs, OnPush, zoneless).

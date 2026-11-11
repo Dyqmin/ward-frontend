@@ -1,5 +1,11 @@
 <section class="page">
-  <a class="back" routerLink="/ward">← Ward</a>
+  <nav class="row">
+    <a class="back ward" routerLink="/ward">← Ward</a>
+    <span class="spacer"></span>
+    @if (nextBed(); as next) {
+    <a class="back next" [routerLink]="['/ward', next]">Next bed →</a>
+    }
+  </nav>
 
   <!-- blocking: always there, no @if -->
   <header class="head">

@@ -40,17 +40,17 @@ Install **Angular DevTools** (Chrome extension). Use Chrome for the day: the Mem
 | **Speed**                                                                   |                              |      |
 | [Measure first](performance/01-measure.md)                                  | tools                        | 30′  |
 | [Change detection: OnPush vs Eager](performance/02-change-detection.md)     | nurse station                | 40′  |
-| [Computation in templates](performance/03-template-computation.md)          | nurse station → tiles, chips | 30′  |
-| [`@for` and `track`](performance/04-for-track.md)                           | active alarms                | 25′  |
-| [Hot events](performance/05-hot-events.md)                                  | bed detail → chart           | 25′  |
-| [Load less: lazy routes, `@defer`, bundles](performance/06-lazy-loading.md) | build                        | 40′  |
+| [Computation in templates](performance/04-template-computation.md)          | nurse station → tiles, chips | 30′  |
+| [`@for` and `track`](performance/05-for-track.md)                           | active alarms                | 25′  |
+| [Hot events](performance/06-hot-events.md)                                  | bed detail → chart           | 25′  |
+| [Load less: lazy routes, `@defer`, bundles](performance/07-lazy-loading.md) | build                        | 40′  |
 | **Memory**                                                                  |                              |      |
-| [Finding leaks](performance/07-find-leaks.md)                               | tools                        | 30′  |
-| [Forgotten `subscribe()`](performance/08-forgotten-subscribe.md)            | bed detail → tab title       | 20′  |
-| [Timers and window listeners](performance/09-listeners-timers.md)           | bed detail → chart           | 20′  |
-| [Root service keeps components](performance/10-root-service.md)             | alarm rows → AlarmSound      | 20′  |
-| [Live buffer that only grows](performance/11-growing-buffer.md)             | bed detail → vitals history  | 20′  |
-| [`shareReplay` without `refCount`](performance/12-share-replay.md)          | live vitals, alarms          | 20′  |
+| [Finding leaks](performance/08-find-leaks.md)                               | tools                        | 30′  |
+| [Forgotten `subscribe()`](performance/09-forgotten-subscribe.md)            | bed detail → tab title       | 20′  |
+| [Timers and window listeners](performance/11-listeners-timers.md)           | bed detail → chart           | 20′  |
+| [Root service keeps components](performance/12-root-service.md)             | alarm rows → AlarmSound      | 20′  |
+| [Live buffer that only grows](performance/13-growing-buffer.md)             | bed detail → vitals history  | 20′  |
+| [`shareReplay` without `refCount`](performance/14-share-replay.md)          | live vitals, alarms          | 20′  |
 | [The hunt](performance/hunt.md): all ❌, find everything with tools only    | everywhere                   | 30′  |
 
 Keep: **[cheatsheet.md](performance/cheatsheet.md)**: everything on one page.

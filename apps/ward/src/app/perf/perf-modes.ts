@@ -24,6 +24,10 @@ export const TOPICS = {
     title: 'Forgotten subscribe()',
     where: 'Bed detail → tab title',
   },
+  'switch-streams': {
+    title: 'mergeMap / nested subscribe vs switchMap',
+    where: 'Bed detail → Next bed → tab title',
+  },
   'listeners-timers': {
     title: 'Timers and window listeners',
     where: 'Bed detail → chart',

@@ -37,8 +37,25 @@ What is the biggest thing in the initial bundle?
 `@defer` only splits a component that is used **nowhere else** outside `@defer` in that file.
 With `pnpm start` (HMR) deferred blocks load eagerly — see the Network tab with `pnpm serve:prod`.
 
+## Don't make navigation wait for live data
+
+`ward.routes.ts` loads the bed page with router resources:
+
+```ts
+resources: (ctx) => ({
+  patient: patientResource(ctx), // blocking: the header needs it, and an empty bed must redirect first
+  vitals: nonBlocking(vitalsResource(ctx)), // the page shows at once; the chart fills in later
+  meds: nonBlocking(medicationResource(ctx)),
+  readings: nonBlocking(manualReadingsResource(ctx)),
+}),
+```
+
+Block navigation only on what the page can't render without. A 10-minute vitals history or a
+medication list behind a resolver makes every click wait for the slowest request.
+
 ## Rules
 
+- Block navigation only on data the page can't render without. Everything else goes in a non-blocking resource or `@defer`.
 - Every route lazy. Preload smart (`withPreloading(...)`, see `WifiAwarePreloading`).
 - `@defer` below the fold, behind interaction (`on interaction`, `on hover`), or rare (`when`).
 - Lazy services too: `injectAsync(() => import('./pdf-export'), { prefetch: onIdle })` (Angular 22).

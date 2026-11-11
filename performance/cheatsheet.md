@@ -4,6 +4,7 @@
 
 - **OnPush** is the default (Angular 22). Never opt out with `Eager` — use signals instead.
 - **Zoneless** (default): change detection runs when a signal, input, event or `markForCheck` says so.
+- Still on zone.js? Activate STOMP / WebSocket / timers in `runOutsideAngular()`, bring data back via signals.
 - Every template expression runs on every check: methods, getters, inline `.filter()`, impure pipes.
 - Derived state → `computed()`. Not getters, not methods, not `effect()` + `set()`.
 - Per-row values in `@for` → a pure pipe (default). `pure: false` = a method.
@@ -26,6 +27,13 @@
 - Avoid CommonJS and whole-library imports (`import _ from 'lodash'`).
 - Images: `NgOptimizedImage` (`ngSrc`, `priority`, `sizes`, `placeholder`).
 - SSR + hydration (incremental: `@defer (hydrate on …)`) for a fast first paint.
+
+## RxJS
+
+- Route param / id / search → `switchMap`. Never `subscribe()` inside `subscribe()`.
+- Double-submit → `exhaustMap`. Ordered commands → `concatMap`. `mergeMap` only for real parallel work.
+- `takeUntilDestroyed()` last in the pipe. `catchError` inside the inner pipe.
+- One topic, one shared stream (root service + `shareReplay({ bufferSize: 1, refCount: true })`).
 
 ## Memory
 

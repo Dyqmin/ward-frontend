@@ -6,11 +6,12 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { distinctUntilChanged, filter, map, switchMap } from 'rxjs';
+import { distinctUntilChanged, filter, map, mergeMap, switchMap } from 'rxjs';
 
 import { AuthStore } from '@core/auth/auth-store';
 import { Clock } from '@core/clock';
 import {
+  ALL_BEDS,
   MessageBus,
   bedFromSlug,
   toSlug,
@@ -23,6 +24,8 @@ import {
 import { isBad } from '@perf/perf-modes';
 import { trackInstance } from '@perf/perf-stats';
 import { AlarmsStore } from '../data/alarms-store';
+import { LiveVitals } from '../data/live-vitals';
+import { PatientsStore } from '../data/patients-store';
 import { AlarmActions } from '../ui/alarm-actions';
 import { STALE_AFTER_SEC } from '../ui/bed-tile';
 import { clock, who } from '../ui/format';
@@ -92,20 +95,49 @@ export default class BedDetail {
     this.wardAlarms().filter((a) => a.event.bed === this.patient().bed),
   );
 
+  /**
+   * The bed from the URL, as a stream. "Next bed →" goes from /ward/icu-1 to /ward/icu-2 and the
+   * router REUSES this component: it is not destroyed, only the params change.
+   */
+  private readonly bed$ = this.route.params.pipe(
+    map((p) => bedFromSlug(String(p['bed'] ?? ''))),
+    filter((bed) => bed !== null),
+    distinctUntilChanged(),
+  );
+
+  /** The next occupied bed, across wards: how a nurse walks the round. */
+  private readonly patients = inject(PatientsStore);
+  protected readonly nextBed = computed(() => {
+    const i = ALL_BEDS.indexOf(this.patient().bed);
+    for (let k = 1; k < ALL_BEDS.length; k++) {
+      const bed = ALL_BEDS[(i + k) % ALL_BEDS.length];
+      if (this.patients.patient(bed) !== null) return toSlug(bed);
+    }
+    return null;
+  });
+
   constructor() {
     trackInstance(this, 'BedDetail');
+    const live = inject(LiveVitals);
 
     // The tab shows the live heart rate: "♥ 82 · ICU-3", handy when the nurse switches tabs.
-    const bed = bedFromSlug(String(this.route.snapshot.params['bed'] ?? ''));
-    if (!bed) return;
-    const frames$ = this.bus.watch(`/topic/vitals.${bed}`);
+    const frames$ = this.bed$.pipe(
+      isBad('switch-streams')
+        ? // ❌ BAD (switch-streams): mergeMap keeps EVERY inner stream. After Next bed → Next bed, the
+          // title gets frames from all three beds and flickers between them. A subscribe() inside a
+          // subscribe() does the same, and survives even takeUntilDestroyed().
+          mergeMap((bed) => live.frames(bed))
+        : // ✅ GOOD (switch-streams): switchMap closes the previous bed's stream when the next one starts.
+          switchMap((bed) => live.frames(bed)),
+    );
+
     if (isBad('forgotten-subscribe')) {
       // ❌ BAD (forgotten-subscribe): subscribe() with no end. Leaving the page does not stop it: the callback holds
       // `this`, so this component (and its DOM) stays in memory, and keeps overwriting the tab title.
       frames$.subscribe((f) => this.showInTitle(f));
     } else {
       // ✅ GOOD (forgotten-subscribe): takeUntilDestroyed() ends the subscription with the component.
-      // (Even better: no subscribe at all — an effect() on `latest()`.)
+      // Keep it LAST in the pipe, so it also ends the inner streams.
       frames$.pipe(takeUntilDestroyed()).subscribe((f) => this.showInTitle(f));
     }
   }
