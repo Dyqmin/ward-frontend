@@ -7,6 +7,8 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { auditTime, fromEvent } from 'rxjs';
 
 import {
   THRESHOLDS,
@@ -70,11 +72,11 @@ export class VitalsChart {
     } else {
       const destroyRef = inject(DestroyRef);
 
-      // ✅ GOOD (M2) · listener: the SAME window listener, removed on destroy. `{ signal }` removes
-      // every listener added with it in one abort() — no need to keep the function reference.
-      const listeners = new AbortController();
-      window.addEventListener('resize', measure, { signal: listeners.signal });
-      destroyRef.onDestroy(() => listeners.abort());
+      // ✅ GOOD (M2) · listener: the SAME window event, as a stream that ends with the component.
+      // fromEvent removes the listener on unsubscribe; takeUntilDestroyed unsubscribes on destroy.
+      fromEvent(window, 'resize')
+        .pipe(auditTime(100), takeUntilDestroyed(destroyRef)) // + RxJS: at most every 100 ms
+        .subscribe(measure);
 
       // ✅ GOOD (M2) · timer → observer: the timer polled for size changes the window event can't
       // see (the @defer placeholder swapping in, a scrollbar appearing). That is ResizeObserver's
