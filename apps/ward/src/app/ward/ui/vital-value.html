@@ -1,4 +1,6 @@
-<span class="label">{{ label() }}</span>
+<span class="label"
+  >{{ label() }} <span class="checks">{{ check('VitalValue') }}</span></span
+>
 <span class="value" [class.out]="out()">{{ value() }}</span>
 @if (unit()) {
 <span class="unit">{{ unit() }}</span>

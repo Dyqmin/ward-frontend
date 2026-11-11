@@ -27,4 +27,10 @@
 <app-dev-toolbar />
 }
 
+<!-- ✅ GOOD (P5): a dev tool nobody needs for the first paint. Its code is a separate chunk,
+     loaded when the browser is idle. -->
+@if (!bare()) { @defer (on idle) {
+<app-perf-panel />
+} }
+
 <app-toast-outlet />

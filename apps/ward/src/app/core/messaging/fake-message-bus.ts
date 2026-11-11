@@ -16,6 +16,7 @@ import {
 } from 'rxjs';
 
 import { createWardFixtures } from '../../testing/ward-fixtures';
+import { countLive } from '@perf/perf-stats';
 import { AuthStore } from '../auth/auth-store';
 import {
   MessageBus,
@@ -98,7 +99,10 @@ export class FakeMessageBus extends MessageBus {
       filter((e) => e.destination === destination),
       map((e) => e.payload as PayloadOf<D>),
     );
-    return merge(ticks, live).pipe(filter(() => this.online())); // an outage is silence, like the real ward
+    return merge(ticks, live).pipe(
+      filter(() => this.online()), // an outage is silence, like the real ward
+      countLive(destination), // Day 6: the Perf panel counts live subscriptions
+    );
   }
 
   notices(participant: ParticipantId): Observable<GameNotice> {

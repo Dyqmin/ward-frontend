@@ -1,0 +1,67 @@
+.panel {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 16;
+  display: grid;
+  gap: 0.6rem;
+  justify-items: end;
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+}
+.panel.open {
+  justify-items: stretch;
+  background: var(--card);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  width: min(30rem, calc(100vw - 2rem));
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.45);
+}
+.toggle {
+  justify-self: end;
+  border-color: var(--accent);
+}
+.toggle.bad {
+  border-color: var(--bad);
+}
+h3 {
+  font-size: 0.85rem;
+  margin: 0.4rem 0 0.25rem;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+td,
+th {
+  padding: 0.2rem 0.3rem;
+  text-align: left;
+  vertical-align: top;
+}
+tr.is-bad td {
+  background: rgb(255 93 93 / 0.08);
+}
+.id {
+  font-weight: 700;
+  font-family: ui-monospace, monospace;
+}
+.modes {
+  white-space: nowrap;
+  text-align: right;
+}
+.mono {
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.bad {
+  color: var(--bad);
+  font-weight: 700;
+}
+.hint {
+  font-size: 0.75rem;
+  margin: 0.2rem 0 0;
+}

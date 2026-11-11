@@ -1,6 +1,7 @@
 <section class="page">
   <header class="row head">
     <h1>Nurse station</h1>
+    <span class="muted clock">{{ shiftClock() }}</span>
     <span class="spacer"></span>
     <nav class="row" aria-label="Ward filter">
       <a class="button small" routerLink="/ward" [class.primary]="!selected()"
@@ -34,23 +35,41 @@
       <span class="chip bad">{{ urgentCount() }} need action</span>
       }
     </h2>
+    @if (bad.p3) {
+    <!-- ❌ BAD (P3): track by identity on fresh objects → every row destroyed and re-created (NG0956) -->
+    @for (a of alarmsCopied(); track a) {
+    <app-alarm-actions [alarm]="a" />
+    } @empty {
+    <p class="muted">No active alarms.</p>
+    } } @else {
+    <!-- ✅ GOOD (P3): track by a stable id → only the rows that changed are touched -->
     @for (a of alarms(); track a.event.alarmId) {
     <app-alarm-actions [alarm]="a" />
     } @empty {
     <p class="muted">No active alarms.</p>
-    }
+    } }
   </section>
 
-  @for (w of visibleWards(); track w) {
-  <h2 class="ward-title">{{ w }}</h2>
+  @for (copy of copies; track copy) { @for (w of visibleWards(); track w) {
+  <h2 class="ward-title">
+    {{ w }} @if (copy) {<span class="muted">· stress copy {{ copy }}</span>}
+  </h2>
   <div class="grid">
-    @for (bed of bedsOf(w); track bed) {
+    @for (bed of bedsOf(w); track bed) { @if (bad.p2) {
+    <!-- ❌ BAD (P2): a method that builds a new array on every check -->
+    <app-bed-tile
+      [bed]="bed"
+      [patient]="patients.patient(bed)"
+      [alarms]="alarmsOf(bed)"
+    />
+    } @else {
+    <!-- ✅ GOOD (P2): a stable array from a computed() -->
     <app-bed-tile
       [bed]="bed"
       [patient]="patients.patient(bed)"
       [alarms]="alarmsFor()(bed)"
     />
-    }
+    } }
   </div>
-  }
+  } }
 </section>

@@ -6,7 +6,10 @@
     "start": "nx serve ward",
     "build": "nx build ward",
     "test": "nx test ward",
-    "lint": "nx lint ward"
+    "lint": "nx lint ward",
+    "build:eager": "nx build ward -c eager --skip-nx-cache",
+    "build:stats": "nx build ward --stats-json --skip-nx-cache",
+    "serve:prod": "nx serve ward -c production"
   },
   "private": true,
   "dependencies": {

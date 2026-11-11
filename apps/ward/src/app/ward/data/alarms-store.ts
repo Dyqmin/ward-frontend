@@ -17,6 +17,7 @@ import {
 } from 'rxjs';
 
 import { Logger } from '@core/logger';
+import { isBad } from '@perf/perf-modes';
 import {
   MessageBus,
   WARDS,
@@ -100,9 +101,14 @@ export class AlarmsStore {
     );
     return resync$.pipe(
       switchMap(() => {
-        const live$ = this.bus
-          .watch(`/topic/alarms.${ward}`)
-          .pipe(shareReplay()); // replays what arrives before the snapshot
+        const live$ = this.bus.watch(`/topic/alarms.${ward}`).pipe(
+          isBad('m5')
+            ? // ❌ BAD (M5) — this one was really in the app: without refCount the topic
+              // subscription outlives `buffered` and the scan below. One more on every visit.
+              shareReplay()
+            : // ✅ GOOD (M5): replays what arrives before the snapshot, closes when both are done
+              shareReplay({ refCount: true }),
+        );
         const buffered = live$.subscribe(); // start listening before asking for the snapshot
         return this.bus.request('/app/alarms.active', { ward }).pipe(
           switchMap((snapshot) => {

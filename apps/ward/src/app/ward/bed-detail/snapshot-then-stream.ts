@@ -21,13 +21,14 @@ export const VITALS_WINDOW = 600;
 export function snapshotThenStream(
   bus: MessageBus,
   bed: BedId,
+  frames$: Observable<VitalsFrame> = bus.watch(`/topic/vitals.${bed}`),
 ): Observable<VitalsFrame[]> {
   const snapshot$ = bus
     .request('/app/vitals.history', { bed, minutes: 10 }) // VitalsFrame[]
     .pipe(map((frames): VitalsEvent => ({ kind: 'snapshot', frames })));
-  const live$ = bus
-    .watch(`/topic/vitals.${bed}`) // VitalsFrame, no <T>
-    .pipe(map((frame): VitalsEvent => ({ kind: 'frame', frame })));
+  const live$ = frames$.pipe(
+    map((frame): VitalsEvent => ({ kind: 'frame', frame })),
+  );
 
   return merge(live$, snapshot$).pipe(
     scan((acc, e) => {

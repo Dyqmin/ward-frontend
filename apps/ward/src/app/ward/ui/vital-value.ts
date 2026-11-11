@@ -1,6 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 
 import { isOutOfRange, type StreamedVital } from '@core/messaging/contract';
+import { check } from '@perf/perf-stats';
 
 @Component({
   selector: 'app-vital-value',
@@ -14,6 +15,7 @@ export class VitalValue {
   readonly value = input.required<number>();
   readonly unit = input('');
   readonly stale = input(false);
+  protected readonly check = check;
   protected readonly out = computed(() =>
     isOutOfRange(this.vital(), this.value()),
   );

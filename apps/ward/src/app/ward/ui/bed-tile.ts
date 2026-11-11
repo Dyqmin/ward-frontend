@@ -12,8 +12,11 @@ import {
   type Patient,
 } from '@core/messaging/contract';
 import type { AlarmView } from '../data/alarms-store';
+import { isBad } from '@perf/perf-modes';
+import { check, trackInstance } from '@perf/perf-stats';
 import { alarmTitle, isUrgent } from './format';
 import { VitalValue } from './vital-value';
+import { summary, summaryLeaky } from './vitals-summary';
 
 /** Frames normally arrive every second; older than this and the tile says so. */
 export const STALE_AFTER_SEC = 3;
@@ -37,6 +40,11 @@ export class BedTile {
   protected readonly urgent = computed(() => this.alarms().some(isUrgent));
   protected readonly alarmTitle = alarmTitle;
   protected readonly isUrgent = isUrgent;
+  protected readonly check = check;
+
+  constructor() {
+    trackInstance(this, 'BedTile');
+  }
 
   /**
    * The vitals type comes from watch() itself (PayloadOf), with no <VitalsFrame>. Age is measured
@@ -55,6 +63,13 @@ export class BedTile {
       ? Math.max(0, Math.round((this.now() - this.vitals.value().at) / 1000))
       : null,
   );
+  /** Tooltip with the latest values. M4: the bad version caches it in a Map that only grows. */
+  protected readonly tooltip = computed(() => {
+    if (!this.vitals.hasValue()) return '';
+    const frame = this.vitals.value().frame;
+    return isBad('m4') ? summaryLeaky(frame) : summary(frame);
+  });
+
   /** Stale data that looks live is the most dangerous thing this screen could do. */
   readonly stale = computed(
     () => !this.bus.connected() || (this.ageSec() ?? 0) > STALE_AFTER_SEC,

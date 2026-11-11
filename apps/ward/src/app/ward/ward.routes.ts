@@ -16,6 +16,7 @@ import {
 import { unsentValueGuard, validBed } from './guards';
 import { stepCompleted, unsavedDraftGuard } from './med-order/guards';
 import { MedOrderDraftStore } from './med-order/med-order-draft-store';
+import { isBad } from '@perf/perf-modes';
 
 /** 'icu-3' → 'ICU-3'; with provideAppSeo() the tab reads "Drug and dose · ICU-3 · Ward Monitor". */
 const bedName = (route: ActivatedRouteSnapshot) =>
@@ -28,7 +29,11 @@ export default [
     path: '',
     title: 'Nurse station',
     canMatch: [hasRole('nurse')],
-    loadComponent: () => import('./nurse-station/nurse-station'),
+    // Day 6 · P1: the Eager twin in bad mode
+    loadComponent: () =>
+      isBad('p1')
+        ? import('./nurse-station/nurse-station.eager')
+        : import('./nurse-station/nurse-station'),
   },
   {
     path: '',

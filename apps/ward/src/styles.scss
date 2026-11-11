@@ -213,3 +213,15 @@ table {
     opacity: 0.45;
   }
 }
+
+/* Day 6 · check counters: how many times a template ran. Empty (hidden) unless switched on in ⚡ Perf. */
+.checks:not(:empty) {
+  display: inline-block;
+  font:
+    600 0.7rem ui-monospace,
+    monospace;
+  color: #000;
+  background: var(--warn);
+  border-radius: 4px;
+  padding: 0 0.3rem;
+}

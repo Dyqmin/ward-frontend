@@ -4,6 +4,7 @@ import { RedirectCommand, ResourceContext, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { MessageBus, bedFromSlug } from '@core/messaging/contract';
+import { LiveVitals } from '../data/live-vitals';
 import { snapshotThenStream } from './snapshot-then-stream';
 
 /** The bed from the URL. `validBed` already ran, so null only happens mid-navigation. */
@@ -33,9 +34,10 @@ export function patientResource(ctx: ResourceContext) {
 /** Non-blocking candidate: snapshot first, then the live stream. */
 export function vitalsResource(ctx: ResourceContext) {
   const bus = inject(MessageBus);
+  const live = inject(LiveVitals); // Day 6 · M5: one shared stream per bed
   return rxResource({
     params: bedOf(ctx),
-    stream: ({ params: bed }) => snapshotThenStream(bus, bed),
+    stream: ({ params: bed }) => snapshotThenStream(bus, bed, live.frames(bed)),
   });
 }
 

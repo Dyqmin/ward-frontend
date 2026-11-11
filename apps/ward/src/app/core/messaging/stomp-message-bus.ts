@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { RxStomp, RxStompRPC, RxStompState } from '@stomp/rx-stomp';
 import { Observable, map, mergeMap, timeout } from 'rxjs';
 
+import { countLive } from '@perf/perf-stats';
 import { Logger } from '../logger';
 import {
   FRAME_GUARDS,
@@ -52,16 +53,15 @@ export class StompMessageBus extends MessageBus {
   watch<D extends StreamDestination>(destination: D): Observable<PayloadOf<D>> {
     const guard: (x: unknown) => x is AnyPayload =
       FRAME_GUARDS[streamNameOf(destination)];
-    return this.stomp
-      .watch({ destination })
-      .pipe(
-        mergeMap((m) =>
-          this.parseOrDrop(
-            destination,
-            () => parseFrame(m.body, guard) as PayloadOf<D>,
-          ),
+    return this.stomp.watch({ destination }).pipe(
+      mergeMap((m) =>
+        this.parseOrDrop(
+          destination,
+          () => parseFrame(m.body, guard) as PayloadOf<D>,
         ),
-      );
+      ),
+      countLive(destination), // Day 6: the Perf panel counts live subscriptions
+    );
   }
 
   notices(participant: ParticipantId): Observable<GameNotice> {

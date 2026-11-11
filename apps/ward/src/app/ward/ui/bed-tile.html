@@ -4,9 +4,10 @@
   [class.alarm]="urgent()"
   [class.stale]="stale()"
   [class.empty]="patient() === null"
+  [title]="tooltip()"
 >
   <header>
-    <h3>{{ bed() }}</h3>
+    <h3>{{ bed() }} <span class="checks">{{ check('BedTile') }}</span></h3>
     <span class="name">
       @switch (patient()) { @case (undefined) { … } @case (null) { Empty bed }
       @default { {{ patient()?.name }} } }

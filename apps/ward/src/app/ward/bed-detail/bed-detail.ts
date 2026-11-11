@@ -2,7 +2,8 @@ import { Component, Resource, computed, inject, input } from '@angular/core';
 
 /** What the router hands a component for a non-blocking resource: a Resource that can reload. */
 type RouteResource<T> = Resource<T> & { reload(): boolean };
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs';
@@ -19,6 +20,8 @@ import {
   type RpcResult,
   type VitalsFrame,
 } from '@core/messaging/contract';
+import { isBad } from '@perf/perf-modes';
+import { trackInstance } from '@perf/perf-stats';
 import { AlarmsStore } from '../data/alarms-store';
 import { AlarmActions } from '../ui/alarm-actions';
 import { STALE_AFTER_SEC } from '../ui/bed-tile';
@@ -88,6 +91,29 @@ export default class BedDetail {
   protected readonly alarms = computed(() =>
     this.wardAlarms().filter((a) => a.event.bed === this.patient().bed),
   );
+
+  constructor() {
+    trackInstance(this, 'BedDetail');
+
+    // The tab shows the live heart rate: "♥ 82 · ICU-3", handy when the nurse switches tabs.
+    const bed = bedFromSlug(String(this.route.snapshot.params['bed'] ?? ''));
+    if (!bed) return;
+    const frames$ = this.bus.watch(`/topic/vitals.${bed}`);
+    if (isBad('m1')) {
+      // ❌ BAD (M1): subscribe() with no end. Leaving the page does not stop it: the callback holds
+      // `this`, so this component (and its DOM) stays in memory, and keeps overwriting the tab title.
+      frames$.subscribe((f) => this.showInTitle(f));
+    } else {
+      // ✅ GOOD (M1): takeUntilDestroyed() ends the subscription with the component.
+      // (Even better: no subscribe at all — an effect() on `latest()`.)
+      frames$.pipe(takeUntilDestroyed()).subscribe((f) => this.showInTitle(f));
+    }
+  }
+
+  private readonly title = inject(Title);
+  private showInTitle(f: VitalsFrame): void {
+    this.title.setTitle(`♥ ${f.hr} · ${f.bed}`);
+  }
 
   /** Re-fetch without re-running guards or navigation. */
   protected refreshRecord(): void {

@@ -1,4 +1,11 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { Observable, finalize } from 'rxjs';
 
 import { commandRetry } from '@core/messaging/command-retry';
@@ -11,6 +18,9 @@ import {
   SNOOZE_MINUTES,
 } from '@core/messaging/contract';
 import { Toasts } from '@core/ui/toasts';
+import { isBad } from '@perf/perf-modes';
+import { check, trackInstance } from '@perf/perf-stats';
+import { AlarmSound } from '../data/alarm-sound';
 import type { AlarmView } from '../data/alarms-store';
 import { alarmStatus, alarmTitle, clock, isUrgent, who } from './format';
 
@@ -32,11 +42,25 @@ export class AlarmActions {
   protected readonly pending = signal(false);
   protected readonly title = computed(() => alarmTitle(this.alarm()));
   protected readonly status = computed(() => alarmStatus(this.alarm()));
-  protected readonly urgent = computed(() => isUrgent(this.alarm()));
+  readonly urgent = computed(() => isUrgent(this.alarm()));
   protected readonly canAck = computed(() => isUrgent(this.alarm()));
   protected readonly canSnooze = computed(
     () => this.alarm().event.status !== 'snoozed',
   );
+  protected readonly check = check;
+
+  constructor() {
+    trackInstance(this, 'AlarmActions');
+    const sound = inject(AlarmSound);
+    sound.register(this);
+    if (isBad('m3')) {
+      // ❌ BAD (M3): registered, never unregistered. The root service now holds this row — and
+      // through it, its DOM — for as long as the app runs. It also beeps for alarms nobody sees.
+    } else {
+      // ✅ GOOD (M3): whatever you register, unregister when the component goes away.
+      inject(DestroyRef).onDestroy(() => sound.unregister(this));
+    }
+  }
 
   ack(): void {
     const { alarmId } = this.alarm().event;

@@ -1,6 +1,7 @@
 <div class="alarm" [class.urgent]="urgent()">
   <div>
     <strong>{{ alarm().event.bed }} · {{ title() }}</strong>
+    <span class="checks">{{ check('AlarmActions') }}</span>
     <div class="muted">{{ status() }}</div>
   </div>
   <div class="row actions">

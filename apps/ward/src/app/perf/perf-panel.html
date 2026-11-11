@@ -1,0 +1,114 @@
+<aside class="panel" [class.open]="open()">
+  <button
+    type="button"
+    class="small toggle"
+    [class.bad]="anyBad"
+    (click)="open.set(!open())"
+  >
+    ⚡ Perf @if (anyBad) {<span>· ❌ bad on</span>} {{ open() ? '▾' : '▸' }}
+  </button>
+
+  @if (open()) {
+  <section>
+    <h3 class="row">
+      Topics <span class="spacer"></span>
+      <button type="button" class="small" (click)="setAll('good')">
+        all ✅
+      </button>
+      <button type="button" class="small danger" (click)="setAll('bad')">
+        all ❌
+      </button>
+    </h3>
+    <table>
+      @for (t of topics; track t.id) {
+      <tr [class.is-bad]="perf.modes[t.id] === 'bad'">
+        <td class="id">{{ t.id.toUpperCase() }}</td>
+        <td>{{ t.title }}<br /><span class="muted">{{ t.where }}</span></td>
+        <td class="modes">
+          <button
+            type="button"
+            class="small"
+            [class.danger]="perf.modes[t.id] === 'bad'"
+            (click)="setMode(t.id, 'bad')"
+          >
+            ❌
+          </button>
+          <button
+            type="button"
+            class="small"
+            [class.primary]="perf.modes[t.id] === 'good'"
+            (click)="setMode(t.id, 'good')"
+          >
+            ✅
+          </button>
+        </td>
+      </tr>
+      }
+    </table>
+    <div class="row">
+      <span class="muted">Stress</span>
+      @for (s of [1, 5, 10]; track s) {
+      <button
+        type="button"
+        class="small"
+        [class.primary]="perf.stress === s"
+        (click)="setStress(s)"
+      >
+        ×{{ s }}
+      </button>
+      }
+      <span class="spacer"></span>
+      <label class="row">
+        <input
+          type="checkbox"
+          [checked]="perf.counters"
+          (change)="setCounters(!perf.counters)"
+        />
+        check counters
+      </label>
+    </div>
+    <p class="muted hint">Switching reloads the page.</p>
+  </section>
+
+  @if (sample(); as s) {
+  <section>
+    <h3>Template checks / s · {{ s.checksTotal }}</h3>
+    <p class="mono">
+      @for (c of s.checksPerSec; track c[0]) { {{ c[0] }} {{ c[1] }} · }
+    </p>
+
+    <h3>Live topic subscriptions · {{ s.subscriptionsTotal }}</h3>
+    <p class="mono">
+      @for (sub of s.subscriptions; track sub[0]) {
+      <span>{{ sub[0] }}@if (sub[1] > 1) { <b>×{{ sub[1] }}</b> }</span> · }
+    </p>
+
+    <h3>Components</h3>
+    <table class="mono">
+      <tr>
+        <th></th>
+        <th>on screen</th>
+        <th title="destroyed, not yet garbage collected">retained</th>
+      </tr>
+      @for (i of s.instances; track i.name) {
+      <tr>
+        <td>{{ i.name }}</td>
+        <td>{{ i.onScreen }}</td>
+        <td [class.bad]="i.retained > 0">{{ i.retained }}</td>
+      </tr>
+      }
+    </table>
+    <p class="muted hint">
+      "retained" drops only after a GC: DevTools → Memory → 🗑.
+    </p>
+
+    @if (s.gauges.length || s.heapMb !== null) {
+    <h3>Gauges</h3>
+    <p class="mono">
+      @for (g of s.gauges; track g[0]) { {{ g[0] }} {{ g[1] }} · } @if (s.heapMb
+      !== null) { JS heap {{ s.heapMb.toFixed(1) }} MB }
+    </p>
+    }
+  </section>
+  } }
+</aside>

@@ -14,6 +14,7 @@
     "paths": {
       "@core/*": ["./src/app/core/*"],
       "@shared/*": ["./src/app/shared/*"],
+      "@perf/*": ["./src/app/perf/*"],
       "@env": ["./src/environments/environment.ts"]
     }
   },

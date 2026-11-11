@@ -67,8 +67,13 @@
         />
       </div>
       }
+      <!-- ✅ GOOD (P5): the chart's code is its own chunk, loaded when the chart scrolls into view,
+           and prefetched as soon as the browser is idle. -->
+      @defer (on viewport; prefetch on idle) {
       <app-vitals-chart [frames]="vitals().value() ?? []" />
-      } @else if (vitals().error()) {
+      } @placeholder {
+      <ngx-skeleton-loader count="3" />
+      } } @else if (vitals().error()) {
       <p class="warn">
         Live vitals unavailable – no data is shown rather than old data.
       </p>

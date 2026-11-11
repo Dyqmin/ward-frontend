@@ -25,7 +25,11 @@
       [attr.y2]="t"
     />
     }
-    <polyline class="line" [attr.points]="p.points" />
+    <!-- P4: ❌ a method call, re-run on every check · ✅ a value computed once per frame -->
+    <polyline
+      class="line"
+      [attr.points]="bad.p4 ? pointsOf(p.vital) : p.points"
+    />
     @if (hoverX() !== null) {
     <line
       class="crosshair"
@@ -38,4 +42,7 @@
   </svg>
 </figure>
 }
-<p class="muted axis"><span>−10 min</span><span>now</span></p>
+<p class="muted axis">
+  <span>−10 min <span class="checks">{{ check('VitalsChart') }}</span></span
+  ><span>now</span>
+</p>

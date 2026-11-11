@@ -14,6 +14,7 @@ import { STOMP_MODE } from '@core/messaging/stomp-mode';
 import { ConnectionBadge } from '@core/ui/connection-badge';
 import { ToastOutlet } from '@core/ui/toast-outlet';
 import { DevToolbar } from './dev/dev-toolbar';
+import { PerfPanel } from '@perf/perf-panel';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ import { DevToolbar } from './dev/dev-toolbar';
     ConnectionBadge,
     ToastOutlet,
     DevToolbar,
+    PerfPanel,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
