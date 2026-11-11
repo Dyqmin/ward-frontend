@@ -54,6 +54,7 @@ Install **Angular DevTools** (Chrome extension). Use Chrome for the day: the Mem
 | [The hunt](performance/hunt.md): all ❌, find everything with tools only    | everywhere                   | 30′  |
 
 Keep: **[cheatsheet.md](performance/cheatsheet.md)**: everything on one page.
+The full checklist, linked to the notes: **[performance/README.md](performance/README.md)**.
 
 ## Every topic, the same way
 
