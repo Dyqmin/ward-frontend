@@ -1,10 +1,10 @@
-# M1 · Forgotten `subscribe()`
+# Forgotten `subscribe()`
 
 **Where:** `bed-detail.ts` constructor — the tab shows `♥ 82 · ICU-3`.
 
 ## See it
 
-M1 ❌. Open 5 beds, go back to the ward.
+Set **Forgotten subscribe()** to ❌. Open 5 beds, go back to the ward.
 
 - The tab title still changes: **`♥ 76 · ICU-5`** on the nurse station.
 - ⚡ Perf: `vitals.ICU-1 ×2`, … one extra subscription per visit. **BedDetail retained: 5.**

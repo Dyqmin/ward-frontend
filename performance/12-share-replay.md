@@ -1,4 +1,4 @@
-# M5 · `shareReplay` without `refCount`
+# `shareReplay` without `refCount`
 
 **Where:** `data/live-vitals.ts` and `data/alarms-store.ts`.
 
@@ -7,7 +7,7 @@ it never unsubscribes from the source, even when every subscriber has left.
 
 ## See it
 
-M5 ❌. Open 5 beds, go back.
+Set **shareReplay** to ❌. Open 5 beds, go back.
 
 - ⚡ Perf → Live subscriptions: `vitals.ICU-1`…`ICU-5` stay `×2`; `alarms.ICU` keeps growing (×11 after 5 visits).
 - Nothing is "retained" — the leak is an **open stream**: frames, network, CPU, for nothing.
@@ -23,7 +23,7 @@ watch(topic).pipe(shareReplay(1));
 watch(topic).pipe(shareReplay({ bufferSize: 1, refCount: true }));
 ```
 
-`alarms-store.ts`: this one was **really in the app** before Day 6. Found by the Perf panel's
+`alarms-store.ts`: this one was **really in the app** before this branch. Found by the Perf panel's
 subscription counter while preparing this workshop: `alarms.ICU ×11` after a few clicks.
 
 ## Rules

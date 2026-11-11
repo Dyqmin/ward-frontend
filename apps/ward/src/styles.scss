@@ -214,7 +214,7 @@ table {
   }
 }
 
-/* Day 6 · check counters: how many times a template ran. Empty (hidden) unless switched on in ⚡ Perf. */
+/* Performance · check counters: how many times a template ran. Empty (hidden) unless switched on in ⚡ Perf. */
 .checks:not(:empty) {
   display: inline-block;
   font:

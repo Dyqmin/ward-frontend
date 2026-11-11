@@ -29,9 +29,9 @@ export default [
     path: '',
     title: 'Nurse station',
     canMatch: [hasRole('nurse')],
-    // Day 6 · P1: the Eager twin in bad mode
+    // Performance · change-detection: the Eager twin in bad mode
     loadComponent: () =>
-      isBad('p1')
+      isBad('change-detection')
         ? import('./nurse-station/nurse-station.eager')
         : import('./nurse-station/nurse-station'),
   },

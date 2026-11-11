@@ -34,7 +34,7 @@ export function patientResource(ctx: ResourceContext) {
 /** Non-blocking candidate: snapshot first, then the live stream. */
 export function vitalsResource(ctx: ResourceContext) {
   const bus = inject(MessageBus);
-  const live = inject(LiveVitals); // Day 6 · M5: one shared stream per bed
+  const live = inject(LiveVitals); // Performance · share-replay: one shared stream per bed
   return rxResource({
     params: bedOf(ctx),
     stream: ({ params: bed }) => snapshotThenStream(bus, bed, live.frames(bed)),

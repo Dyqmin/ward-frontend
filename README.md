@@ -6,11 +6,11 @@ router resources) on STOMP over WebSockets with `@stomp/rx-stomp`.
 
 > All patients, readings and thresholds are fictional and illustrative, not clinical.
 
-## Day 6 branch: performance
+## Performance branch
 
-On `day-6-performance`, the app carries planted performance problems and memory leaks, each in a
+On `performance-intro`, the app carries planted performance problems and memory leaks, each in a
 ❌ bad and a ✅ good version side by side. A **⚡ Perf** panel switches them and shows the numbers.
-Start with [DAY-6.md](DAY-6.md); the notes are in [`day-6/`](day-6/).
+Start with [PERFORMANCE.md](PERFORMANCE.md); the notes are in [`performance/`](performance/).
 
 ## Run it
 

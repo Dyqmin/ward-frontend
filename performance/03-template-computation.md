@@ -1,4 +1,4 @@
-# P2 · Computation in templates
+# Computation in templates
 
 **Where:** nurse station (alarm count, ward headings, tiles) and the alarm chips in each tile.
 
@@ -11,7 +11,7 @@ second because of the shift clock, and each tile is checked every second because
 
 ## See it
 
-Set P2 ❌, turn the counters on and open **⚡ Perf → Calculations / s**:
+Set **Computation in templates** to ❌, turn the counters on and open **⚡ Perf → Calculations / s**:
 
 | ❌ BAD                                       | ✅ GOOD                                | Calculations/s ❌ → ✅ |
 | -------------------------------------------- | -------------------------------------- | ---------------------- |

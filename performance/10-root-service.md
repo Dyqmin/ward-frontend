@@ -1,4 +1,4 @@
-# M3 · Root service keeps components
+# Root service keeps components
 
 **Where:** `alarm-actions.ts` constructor → `data/alarm-sound.ts`.
 
@@ -7,10 +7,10 @@ stores lives that long too.
 
 ## See it
 
-M3 ❌ (P3 ❌ makes it faster: it re-creates rows). Let alarms come and go, open a bed, go back.
+Set **Root service** to ❌. (With **@for and track** also ❌ it grows faster, because rows are re-created.). Let alarms come and go, open a bed, go back.
 
-- ⚡ Perf gauges: **M3 AlarmSound rows** grows; on screen there are fewer rows.
-- **M3 beeping for** counts alarms nobody can see — a real bug, not just memory.
+- ⚡ Perf gauges: **AlarmSound rows** grows; on screen there are fewer rows.
+- **AlarmSound beeping for** counts alarms nobody can see — a real bug, not just memory.
 - Heap snapshot → `AlarmActions` → Retainers: `Set` → `sources` → `AlarmSound`.
 
 ## Why

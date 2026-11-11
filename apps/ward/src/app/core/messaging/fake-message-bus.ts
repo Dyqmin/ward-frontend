@@ -101,7 +101,7 @@ export class FakeMessageBus extends MessageBus {
     );
     return merge(ticks, live).pipe(
       filter(() => this.online()), // an outage is silence, like the real ward
-      countLive(destination), // Day 6: the Perf panel counts live subscriptions
+      countLive(destination), // Performance: the Perf panel counts live subscriptions
     );
   }
 

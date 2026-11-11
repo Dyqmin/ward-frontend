@@ -102,11 +102,11 @@ export class AlarmsStore {
     return resync$.pipe(
       switchMap(() => {
         const live$ = this.bus.watch(`/topic/alarms.${ward}`).pipe(
-          isBad('m5')
-            ? // ❌ BAD (M5) — this one was really in the app: without refCount the topic
+          isBad('share-replay')
+            ? // ❌ BAD (share-replay) — this one was really in the app: without refCount the topic
               // subscription outlives `buffered` and the scan below. One more on every visit.
               shareReplay()
-            : // ✅ GOOD (M5): replays what arrives before the snapshot, closes when both are done
+            : // ✅ GOOD (share-replay): replays what arrives before the snapshot, closes when both are done
               shareReplay({ refCount: true }),
         );
         const buffered = live$.subscribe(); // start listening before asking for the snapshot

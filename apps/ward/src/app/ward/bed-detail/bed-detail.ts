@@ -99,12 +99,12 @@ export default class BedDetail {
     const bed = bedFromSlug(String(this.route.snapshot.params['bed'] ?? ''));
     if (!bed) return;
     const frames$ = this.bus.watch(`/topic/vitals.${bed}`);
-    if (isBad('m1')) {
-      // ❌ BAD (M1): subscribe() with no end. Leaving the page does not stop it: the callback holds
+    if (isBad('forgotten-subscribe')) {
+      // ❌ BAD (forgotten-subscribe): subscribe() with no end. Leaving the page does not stop it: the callback holds
       // `this`, so this component (and its DOM) stays in memory, and keeps overwriting the tab title.
       frames$.subscribe((f) => this.showInTitle(f));
     } else {
-      // ✅ GOOD (M1): takeUntilDestroyed() ends the subscription with the component.
+      // ✅ GOOD (forgotten-subscribe): takeUntilDestroyed() ends the subscription with the component.
       // (Even better: no subscribe at all — an effect() on `latest()`.)
       frames$.pipe(takeUntilDestroyed()).subscribe((f) => this.showInTitle(f));
     }

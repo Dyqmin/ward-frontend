@@ -9,7 +9,7 @@ import NurseStation from './ward/nurse-station/nurse-station';
 import wardRoutes from './ward/ward.routes';
 
 /**
- * ❌ BAD (P5): every route imported up front. All of it lands in the initial bundle, so every user
+ * ❌ BAD (lazy-loading): every route imported up front. All of it lands in the initial bundle, so every user
  * downloads (and the browser parses) the login, the phone simulator and the PDF reports before the
  * first screen shows. Built only by `pnpm build:eager`, which swaps it in for app.routes.ts.
  * Compare "Initial total" with `pnpm build`.

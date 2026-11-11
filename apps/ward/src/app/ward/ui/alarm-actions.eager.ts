@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { AlarmActions } from './alarm-actions';
 
-/** ❌ BAD (P1): the same alarm row, checked every time its parent is. */
+/** ❌ BAD (change-detection): the same alarm row, checked every time its parent is. */
 @Component({
   selector: 'app-alarm-actions',
   templateUrl: './alarm-actions.html',

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { VitalValue } from './vital-value';
 
-/** ❌ BAD (P1): the same value, checked every time its parent is. */
+/** ❌ BAD (change-detection): the same value, checked every time its parent is. */
 @Component({
   selector: 'app-vital-value',
   templateUrl: './vital-value.html',

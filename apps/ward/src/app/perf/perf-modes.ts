@@ -1,32 +1,44 @@
 /**
- * Day 6 · every topic runs in one of two modes: ❌ bad or ✅ good.
+ * Performance · every topic runs in one of two modes: ❌ bad or ✅ good.
  *
  * Modes are read ONCE, at startup (localStorage, or `?perf=bad` / `?perf=good` for all topics).
  * Switching a mode in the Perf panel reloads the page, so a component can read its mode as a
- * plain constant: `if (isBad('m1')) …`.
+ * plain constant: `if (isBad('forgotten-subscribe')) …`.
  */
 
 export const TOPICS = {
-  p1: {
-    title: 'Change detection',
+  'change-detection': {
+    title: 'Change detection: OnPush vs Eager',
     where: 'App, Nurse station, BedTile, AlarmActions',
   },
-  p2: {
+  'template-computation': {
     title: 'Computation in templates',
     where: 'Nurse station → alarm count, tiles, chips',
   },
-  p3: { title: '@for and track', where: 'Nurse station → Active alarms' },
-  p4: { title: 'Hot events', where: 'Bed detail → chart hover' },
-  m1: { title: 'Forgotten subscribe()', where: 'Bed detail → tab title' },
-  m2: { title: 'Timers and window listeners', where: 'Bed detail → chart' },
-  m3: {
+  'for-track': {
+    title: '@for and track',
+    where: 'Nurse station → Active alarms',
+  },
+  'hot-events': { title: 'Hot events', where: 'Bed detail → chart hover' },
+  'forgotten-subscribe': {
+    title: 'Forgotten subscribe()',
+    where: 'Bed detail → tab title',
+  },
+  'listeners-timers': {
+    title: 'Timers and window listeners',
+    where: 'Bed detail → chart',
+  },
+  'root-service': {
     title: 'Root service keeps components',
     where: 'AlarmActions → AlarmSound',
   },
-  m4: { title: 'Cache that only grows', where: 'BedTile → tooltip' },
-  m5: {
+  'growing-buffer': {
+    title: 'Live buffer that only grows',
+    where: 'Bed detail → vitals history',
+  },
+  'share-replay': {
     title: 'shareReplay without refCount',
-    where: 'Bed detail → live vitals',
+    where: 'Bed detail → live vitals, alarms',
   },
 } as const;
 

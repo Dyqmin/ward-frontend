@@ -1,4 +1,4 @@
-# P4 · Hot events
+# Hot events
 
 **Where:** bed detail → chart (`vitals-chart.ts`). Move the mouse over it.
 
@@ -7,7 +7,7 @@ template marks the component dirty **every time** → the template re-runs every
 
 ## See it
 
-P4 ❌, open a bed, Performance panel → record while moving the mouse over the chart.
+Set **Hot events** to ❌, open a bed, Performance panel → record while moving the mouse over the chart.
 
 - Long yellow **scripting** blocks per move: `pointsOf()` rebuilds 3 × 600 points each time.
 - Purple **Layout** blocks, "Forced reflow" warnings: `getBoundingClientRect()` on every move.

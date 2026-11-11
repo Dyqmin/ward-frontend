@@ -1,4 +1,4 @@
-import { Observable, map, merge, scan } from 'rxjs';
+import { Observable, map, merge, scan, tap } from 'rxjs';
 
 import {
   assertNever,
@@ -6,6 +6,8 @@ import {
   type MessageBus,
   type VitalsFrame,
 } from '@core/messaging/contract';
+import { isBad } from '@perf/perf-modes';
+import { gauge } from '@perf/perf-stats';
 
 type VitalsEvent =
   | { kind: 'snapshot'; frames: VitalsFrame[] }
@@ -13,6 +15,17 @@ type VitalsEvent =
 
 /** 10 min at 1 Hz. */
 export const VITALS_WINDOW = 600;
+
+// ❌ BAD (growing-buffer): no limit. A new frame every second, kept forever: a bed left open for a
+// 12 h shift holds 43,200 frames, and every new frame copies all of them. The chart only draws the
+// last 600, so the screen looks fine while memory and CPU climb.
+// ✅ GOOD (growing-buffer): keep only what the screen needs.
+const keep = isBad('growing-buffer')
+  ? (frames: VitalsFrame[]) => frames
+  : (frames: VitalsFrame[]) => frames.slice(-VITALS_WINDOW);
+
+let kept = 0;
+gauge('vitals buffer · frames', () => kept);
 
 /**
  * The last ten minutes as a snapshot, then the live stream continuing from there. It subscribes to
@@ -35,17 +48,15 @@ export function snapshotThenStream(
       switch (e.kind) {
         case 'snapshot': {
           const last = e.frames.at(-1)?.ts ?? 0;
-          return [...e.frames, ...acc.filter((f) => f.ts > last)].slice(
-            -VITALS_WINDOW,
-          ); // keep frames that arrived early
+          // keep frames that arrived early
+          return keep([...e.frames, ...acc.filter((f) => f.ts > last)]);
         }
         case 'frame':
-          return acc.at(-1)?.ts === e.frame.ts
-            ? acc
-            : [...acc, e.frame].slice(-VITALS_WINDOW);
+          return acc.at(-1)?.ts === e.frame.ts ? acc : keep([...acc, e.frame]);
         default:
           return assertNever(e);
       }
     }, [] as VitalsFrame[]),
+    tap((frames) => (kept = frames.length)),
   );
 }

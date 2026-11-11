@@ -6,7 +6,7 @@ import { AlarmChipPipe } from './alarm-chip.pipe';
 import { BedTile } from './bed-tile';
 import { VitalValueEager } from './vital-value.eager';
 
-/** ❌ BAD (P1): the same tile, checked every time its parent is — whether anything changed or not. */
+/** ❌ BAD (change-detection): the same tile, checked every time its parent is — whether anything changed or not. */
 @Component({
   selector: 'app-bed-tile',
   imports: [

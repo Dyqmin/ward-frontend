@@ -25,10 +25,10 @@
       [attr.y2]="t"
     />
     }
-    <!-- P4: ❌ a method call, re-run on every check · ✅ a value computed once per frame -->
+    <!-- hot-events: ❌ a method call, re-run on every check · ✅ a value computed once per frame -->
     <polyline
       class="line"
-      [attr.points]="bad.p4 ? pointsOf(p.vital) : p.points"
+      [attr.points]="bad.hotEvents ? pointsOf(p.vital) : p.points"
     />
     @if (hoverX() !== null) {
     <line

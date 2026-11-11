@@ -1,4 +1,4 @@
-# P5 · Load less: lazy routes, `@defer`, bundles
+# Load less: lazy routes, `@defer`, bundles
 
 The fastest code is code the user never downloads.
 

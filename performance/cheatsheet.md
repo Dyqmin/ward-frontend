@@ -29,15 +29,16 @@
 
 ## Memory
 
-| Holds a reference forever | Release it with                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| `subscribe()` to a stream | `toSignal`, `rxResource`, `async` pipe, or `takeUntilDestroyed()`         |
-| `addEventListener`        | `fromEvent(…).pipe(takeUntilDestroyed())`, host listener, `abort()`       |
-| `setInterval` / observers | `interval(…).pipe(takeUntilDestroyed())` / `clearInterval` / `disconnect` |
-| root service + `this`     | unregister on destroy; better: expose signals                             |
-| `Map` cache               | limit (LRU/TTL), `WeakMap`, or a route/component-scoped service           |
-| `shareReplay(1)`          | `shareReplay({ bufferSize: 1, refCount: true })`                          |
-| `ReplaySubject()`         | a buffer size                                                             |
+| Holds a reference forever     | Release it with                                                           |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| `subscribe()` to a stream     | `toSignal`, `rxResource`, `async` pipe, or `takeUntilDestroyed()`         |
+| `addEventListener`            | `fromEvent(…).pipe(takeUntilDestroyed())`, host listener, `abort()`       |
+| `setInterval` / observers     | `interval(…).pipe(takeUntilDestroyed())` / `clearInterval` / `disconnect` |
+| root service + `this`         | unregister on destroy; better: expose signals                             |
+| `Map` cache                   | limit (LRU/TTL), `WeakMap`, or a route/component-scoped service           |
+| a live buffer (`scan`, store) | `.slice(-N)`: keep what the screen shows                                  |
+| `shareReplay(1)`              | `shareReplay({ bufferSize: 1, refCount: true })`                          |
+| `ReplaySubject()`             | a buffer size                                                             |
 
 ## Tools
 

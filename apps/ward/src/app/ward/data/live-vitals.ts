@@ -18,12 +18,12 @@ export class LiveVitals {
     let frames$ = this.streams.get(bed);
     if (!frames$) {
       frames$ = this.bus.watch(`/topic/vitals.${bed}`).pipe(
-        isBad('m5')
-          ? // ❌ BAD (M5): refCount is false by default. After the first subscriber, the topic
+        isBad('share-replay')
+          ? // ❌ BAD (share-replay): refCount is false by default. After the first subscriber, the topic
             // subscription is NEVER closed — not when the page is left, not ever. One more live
             // stream per bed you have opened.
             shareReplay(1)
-          : // ✅ GOOD (M5): when the last subscriber leaves, the topic subscription closes.
+          : // ✅ GOOD (share-replay): when the last subscriber leaves, the topic subscription closes.
             shareReplay({ bufferSize: 1, refCount: true }),
       );
       this.streams.set(bed, frames$);

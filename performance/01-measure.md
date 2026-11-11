@@ -1,4 +1,4 @@
-# P0 · Measure first
+# Measure first
 
 Guessing is how you optimize the wrong thing. Measure, change one thing, measure again.
 

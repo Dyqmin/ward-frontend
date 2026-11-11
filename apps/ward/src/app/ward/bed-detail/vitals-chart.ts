@@ -52,7 +52,7 @@ export class VitalsChart {
 
   private readonly window = computed(() => this.frames().slice(-WINDOW));
 
-  protected readonly bad = { p4: isBad('p4') };
+  protected readonly bad = { hotEvents: isBad('hot-events') };
   protected readonly check = check;
   private readonly host =
     inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
@@ -63,8 +63,8 @@ export class VitalsChart {
     trackInstance(this, 'VitalsChart');
     const measure = () => this.measure();
 
-    if (isBad('m2')) {
-      // ❌ BAD (M2): a window listener and a timer that nobody ever removes. Both callbacks hold
+    if (isBad('listeners-timers')) {
+      // ❌ BAD (listeners-timers): a window listener and a timer that nobody ever removes. Both callbacks hold
       // `this`: after the page is left, the chart and its SVG stay in memory ("Detached" in a heap
       // snapshot), and the timer keeps running — one more per visit.
       window.addEventListener('resize', measure);
@@ -72,13 +72,13 @@ export class VitalsChart {
     } else {
       const destroyRef = inject(DestroyRef);
 
-      // ✅ GOOD (M2) · listener: the SAME window event, as a stream that ends with the component.
+      // ✅ GOOD (listeners-timers) · listener: the SAME window event, as a stream that ends with the component.
       // fromEvent removes the listener on unsubscribe; takeUntilDestroyed unsubscribes on destroy.
       fromEvent(window, 'resize')
         .pipe(auditTime(100), takeUntilDestroyed(destroyRef)) // + RxJS: at most every 100 ms
         .subscribe(measure);
 
-      // ✅ GOOD (M2) · timer → observer: the timer polled for size changes the window event can't
+      // ✅ GOOD (listeners-timers) · timer → observer: the timer polled for size changes the window event can't
       // see (the @defer placeholder swapping in, a scrollbar appearing). That is ResizeObserver's
       // job: it fires when THIS element's size changes, for any reason — and only then.
       const observer = new ResizeObserver(measure);
@@ -94,7 +94,7 @@ export class VitalsChart {
     this.box = { left: r.left, width: r.width };
   }
 
-  // ✅ GOOD (P4): a computed() — 3 × 600 points are built once per new frame, not on every check.
+  // ✅ GOOD (hot-events): a computed() — 3 × 600 points are built once per new frame, not on every check.
   protected readonly panels = computed(() => {
     const frames = this.window();
     return PANELS.map((p) => {
@@ -103,7 +103,7 @@ export class VitalsChart {
       return {
         ...p,
         latest: frames.at(-1)?.[p.vital],
-        points: this.bad.p4 ? '' : pointsOf(frames, p),
+        points: this.bad.hotEvents ? '' : pointsOf(frames, p),
         thresholds: [t.low, t.high]
           .filter((v): v is number => v !== undefined)
           .map(y),
@@ -111,7 +111,7 @@ export class VitalsChart {
     });
   });
 
-  // ❌ BAD (P4): a method called from the template. It rebuilds 600 points on EVERY check of this
+  // ❌ BAD (hot-events): a method called from the template. It rebuilds 600 points on EVERY check of this
   // component — and with a pointermove listener in the template, that is every mouse move.
   protected pointsOf(vital: StreamedVital): string {
     const p = PANELS.find((x) => x.vital === vital) as Panel;
@@ -132,14 +132,14 @@ export class VitalsChart {
   protected hover(e: PointerEvent): void {
     let left: number;
     let width: number;
-    if (this.bad.p4) {
-      // ❌ BAD (P4): reads layout on every pointermove. After a DOM change this forces the browser
+    if (this.bad.hotEvents) {
+      // ❌ BAD (hot-events): reads layout on every pointermove. After a DOM change this forces the browser
       // to lay out the page synchronously ("Forced reflow" in the Performance panel).
       const r = (e.currentTarget as SVGElement).getBoundingClientRect();
       left = r.left;
       width = r.width;
     } else {
-      // ✅ GOOD (P4): measured once (and again on resize), read from a field here.
+      // ✅ GOOD (hot-events): measured once (and again on resize), read from a field here.
       if (!this.box) this.measure();
       ({ left, width } = this.box ?? { left: 0, width: 1 });
     }

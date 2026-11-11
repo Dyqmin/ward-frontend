@@ -1,4 +1,4 @@
-# P3 · `@for` and `track`
+# `@for` and `track`
 
 **Where:** nurse station → Active alarms. `alarmsCopied` and `@for (… track a)`.
 
@@ -7,7 +7,7 @@ component; new key = destroy and create.
 
 ## See it
 
-P3 ❌, wait for an alarm (or Acknowledge one).
+Set **@for and track** to ❌, wait for an alarm (or Acknowledge one).
 
 - Console: **NG0956** — "tracking expression caused re-creation of the entire collection".
 - Elements panel: the whole alarm list flashes on every change.

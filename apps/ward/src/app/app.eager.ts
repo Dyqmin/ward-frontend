@@ -8,8 +8,8 @@ import { App } from './app';
 import { DevToolbar } from './dev/dev-toolbar';
 
 /**
- * ❌ BAD (P1): the same shell, checked on EVERY change detection run.
- * Same template, same code — only the strategy differs. Bootstrapped by main.ts when P1 is bad.
+ * ❌ BAD (change-detection): the same shell, checked on EVERY change detection run.
+ * Same template, same code — only the strategy differs. Bootstrapped by main.ts when change-detection is bad.
  */
 @Component({
   selector: 'app-root',

@@ -53,11 +53,11 @@ export class AlarmActions {
     trackInstance(this, 'AlarmActions');
     const sound = inject(AlarmSound);
     sound.register(this);
-    if (isBad('m3')) {
-      // ❌ BAD (M3): registered, never unregistered. The root service now holds this row — and
+    if (isBad('root-service')) {
+      // ❌ BAD (root-service): registered, never unregistered. The root service now holds this row — and
       // through it, its DOM — for as long as the app runs. It also beeps for alarms nobody sees.
     } else {
-      // ✅ GOOD (M3): whatever you register, unregister when the component goes away.
+      // ✅ GOOD (root-service): whatever you register, unregister when the component goes away.
       inject(DestroyRef).onDestroy(() => sound.unregister(this));
     }
   }

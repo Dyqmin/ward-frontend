@@ -31,24 +31,24 @@
     aria-live="polite"
   >
     <h2>
-      Active alarms @if (bad.p2) {
-      <!-- ❌ BAD (P2): a getter, read twice → two filters per check -->
+      Active alarms @if (bad.template) {
+      <!-- ❌ BAD (template-computation): a getter, read twice → two filters per check -->
       @if (urgentNow) {
       <span class="chip bad">{{ urgentNow }} need action</span>
       } } @else {
-      <!-- ✅ GOOD (P2): a computed() → filtered once per change, read for free -->
+      <!-- ✅ GOOD (template-computation): a computed() → filtered once per change, read for free -->
       @if (urgentCount()) {
       <span class="chip bad">{{ urgentCount() }} need action</span>
       } }
     </h2>
-    @if (bad.p3) {
-    <!-- ❌ BAD (P3): track by identity on fresh objects → every row destroyed and re-created (NG0956) -->
+    @if (bad.track) {
+    <!-- ❌ BAD (for-track): track by identity on fresh objects → every row destroyed and re-created (NG0956) -->
     @for (a of alarmsCopied(); track a) {
     <app-alarm-actions [alarm]="a" />
     } @empty {
     <p class="muted">No active alarms.</p>
     } } @else {
-    <!-- ✅ GOOD (P3): track by a stable id → only the rows that changed are touched -->
+    <!-- ✅ GOOD (for-track): track by a stable id → only the rows that changed are touched -->
     @for (a of alarms(); track a.event.alarmId) {
     <app-alarm-actions [alarm]="a" />
     } @empty {
@@ -58,27 +58,27 @@
 
   @for (copy of copies; track copy) { @for (w of visibleWards(); track w) {
   <h2 class="ward-title">
-    {{ w }} @if (bad.p2) {
-    <!-- ❌ BAD (P2): an arrow function in the template is still code that runs on every check -->
+    {{ w }} @if (bad.template) {
+    <!-- ❌ BAD (template-computation): an arrow function in the template is still code that runs on every check -->
     <span class="muted"
       >· alarms: {{ allAlarms().filter((a) => a.event.bed.startsWith(w +
       '-')).length }}</span
     >
     } @else {
-    <!-- ✅ GOOD (P2): counted once in a computed() -->
+    <!-- ✅ GOOD (template-computation): counted once in a computed() -->
     <span class="muted">· alarms: {{ alarmsPerWard().get(w) ?? 0 }}</span>
     } @if (copy) {<span class="muted">· stress copy {{ copy }}</span>}
   </h2>
   <div class="grid">
-    @for (bed of bedsOf(w); track bed) { @if (bad.p2) {
-    <!-- ❌ BAD (P2): a method that builds a new array on every check -->
+    @for (bed of bedsOf(w); track bed) { @if (bad.template) {
+    <!-- ❌ BAD (template-computation): a method that builds a new array on every check -->
     <app-bed-tile
       [bed]="bed"
       [patient]="patients.patient(bed)"
       [alarms]="alarmsOf(bed)"
     />
     } @else {
-    <!-- ✅ GOOD (P2): a stable array from a computed() -->
+    <!-- ✅ GOOD (template-computation): a stable array from a computed() -->
     <app-bed-tile
       [bed]="bed"
       [patient]="patients.patient(bed)"

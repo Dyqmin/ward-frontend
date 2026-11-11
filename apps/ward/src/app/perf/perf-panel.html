@@ -22,7 +22,6 @@
     <table>
       @for (t of topics; track t.id) {
       <tr [class.is-bad]="perf.modes[t.id] === 'bad'">
-        <td class="id">{{ t.id.toUpperCase() }}</td>
         <td>{{ t.title }}<br /><span class="muted">{{ t.where }}</span></td>
         <td class="modes">
           <button

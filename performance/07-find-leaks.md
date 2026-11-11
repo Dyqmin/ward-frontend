@@ -1,4 +1,4 @@
-# M0 · Finding leaks
+# Finding leaks
 
 A leak = something you are done with that is still reachable, so the garbage collector can't free
 it. In Angular it is almost always: **something long-lived holds a reference to something
@@ -33,5 +33,6 @@ long-lived (window, a timer, a root service, an open stream)
 
 ## Do
 
-Switch all M topics to ❌. Visit five beds. Before reading M1–M5, find with the tools:
+Switch every memory topic to ❌ (Forgotten subscribe() … shareReplay). Visit five beds. Before
+reading their notes, find with the tools:
 which components are retained, and what holds them?

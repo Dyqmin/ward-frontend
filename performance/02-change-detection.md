@@ -1,4 +1,4 @@
-# P1 · Change detection: OnPush vs Eager
+# Change detection: OnPush vs Eager
 
 **Where:** whole nurse station. ❌ code: `*.eager.ts`, `main.ts`, `ward.routes.ts`.
 
@@ -14,7 +14,7 @@ detection reaches it**, whether anything changed or not.
 
 ## See it
 
-1. ⚡ Perf → check counters on. P1 ❌. Watch the yellow badges: every tile, every second, ×6.
+1. ⚡ Perf → check counters on. **Change detection** ❌. Watch the yellow badges: every tile, every second, ×6.
 2. Panel → Template checks / s: **~430** (❌) vs **~30** (✅) with 18 beds. Try Stress ×10.
 3. Angular DevTools → Profiler: in ❌ every run touches every `BedTile` and `VitalValue`.
 

@@ -60,7 +60,7 @@ export class StompMessageBus extends MessageBus {
           () => parseFrame(m.body, guard) as PayloadOf<D>,
         ),
       ),
-      countLive(destination), // Day 6: the Perf panel counts live subscriptions
+      countLive(destination), // Performance: the Perf panel counts live subscriptions
     );
   }
 

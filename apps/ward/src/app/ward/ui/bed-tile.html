@@ -4,7 +4,6 @@
   [class.alarm]="urgent()"
   [class.stale]="stale()"
   [class.empty]="patient() === null"
-  [title]="tooltip()"
 >
   <header>
     <h3>{{ bed() }} <span class="checks">{{ check('BedTile') }}</span></h3>
@@ -45,10 +44,10 @@
     <span class="chip ok">live</span>
     } @for (a of alarms(); track a.event.alarmId) {
     <span class="chip" [class.bad]="isUrgent(a)">
-      @if (badP2) {
-      <!-- ❌ BAD (P2): method call → runs on every check of the tile -->
+      @if (badTemplate) {
+      <!-- ❌ BAD (template-computation): method call → runs on every check of the tile -->
       {{ chipText(a) }} } @else {
-      <!-- ✅ GOOD (P2): pure pipe → runs when `a` changes -->
+      <!-- ✅ GOOD (template-computation): pure pipe → runs when `a` changes -->
       {{ a | alarmChip }} }
     </span>
     }

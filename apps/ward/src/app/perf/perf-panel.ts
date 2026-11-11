@@ -27,7 +27,7 @@ interface Sample {
   heapMb: number | null;
 }
 
-/** Day 6 · switch topics between ❌ bad and ✅ good, and watch the numbers. */
+/** Performance · switch topics between ❌ bad and ✅ good, and watch the numbers. */
 @Component({
   selector: 'app-perf-panel',
   templateUrl: './perf-panel.html',
@@ -44,7 +44,7 @@ export class PerfPanel {
   private lastCalcs = new Map<string, number>();
 
   constructor() {
-    // ✅ a timer that is cleared when the component goes away (see M2)
+    // ✅ a timer that is cleared when the component goes away (see listeners-timers)
     const id = setInterval(() => this.take(), 1000);
     inject(DestroyRef).onDestroy(() => clearInterval(id));
   }

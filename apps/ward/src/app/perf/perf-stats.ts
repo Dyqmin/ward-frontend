@@ -28,9 +28,12 @@ export const checkTotals = (): ReadonlyMap<string, number> => checks;
 
 const calcs = new Map<string, number>();
 
-/** Call inside a derivation (getter, method, computed, pipe): counts how often it REALLY runs. */
-export function calc(name: string): void {
-  calcs.set(name, (calcs.get(name) ?? 0) + 1);
+/**
+ * Call inside a derivation (getter, method, computed, pipe): counts how often it REALLY runs.
+ * `n` counts units of work instead, e.g. how many items were copied.
+ */
+export function calc(name: string, n = 1): void {
+  calcs.set(name, (calcs.get(name) ?? 0) + n);
 }
 
 export const calcTotals = (): ReadonlyMap<string, number> => calcs;

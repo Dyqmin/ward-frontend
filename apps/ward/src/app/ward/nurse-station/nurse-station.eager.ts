@@ -6,9 +6,9 @@ import { BedTileEager } from '../ui/bed-tile.eager';
 import NurseStation from './nurse-station';
 
 /**
- * ❌ BAD (P1): the same page with ChangeDetectionStrategy.Eager, all the way down.
+ * ❌ BAD (change-detection): the same page with ChangeDetectionStrategy.Eager, all the way down.
  * Every change detection run — a vitals frame for ONE bed, a clock tick — re-checks every tile,
- * every value and every alarm row. Loaded by ward.routes.ts when P1 is bad.
+ * every value and every alarm row. Loaded by ward.routes.ts when change-detection is bad.
  */
 @Component({
   selector: 'app-nurse-station',

@@ -1,10 +1,10 @@
-# M2 · Timers and window listeners
+# Timers and window listeners
 
 **Where:** the `vitals-chart.ts` constructor.
 
 ## See it
 
-Set M2 ❌, open 5 beds, then go back.
+Set **Timers and window listeners** to ❌, open 5 beds, then go back.
 
 - **⚡ Perf** shows **VitalsChart retained: 5**. BedDetail stays at 0: only the chart leaks.
 - **Performance monitor:** JS event listeners goes up by one per visit and never comes back down.

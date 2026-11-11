@@ -16,9 +16,9 @@ export class AlarmSound {
   private readonly sources = new Set<SoundSource>();
 
   constructor() {
-    gauge('M3 AlarmSound rows', () => this.sources.size);
+    gauge('AlarmSound rows', () => this.sources.size);
     gauge(
-      'M3 beeping for',
+      'AlarmSound beeping for',
       () => [...this.sources].filter((s) => s.urgent()).length,
     );
   }

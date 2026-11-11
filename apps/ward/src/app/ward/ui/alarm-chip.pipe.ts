@@ -5,7 +5,7 @@ import type { AlarmView } from '../data/alarms-store';
 import { chipText } from './format';
 
 /**
- * ✅ GOOD (P2): a PURE pipe (the default) runs only when its input changes (`!==`), not on every
+ * ✅ GOOD (template-computation): a PURE pipe (the default) runs only when its input changes (`!==`), not on every
  * check. The tool for per-row derived values inside `@for`, where there is no computed() per row.
  */
 @Pipe({ name: 'alarmChip' })
