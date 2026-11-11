@@ -68,11 +68,20 @@ export class VitalsChart {
       window.addEventListener('resize', measure);
       setInterval(measure, 1000); // "in case the layout changed"
     } else {
-      // ✅ GOOD (M2): one ResizeObserver on our own element, disconnected on destroy.
-      // No polling: the browser tells us when the size really changes.
+      const destroyRef = inject(DestroyRef);
+
+      // ✅ GOOD (M2) · listener: the SAME window listener, removed on destroy. `{ signal }` removes
+      // every listener added with it in one abort() — no need to keep the function reference.
+      const listeners = new AbortController();
+      window.addEventListener('resize', measure, { signal: listeners.signal });
+      destroyRef.onDestroy(() => listeners.abort());
+
+      // ✅ GOOD (M2) · timer → observer: the timer polled for size changes the window event can't
+      // see (the @defer placeholder swapping in, a scrollbar appearing). That is ResizeObserver's
+      // job: it fires when THIS element's size changes, for any reason — and only then.
       const observer = new ResizeObserver(measure);
       observer.observe(this.host);
-      inject(DestroyRef).onDestroy(() => observer.disconnect());
+      destroyRef.onDestroy(() => observer.disconnect());
     }
   }
 

@@ -29,15 +29,15 @@
 
 ## Memory
 
-| Holds a reference forever | Release it with                                                   |
-| ------------------------- | ----------------------------------------------------------------- |
-| `subscribe()` to a stream | `toSignal`, `rxResource`, `async` pipe, or `takeUntilDestroyed()` |
-| `addEventListener`        | `host: { '(window:x)': … }`, or `removeEventListener` on destroy  |
-| `setInterval` / observers | `clearInterval` / `disconnect` in `DestroyRef.onDestroy`          |
-| root service + `this`     | unregister on destroy; better: expose signals                     |
-| `Map` cache               | limit (LRU/TTL), `WeakMap`, or a route/component-scoped service   |
-| `shareReplay(1)`          | `shareReplay({ bufferSize: 1, refCount: true })`                  |
-| `ReplaySubject()`         | a buffer size                                                     |
+| Holds a reference forever | Release it with                                                     |
+| ------------------------- | ------------------------------------------------------------------- |
+| `subscribe()` to a stream | `toSignal`, `rxResource`, `async` pipe, or `takeUntilDestroyed()`   |
+| `addEventListener`        | `host: { '(window:x)': … }`, or `{ signal }` + `abort()` on destroy |
+| `setInterval` / observers | `clearInterval` / `disconnect` in `DestroyRef.onDestroy`            |
+| root service + `this`     | unregister on destroy; better: expose signals                       |
+| `Map` cache               | limit (LRU/TTL), `WeakMap`, or a route/component-scoped service     |
+| `shareReplay(1)`          | `shareReplay({ bufferSize: 1, refCount: true })`                    |
+| `ReplaySubject()`         | a buffer size                                                       |
 
 ## Tools
 
