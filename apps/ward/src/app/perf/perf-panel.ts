@@ -9,6 +9,7 @@ import {
   type Topic,
 } from './perf-modes';
 import {
+  calcTotals,
   checkTotals,
   gaugeValues,
   instanceCounts,
@@ -18,6 +19,7 @@ import {
 interface Sample {
   checksPerSec: [string, number][];
   checksTotal: number;
+  calcsPerSec: [string, number][];
   subscriptions: [string, number][];
   subscriptionsTotal: number;
   instances: { name: string; onScreen: number; retained: number }[];
@@ -39,6 +41,7 @@ export class PerfPanel {
   protected readonly anyBad = TOPIC_IDS.some((t) => PERF.modes[t] === 'bad');
 
   private lastChecks = new Map<string, number>();
+  private lastCalcs = new Map<string, number>();
 
   constructor() {
     // ✅ a timer that is cleared when the component goes away (see M2)
@@ -64,12 +67,10 @@ export class PerfPanel {
   }
 
   private take(): void {
-    const totals = checkTotals();
-    const perSec: [string, number][] = [...totals].map(([name, n]) => [
-      name,
-      n - (this.lastChecks.get(name) ?? 0),
-    ]);
-    this.lastChecks = new Map(totals);
+    const perSec = this.rate(checkTotals(), this.lastChecks);
+    this.lastChecks = new Map(checkTotals());
+    const calcsPerSec = this.rate(calcTotals(), this.lastCalcs);
+    this.lastCalcs = new Map(calcTotals());
 
     const subs = [...liveSubscriptions()].sort((a, b) => b[1] - a[1]);
     const memory = (performance as { memory?: { usedJSHeapSize: number } })
@@ -79,6 +80,7 @@ export class PerfPanel {
     this.sample.set({
       checksPerSec: perSec,
       checksTotal: perSec.reduce((s, [, n]) => s + n, 0),
+      calcsPerSec,
       subscriptions: subs,
       subscriptionsTotal: subs.reduce((s, [, n]) => s + n, 0),
       instances: [...instanceCounts()].map(([name, c]) => ({
@@ -89,5 +91,12 @@ export class PerfPanel {
       gauges: gaugeValues(),
       heapMb: memory ? memory.usedJSHeapSize / 1_048_576 : null,
     });
+  }
+
+  private rate(
+    totals: ReadonlyMap<string, number>,
+    last: ReadonlyMap<string, number>,
+  ): [string, number][] {
+    return [...totals].map(([name, n]) => [name, n - (last.get(name) ?? 0)]);
   }
 }

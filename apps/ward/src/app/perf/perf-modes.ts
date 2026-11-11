@@ -11,7 +11,10 @@ export const TOPICS = {
     title: 'Change detection',
     where: 'App, Nurse station, BedTile, AlarmActions',
   },
-  p2: { title: 'Work in templates', where: 'Nurse station → tiles' },
+  p2: {
+    title: 'Computation in templates',
+    where: 'Nurse station → alarm count, tiles, chips',
+  },
   p3: { title: '@for and track', where: 'Nurse station → Active alarms' },
   p4: { title: 'Hot events', where: 'Bed detail → chart hover' },
   m1: { title: 'Forgotten subscribe()', where: 'Bed detail → tab title' },

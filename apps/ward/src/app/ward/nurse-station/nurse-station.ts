@@ -11,6 +11,7 @@ import {
   type Ward,
 } from '@core/messaging/contract';
 import { PERF, isBad } from '@perf/perf-modes';
+import { calc } from '@perf/perf-stats';
 import { AlarmsStore, type AlarmView } from '../data/alarms-store';
 import { PatientsStore } from '../data/patients-store';
 import { AlarmActions } from '../ui/alarm-actions';
@@ -31,7 +32,7 @@ export default class NurseStation {
   readonly empty = input<string>();
 
   protected readonly patients = inject(PatientsStore);
-  private readonly allAlarms = toSignal(inject(AlarmsStore).all$(), {
+  protected readonly allAlarms = toSignal(inject(AlarmsStore).all$(), {
     initialValue: [],
   });
   private readonly now = inject(Clock).now;
@@ -60,18 +61,42 @@ export default class NurseStation {
       )
       .sort((a, b) => Number(isUrgent(b)) - Number(isUrgent(a))),
   );
-  protected readonly urgentCount = computed(
-    () => this.alarms().filter(isUrgent).length,
-  );
+  // ✅ GOOD (P2): computed() filters once per alarm change. A check only reads the cached number.
+  protected readonly urgentCount = computed(() => {
+    calc('urgentCount · computed');
+    return this.alarms().filter(isUrgent).length;
+  });
+
+  // ❌ BAD (P2): a getter is a method in disguise. Read twice in the template, on every check
+  // (every second, for the shift clock): two full filters per second, for a number that didn't change.
+  protected get urgentNow(): number {
+    calc('urgentNow · getter');
+    return this.alarms().filter(isUrgent).length;
+  }
+
+  // ✅ GOOD (P2): alarms per ward, counted once per alarm change.
+  protected readonly alarmsPerWard = computed(() => {
+    calc('alarmsPerWard · computed');
+    const count = new Map<string, number>();
+    for (const a of this.allAlarms()) {
+      const w = a.event.bed.split('-')[0];
+      count.set(w, (count.get(w) ?? 0) + 1);
+    }
+    return count;
+  });
 
   protected bedsOf = bedsOf;
 
   // ✅ GOOD (P2): computed once per alarm change; every tile gets the SAME array until its alarms change.
-  protected readonly alarmsFor = computed(() => alarmsByBed(this.allAlarms()));
+  protected readonly alarmsFor = computed(() => {
+    calc('alarmsFor · computed');
+    return alarmsByBed(this.allAlarms());
+  });
 
   // ❌ BAD (P2): runs for every tile on every check of this page, and returns a NEW array each time.
   // A new array is a new input value → every tile is marked dirty and re-renders, every second.
   protected alarmsOf(bed: BedId): readonly AlarmView[] {
+    calc('alarmsOf · method');
     return this.allAlarms().filter((a) => a.event.bed === bed);
   }
 

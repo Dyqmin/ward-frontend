@@ -31,9 +31,15 @@
     aria-live="polite"
   >
     <h2>
-      Active alarms @if (urgentCount()) {
+      Active alarms @if (bad.p2) {
+      <!-- ❌ BAD (P2): a getter, read twice → two filters per check -->
+      @if (urgentNow) {
+      <span class="chip bad">{{ urgentNow }} need action</span>
+      } } @else {
+      <!-- ✅ GOOD (P2): a computed() → filtered once per change, read for free -->
+      @if (urgentCount()) {
       <span class="chip bad">{{ urgentCount() }} need action</span>
-      }
+      } }
     </h2>
     @if (bad.p3) {
     <!-- ❌ BAD (P3): track by identity on fresh objects → every row destroyed and re-created (NG0956) -->
@@ -52,7 +58,16 @@
 
   @for (copy of copies; track copy) { @for (w of visibleWards(); track w) {
   <h2 class="ward-title">
-    {{ w }} @if (copy) {<span class="muted">· stress copy {{ copy }}</span>}
+    {{ w }} @if (bad.p2) {
+    <!-- ❌ BAD (P2): an arrow function in the template is still code that runs on every check -->
+    <span class="muted"
+      >· alarms: {{ allAlarms().filter((a) => a.event.bed.startsWith(w +
+      '-')).length }}</span
+    >
+    } @else {
+    <!-- ✅ GOOD (P2): counted once in a computed() -->
+    <span class="muted">· alarms: {{ alarmsPerWard().get(w) ?? 0 }}</span>
+    } @if (copy) {<span class="muted">· stress copy {{ copy }}</span>}
   </h2>
   <div class="grid">
     @for (bed of bedsOf(w); track bed) { @if (bad.p2) {

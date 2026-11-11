@@ -44,9 +44,13 @@
     } @else {
     <span class="chip ok">live</span>
     } @for (a of alarms(); track a.event.alarmId) {
-    <span class="chip" [class.bad]="isUrgent(a)"
-      >{{ alarmTitle(a) }} · {{ a.event.status }}</span
-    >
+    <span class="chip" [class.bad]="isUrgent(a)">
+      @if (badP2) {
+      <!-- ❌ BAD (P2): method call → runs on every check of the tile -->
+      {{ chipText(a) }} } @else {
+      <!-- ✅ GOOD (P2): pure pipe → runs when `a` changes -->
+      {{ a | alarmChip }} }
+    </span>
     }
   </footer>
   } @else {

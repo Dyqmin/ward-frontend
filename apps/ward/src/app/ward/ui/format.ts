@@ -40,6 +40,18 @@ export function alarmTitle(a: AlarmView): string {
   return a.value !== null ? `${label} (${a.value})` : label;
 }
 
+/** 'HR high (142) · acknowledged 14:03:12'. Not free: `clock()` builds an Intl formatter per call. */
+export function chipText(a: AlarmView): string {
+  const e = a.event;
+  const time =
+    e.status === 'acknowledged'
+      ? ` ${clock(e.at)}`
+      : e.status === 'snoozed'
+        ? ` until ${clock(e.until)}`
+        : '';
+  return `${alarmTitle(a)} · ${e.status}${time}`;
+}
+
 /** Every status handled, checked by the compiler. */
 export function alarmStatus(a: AlarmView): string {
   const e = a.event;

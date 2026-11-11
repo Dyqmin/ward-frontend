@@ -13,8 +13,9 @@ import {
 } from '@core/messaging/contract';
 import type { AlarmView } from '../data/alarms-store';
 import { isBad } from '@perf/perf-modes';
-import { check, trackInstance } from '@perf/perf-stats';
-import { alarmTitle, isUrgent } from './format';
+import { calc, check, trackInstance } from '@perf/perf-stats';
+import { AlarmChipPipe } from './alarm-chip.pipe';
+import { chipText, isUrgent } from './format';
 import { VitalValue } from './vital-value';
 import { summary, summaryLeaky } from './vitals-summary';
 
@@ -23,7 +24,7 @@ export const STALE_AFTER_SEC = 3;
 
 @Component({
   selector: 'app-bed-tile',
-  imports: [RouterLink, VitalValue, NgxSkeletonLoaderComponent],
+  imports: [RouterLink, VitalValue, NgxSkeletonLoaderComponent, AlarmChipPipe],
   templateUrl: './bed-tile.html',
   styleUrl: './bed-tile.scss',
 })
@@ -38,8 +39,8 @@ export class BedTile {
 
   protected readonly slug = computed(() => toSlug(this.bed()));
   protected readonly urgent = computed(() => this.alarms().some(isUrgent));
-  protected readonly alarmTitle = alarmTitle;
   protected readonly isUrgent = isUrgent;
+  protected readonly badP2 = isBad('p2');
   protected readonly check = check;
 
   constructor() {
@@ -63,6 +64,13 @@ export class BedTile {
       ? Math.max(0, Math.round((this.now() - this.vitals.value().at) / 1000))
       : null,
   );
+  // ❌ BAD (P2): a method per chip. This tile re-renders every second (its "no data for N s" age),
+  // so every chip re-formats its text every second, Intl formatter included — though nothing changed.
+  protected chipText(a: AlarmView): string {
+    calc('chip text · method');
+    return chipText(a);
+  }
+
   /** Tooltip with the latest values. M4: the bad version caches it in a Map that only grows. */
   protected readonly tooltip = computed(() => {
     if (!this.vitals.hasValue()) return '';

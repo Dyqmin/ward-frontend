@@ -24,6 +24,17 @@ export function check(name: string): string {
 
 export const checkTotals = (): ReadonlyMap<string, number> => checks;
 
+// ── calculations ────────────────────────────────────────────────────────────
+
+const calcs = new Map<string, number>();
+
+/** Call inside a derivation (getter, method, computed, pipe): counts how often it REALLY runs. */
+export function calc(name: string): void {
+  calcs.set(name, (calcs.get(name) ?? 0) + 1);
+}
+
+export const calcTotals = (): ReadonlyMap<string, number> => calcs;
+
 // ── live topic subscriptions ────────────────────────────────────────────────
 
 const live = new Map<string, number>();

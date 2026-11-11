@@ -26,6 +26,7 @@ Install **Angular DevTools** (Chrome extension). Use Chrome for the day: the Mem
 | Stress ×1 / ×5 / ×10 | draws every ward N times, so costs become measurable                       |
 | check counters       | yellow badge on components: how many times their template ran              |
 | Template checks / s  | the same, summed per component                                             |
+| Calculations / s     | how often a getter, method, `computed()` or pipe really ran                |
 | Live subscriptions   | open topic subscriptions right now. `×3` on one topic = suspicious         |
 | Components           | on screen vs **retained** (destroyed, still in memory after GC)            |
 | Gauges               | cache sizes, JS heap                                                       |
@@ -38,7 +39,7 @@ Install **Angular DevTools** (Chrome extension). Use Chrome for the day: the Mem
 | --- | ------------------------------------------------------------------ | ----------------------- | ---- |
 | P0  | [Measure first](day-6/p0-measure.md)                               | tools                   | 30′  |
 | P1  | [Change detection: OnPush vs Eager](day-6/p1-change-detection.md)  | nurse station           | 40′  |
-| P2  | [Work in templates](day-6/p2-template.md)                          | nurse station → tiles   | 30′  |
+| P2  | [Computation in templates](day-6/p2-template.md)                   | nurse station → tiles   | 30′  |
 | P3  | [`@for` and `track`](day-6/p3-track.md)                            | active alarms           | 25′  |
 | P4  | [Hot events](day-6/p4-hot-events.md)                               | bed detail → chart      | 25′  |
 | P5  | [Load less: lazy routes, `@defer`, bundles](day-6/p5-load-less.md) | build                   | 40′  |

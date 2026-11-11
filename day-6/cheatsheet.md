@@ -4,10 +4,13 @@
 
 - **OnPush** is the default (Angular 22). Never opt out with `Eager` — use signals instead.
 - **Zoneless** (default): change detection runs when a signal, input, event or `markForCheck` says so.
-- Derived state → `computed()`. Not methods, not `effect()` + `set()`.
-- Inputs: stable references. No `[]`, `{}`, `.map()`, `.filter()` built in the template.
-- Methods in templates: only cheap ones that return primitives. Formatting → pure pipe.
-- `@let x = expensive();` — call once, use many times.
+- Every template expression runs on every check: methods, getters, inline `.filter()`, impure pipes.
+- Derived state → `computed()`. Not getters, not methods, not `effect()` + `set()`.
+- Per-row values in `@for` → a pure pipe (default). `pure: false` = a method.
+- Inputs: stable references. `.map()` / `.filter()` in a template = a new array every check.
+  (`{ a: x }` / `[x, y]` literals are memoized by the compiler: fine.)
+- Methods in templates: only cheap ones that return primitives.
+- `@let x = value();` — read once, use many times.
 - `@for` → `track item.id`. Never identity on fresh objects (NG0956), `$index` only for static lists.
 - Hot events (`pointermove`, `scroll`, `input`): no layout reads, cheap templates, debounce
   (`debounced()` / `debounceTime`), CSS for visual effects.

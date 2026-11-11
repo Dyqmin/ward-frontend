@@ -77,6 +77,13 @@
       @for (c of s.checksPerSec; track c[0]) { {{ c[0] }} {{ c[1] }} · }
     </p>
 
+    @if (s.calcsPerSec.length) {
+    <h3>Calculations / s</h3>
+    <p class="mono">
+      @for (c of s.calcsPerSec; track c[0]) { {{ c[0] }} {{ c[1] }} · }
+    </p>
+    }
+
     <h3>Live topic subscriptions · {{ s.subscriptionsTotal }}</h3>
     <p class="mono">
       @for (sub of s.subscriptions; track sub[0]) {
