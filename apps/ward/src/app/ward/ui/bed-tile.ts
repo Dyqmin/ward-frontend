@@ -2,7 +2,7 @@ import { Component, computed, inject, input } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
-import { map } from 'rxjs';
+import { animationFrameScheduler, auditTime, map, tap } from 'rxjs';
 
 import { Clock } from '@core/clock';
 import {
@@ -17,6 +17,8 @@ import { calc, check, trackInstance } from '@perf/perf-stats';
 import { AlarmChipPipe } from './alarm-chip.pipe';
 import { chipText, isUrgent } from './format';
 import { VitalValue } from './vital-value';
+
+const BURST_BAD = isBad('ws-burst');
 
 /** Frames normally arrive every second; older than this and the tile says so. */
 export const STALE_AFTER_SEC = 3;
@@ -53,9 +55,18 @@ export class BedTile {
   readonly vitals = rxResource({
     params: () => this.bed(),
     stream: ({ params: bed }) =>
-      this.bus
-        .watch(`/topic/vitals.${bed}`)
-        .pipe(map((frame) => ({ frame, at: Date.now() }))),
+      this.bus.watch(`/topic/vitals.${bed}`).pipe(
+        BURST_BAD
+          ? // ❌ BAD (ws-burst): every message becomes a new value → this tile is dirty → a change
+            // detection run, per message, per task. 3000 messages after a reconnect = 3000 renders
+            // of tiles that can only show the LAST value anyway.
+            (frames$) => frames$
+          : // ✅ GOOD (ws-burst): a tile shows the latest frame, so keep the latest per animation frame.
+            // Thousands of messages → at most one render per display frame (~60/s).
+            auditTime(0, animationFrameScheduler),
+        tap(() => calc('BedTile · frames applied')),
+        map((frame) => ({ frame, at: Date.now() })),
+      ),
   });
 
   readonly ageSec = computed(() =>

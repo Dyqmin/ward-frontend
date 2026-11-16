@@ -68,7 +68,8 @@ in this app. The course order is in [PERFORMANCE.md](../PERFORMANCE.md), and the
   package, which adds bundle weight. → [Hot events](06-hot-events.md)
 - **Use CSS `content-visibility` and `contain`** for large off-screen sections.
   → [cheatsheet](cheatsheet.md)
-- **Move CPU-heavy work to Web Workers** (`ng generate web-worker`). → [cheatsheet](cheatsheet.md)
+- **Move CPU-heavy work to Web Workers** (`ng generate web-worker`), and let the worker own its state.
+  → [Heavy calculation](15-main-thread.md), [Worker cache](16-worker-cache.md)
 
 ## Loading and bundle size
 

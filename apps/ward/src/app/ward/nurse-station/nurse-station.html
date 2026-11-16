@@ -56,6 +56,19 @@
     } }
   </section>
 
+  <section class="trends card" aria-label="Heart-rate trends">
+    <h2>HR trend · last 3 min</h2>
+    <div class="row wrap">
+      @for (t of trendList(); track t[0]) {
+      <span class="chip" [class.warn]="t[1] > 2 || t[1] < -2"
+        >{{ t[0] }} {{ t[1] > 0 ? '+' : '' }}{{ t[1].toFixed(1) }}/min</span
+      >
+      } @empty {
+      <span class="muted">Calculating…</span>
+      }
+    </div>
+  </section>
+
   @for (copy of copies; track copy) { @for (w of visibleWards(); track w) {
   <h2 class="ward-title">
     {{ w }} @if (bad.template) {

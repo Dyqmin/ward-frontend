@@ -16,7 +16,9 @@
 - Hot events (`pointermove`, `scroll`, `input`): no layout reads, cheap templates, debounce
   (`debounced()` / `debounceTime`), CSS for visual effects.
 - Long lists: paginate, or `@angular/cdk/scrolling` virtual scroll, or CSS `content-visibility: auto`.
-- Heavy computation: a Web Worker (`ng g web-worker`).
+- Heavy computation: compute less often, then a cheaper algorithm, then a Web Worker (`ng g web-worker`).
+- Worker: it owns its state. Send deltas, transfer `ArrayBuffer`s, `terminate()` on teardown.
+- Socket bursts: latest value per frame (`auditTime(0, animationFrameScheduler)`), or `bufferTime` + one update.
 
 ## Loading
 

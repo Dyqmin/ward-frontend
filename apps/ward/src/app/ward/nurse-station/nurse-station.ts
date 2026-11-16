@@ -17,6 +17,7 @@ import { PatientsStore } from '../data/patients-store';
 import { AlarmActions } from '../ui/alarm-actions';
 import { BedTile } from '../ui/bed-tile';
 import { alarmsByBed, isUrgent } from '../ui/format';
+import { HrTrends } from '../trends/hr-trends';
 
 /** The nurse station: every bed, live, with the alarms to act on. */
 @Component({
@@ -36,6 +37,14 @@ export default class NurseStation {
     initialValue: [],
   });
   private readonly now = inject(Clock).now;
+
+  /** HR trend per bed, bpm/min. See performance/15-main-thread.md. toSignal ends the work on destroy. */
+  protected readonly trends = toSignal(inject(HrTrends).trends$(), {
+    initialValue: new Map<BedId, number>(),
+  });
+  protected readonly trendList = computed(() =>
+    [...this.trends()].sort(([a], [b]) => a.localeCompare(b)),
+  );
 
   protected readonly bad = {
     template: isBad('template-computation'),

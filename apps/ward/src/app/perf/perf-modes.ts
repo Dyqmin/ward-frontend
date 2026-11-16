@@ -44,6 +44,18 @@ export const TOPICS = {
     title: 'shareReplay without refCount',
     where: 'Bed detail → live vitals, alarms',
   },
+  'main-thread': {
+    title: 'Heavy calculation on the main thread',
+    where: 'Nurse station → HR trends',
+  },
+  'worker-cache': {
+    title: 'Worker with a duplicated cache',
+    where: 'Nurse station → HR trends (worker)',
+  },
+  'ws-burst': {
+    title: 'Message burst after reconnect',
+    where: 'Nurse station → tiles, Dev → outage / burst',
+  },
 } as const;
 
 export type Topic = keyof typeof TOPICS;

@@ -51,6 +51,13 @@ Install **Angular DevTools** (Chrome extension). Use Chrome for the day: the Mem
 | [Root service keeps components](performance/12-root-service.md)             | alarm rows → AlarmSound      | 20′  |
 | [Live buffer that only grows](performance/13-growing-buffer.md)             | bed detail → vitals history  | 20′  |
 | [`shareReplay` without `refCount`](performance/14-share-replay.md)          | live vitals, alarms          | 20′  |
+| **Reading and comparing**                                                   |                              |      |
+| [Reading the charts: six shapes](performance/18-reading-charts.md)          | tools                        | 40′  |
+| [Heavy calculation on the main thread](performance/15-main-thread.md)       | nurse station → HR trends    | 20′  |
+| [Worker with a duplicated cache](performance/16-worker-cache.md)            | nurse station → HR trends    | 15′  |
+| [Message burst after reconnect](performance/17-ws-burst.md)                 | tiles, Dev → burst           | 15′  |
+| [Comparing two approaches](performance/19-compare.md)                       | `pnpm bench`                 | 20′  |
+| [AI for performance analysis](performance/20-ai.md)                         | `pnpm trace:digest`, agent   | 20′  |
 | [The hunt](performance/hunt.md): all ❌, find everything with tools only    | everywhere                   | 30′  |
 
 Keep: **[cheatsheet.md](performance/cheatsheet.md)**: everything on one page.

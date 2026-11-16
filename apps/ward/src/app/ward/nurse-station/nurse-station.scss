@@ -25,3 +25,12 @@
   grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
   gap: 0.75rem;
 }
+
+.trends {
+  margin-bottom: 1.25rem;
+
+  .wrap {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+}

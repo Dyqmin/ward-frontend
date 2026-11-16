@@ -9,7 +9,9 @@
     "lint": "nx lint ward",
     "build:eager": "nx build ward -c eager --skip-nx-cache",
     "build:stats": "nx build ward --stats-json --skip-nx-cache",
-    "serve:prod": "nx serve ward -c production"
+    "serve:prod": "nx serve ward -c production",
+    "bench": "node tools/bench.mjs",
+    "trace:digest": "node tools/trace-digest.mjs"
   },
   "private": true,
   "dependencies": {

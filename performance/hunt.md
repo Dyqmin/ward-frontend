@@ -11,7 +11,7 @@ In pairs, 25 minutes. For each problem write one line:
 | ---------------------- | ---- | ------------------ | --- |
 |                        |      |                    |     |
 
-There are 10 planted problems and 1 that was real. Then switch topics back to ✅ one by one and
+There are 13 planted problems and 1 that was real. Then switch topics back to ✅ one by one and
 check that your number moves.
 
 ## Bonus
