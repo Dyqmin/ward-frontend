@@ -23,7 +23,7 @@
   <router-outlet />
 </main>
 
-@if (mock && auth.signedIn() && !bare()) {
+@if (auth.signedIn() && !bare()) {
 <app-dev-toolbar />
 }
 

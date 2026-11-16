@@ -1,7 +1,7 @@
 # Message burst after reconnect
 
-**Where:** `ward/ui/bed-tile.ts` (`vitals`), and `FakeMessageBus.burst()` in
-`core/messaging/fake-message-bus.ts`.
+**Where:** `ward/ui/bed-tile.ts` (`vitals`), and `deliverBurst()` in `core/messaging/burst.ts`.
+The burst is made in the browser, so it works the same with the mock and with the real broker.
 
 After an outage, a broker redelivers what it queued for durable subscribers (ActiveMQ does). Monitors
 send several readings per second, so a few seconds offline is thousands of messages, back to back.

@@ -1,9 +1,7 @@
-// The backend (ward-worker) runs on port 8787 of the machine that serves the app. Using the page's
-// own hostname means the same build works on localhost and for phones on the workshop LAN.
-const host = typeof location === 'undefined' ? 'localhost' : location.hostname;
-
+// The backend is the deployed ward-worker (the same address as on the day-5 branch).
+// For a local ward-worker on port 8787 use `http://${location.hostname}:8787` and `ws://…:8787`.
 export const environment = {
-  apiUrl: `http://${host}:8787`,
-  wsUrl: `ws://${host}:8787`,
+  apiUrl: `https://ward-worker.teesdomin.workers.dev`,
+  wsUrl: `ws://ward-worker.teesdomin.workers.dev`,
   defaultRoomCode: 'ward-demo',
 };

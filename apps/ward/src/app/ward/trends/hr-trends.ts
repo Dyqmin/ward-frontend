@@ -1,5 +1,14 @@
 import { Service, inject } from '@angular/core';
-import { Observable, map, merge, scan, tap } from 'rxjs';
+import {
+  Observable,
+  interval,
+  map,
+  merge,
+  sample,
+  scan,
+  share,
+  tap,
+} from 'rxjs';
 
 import { ALL_BEDS, MessageBus, type BedId } from '@core/messaging/contract';
 import { isBad } from '@perf/perf-modes';
@@ -21,7 +30,7 @@ gauge('trend · values posted to worker', () => postedValues);
 /**
  * Heart-rate trends for every bed on the ward (nurse station). Three versions of the same feature:
  *
- * ❌ main-thread            Theil–Sen for 18 beds, synchronously, inside the frame callback.
+ * ❌ main-thread            Theil–Sen for 18 beds, synchronously, in one task every second.
  * ✅ main-thread, ❌ worker-cache   in a worker, but the main thread still keeps the history and
  *                            sends all of it every second: two caches, a big structured clone.
  * ✅ main-thread, ✅ worker-cache   the worker owns the history; main sends one snapshot, then frames.
@@ -36,12 +45,16 @@ export class HrTrends {
     return isBad('main-thread') ? this.onMainThread() : this.inWorker();
   }
 
-  // ❌ BAD (main-thread): 18 beds × an O(n²) estimator, in the same task that delivered the frame.
+  /** One shared tick: the trends of all beds are refreshed together, once a second. */
+  private readonly everySecond$ = interval(1000).pipe(share());
+
+  // ❌ BAD (main-thread): 18 beds × an O(n²) estimator, all in one task, every second.
   // On the flame chart: one wide "wall" every second (a long task, red corner). Clicks wait for it.
   private onMainThread(): Observable<Trends> {
     return merge(
       ...ALL_BEDS.map((bed) =>
         snapshotThenStream(this.bus, bed, this.live.frames(bed)).pipe(
+          sample(this.everySecond$),
           map((frames) => {
             calc('hrTrend · main thread');
             const hr = setHistory(

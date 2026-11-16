@@ -1,9 +1,8 @@
-@if (fake) {
 <aside class="toolbar" [class.open]="open()">
   <button type="button" class="small toggle" (click)="open.set(!open())">
     🛠 Dev {{ open() ? '▾' : '▸' }}
   </button>
-  @if (open()) {
+  @if (open()) { @if (fake) {
   <div class="row">
     <span class="muted">Role</span>
     @for (r of roles; track r) {
@@ -17,7 +16,9 @@
     </button>
     }
   </div>
+  }
   <div class="row">
+    @if (fake) {
     <button
       type="button"
       class="small danger"
@@ -26,13 +27,17 @@
     >
       Simulate outage (8 s)
     </button>
-    <button type="button" class="small" (click)="fake.burst()">
+    }
+    <button type="button" class="small" (click)="burst()">
       Burst 3000 msgs
     </button>
+    @if (fake) {
     <button type="button" class="small" (click)="fake.clearLog()">
       Clear log
     </button>
+    }
   </div>
+  @if (fake) {
   <table class="log">
     <thead>
       <tr>
@@ -62,6 +67,5 @@
       }
     </tbody>
   </table>
-  }
+  } }
 </aside>
-}

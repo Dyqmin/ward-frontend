@@ -16,10 +16,10 @@ import {
 } from 'rxjs';
 
 import { createWardFixtures } from '../../testing/ward-fixtures';
-import { countLive, gauge } from '@perf/perf-stats';
+import { countLive } from '@perf/perf-stats';
 import { AuthStore } from '../auth/auth-store';
+import { BURST_SIZE, deliverBurst } from './burst';
 import {
-  ALL_BEDS,
   MessageBus,
   isCommand,
   type ConnectionState,
@@ -37,16 +37,6 @@ export const MOCK_FIXTURES = new InjectionToken<MockFixtures>('MOCK_FIXTURES', {
   providedIn: 'root',
   factory: () => createWardFixtures(),
 });
-
-/**
- * Performance (ws-burst): after an outage a broker redelivers what it queued for durable
- * subscribers (ActiveMQ does this). Monitors send several readings per second, so 8 s offline is
- * thousands of messages, arriving back to back.
- */
-export const BURST_SIZE = 3000;
-
-let burstDelivered = 0;
-gauge('burst · messages delivered', () => burstDelivered);
 
 /** Simulated network latency of every request. */
 export const FAKE_LATENCY_MS = 300;
@@ -172,28 +162,9 @@ export class FakeMessageBus extends MessageBus {
     });
   }
 
-  /**
-   * Deliver `n` vitals frames, EACH IN ITS OWN TASK, like WebSocket `onmessage` events. (A
-   * `queueMicrotask` loop would be one task, and Angular would coalesce it: not what a socket does.)
-   */
+  /** `n` vitals frames, each in its own task: see deliverBurst(). */
   burst(n = BURST_SIZE): void {
-    const channel = new MessageChannel();
-    let i = 0;
-    channel.port1.onmessage = () => {
-      const bed = ALL_BEDS[i % ALL_BEDS.length];
-      const ts = Date.now();
-      this.emit(`/topic/vitals.${bed}`, {
-        bed,
-        ts,
-        hr: 70 + ((i * 7) % 15),
-        spo2: 95 + (i % 4),
-        rr: 14 + (i % 5),
-      });
-      burstDelivered++;
-      if (++i < n) channel.port2.postMessage(null);
-      else channel.port1.close();
-    };
-    channel.port2.postMessage(null);
+    deliverBurst((f) => this.emit(`/topic/vitals.${f.bed}`, f), n);
   }
 
   clearLog(): void {

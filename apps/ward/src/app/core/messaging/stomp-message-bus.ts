@@ -1,10 +1,19 @@
 import { LOCALE_ID, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RxStomp, RxStompRPC, RxStompState } from '@stomp/rx-stomp';
-import { Observable, map, mergeMap, timeout } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  filter,
+  map,
+  merge,
+  mergeMap,
+  timeout,
+} from 'rxjs';
 
 import { countLive } from '@perf/perf-stats';
 import { Logger } from '../logger';
+import { BURST_SIZE, deliverBurst } from './burst';
 import {
   FRAME_GUARDS,
   FrameError,
@@ -19,6 +28,7 @@ import {
   type StreamContract,
   type StreamDestination,
   type StreamName,
+  type VitalsFrame,
   type WardRpcContract,
   type WardRpcName,
 } from './contract';
@@ -41,6 +51,8 @@ export class StompMessageBus extends MessageBus {
   private readonly rpc = inject(RxStompRPC);
   private readonly logger = inject(Logger);
   private readonly locale = inject(LOCALE_ID);
+  /** Performance (ws-burst): frames of a simulated redelivery, made in the browser. */
+  private readonly redelivered = new Subject<VitalsFrame>();
 
   readonly state = toSignal(
     this.stomp.connectionState$.pipe(map(toConnectionState)),
@@ -53,15 +65,31 @@ export class StompMessageBus extends MessageBus {
   watch<D extends StreamDestination>(destination: D): Observable<PayloadOf<D>> {
     const guard: (x: unknown) => x is AnyPayload =
       FRAME_GUARDS[streamNameOf(destination)];
-    return this.stomp.watch({ destination }).pipe(
-      mergeMap((m) =>
-        this.parseOrDrop(
-          destination,
-          () => parseFrame(m.body, guard) as PayloadOf<D>,
+    const fromBroker = this.stomp
+      .watch({ destination })
+      .pipe(
+        mergeMap((m) =>
+          this.parseOrDrop(
+            destination,
+            () => parseFrame(m.body, guard) as PayloadOf<D>,
+          ),
         ),
-      ),
+      );
+    const redelivered = this.redelivered.pipe(
+      filter((f) => destination === `/topic/vitals.${f.bed}`),
+      map((f) => f as PayloadOf<D>),
+    );
+    return merge(fromBroker, redelivered).pipe(
       countLive(destination), // Performance: the Perf panel counts live subscriptions
     );
+  }
+
+  /**
+   * Performance (ws-burst): what a broker does after an outage, simulated in the browser. Nothing
+   * is sent to the broker; `n` frames reach the subscribers of this tab, each in its own task.
+   */
+  burst(n = BURST_SIZE): void {
+    deliverBurst((f) => this.redelivered.next(f), n);
   }
 
   notices(participant: ParticipantId): Observable<GameNotice> {
