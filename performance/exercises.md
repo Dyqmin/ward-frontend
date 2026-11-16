@@ -31,14 +31,15 @@ Every problem in this application can be switched on and off.
 2. Click **❌** next to a problem. The page reloads. The button now says **⚡ Perf · ❌ bad on**.
 3. To switch everything off again, click **all ✅** at the top of the panel.
 
-In the code, both versions are next to each other: the ❌ version is marked `❌ BAD`, the finished
-one `✅ GOOD`. You will change the ❌ version. Do not read the ✅ version before step 5.
+Every one of these clicks reloads the page and closes the panel. Click **⚡ Perf** again to open it.
+
+In the code, both versions are next to each other: the ❌ version is marked `❌ BAD`, the finished one `✅ GOOD`. You will change the ❌ version. The finished one is often only a few lines below: write your own change first, then compare.
 
 Write your numbers here:
 
 | Exercise                | What you count                         | Before | After your fix |
 | ----------------------- | -------------------------------------- | ------ | -------------- |
-| 1 · a wall              | tasks with a red corner                |        |                |
+| 1 · a wall              | tasks with a red corner in 15 seconds  |        |                |
 | 2 · a page never leaves | `_BedDetail` in the column **# Delta** |        |                |
 
 ---
@@ -50,29 +51,25 @@ freeze for a moment, again and again.
 
 ### Switch the problem on
 
-1. Click **⚡ Perf** → **all ✅**.
-2. In the list, find **Heavy calculation on the main thread** and click its **❌**.
+1. Click **⚡ Perf** → **all ✅**. The page reloads and the panel closes.
+2. Click **⚡ Perf** again. In the list, find **Heavy calculation on the main thread** and click its **❌**.
 3. Stay on the nurse station (the first page, with all the beds).
 
 ### Measure
 
 1. In DevTools open the **Performance** tab.
-2. Click the gear icon in the toolbar of that tab and set **CPU throttling** to **4× slowdown**.
-   Your laptop is faster than the computer on the ward; this makes it comparable.
-3. Click the round **Record** button. Wait 5 seconds. Click **Stop**.
+2. On the right side of that tab, under **Environment settings**, find the list labelled **CPU:** and choose **4× slowdown**. (The same list is behind the gear icon at the right end of the Performance toolbar, not the gear at the top of DevTools.) A warning triangle appears on the Performance tab: that is expected. Your laptop is faster than the computer on the ward; this makes it comparable.
+3. Click the round **Record** button. Wait **15 seconds**. Click **Stop**. The first time, a box called **Keyboard shortcuts for flame chart** covers part of the chart: close it with ×.
 4. Look at the row called **Main**. Each grey block at the top of it is one task: one piece of
    work the page did without a break. A task with a **red corner** took longer than 50 ms, and
    the page could not react to a click during that time.
-5. Count the tasks with a red corner. Skip the very first one (that is the recording starting).
-   Write the number down.
+5. Count the tasks with a red corner. Skip the very first one (that is the recording starting) and one that is cut off at the very end. You should find about 15: one per second. Write the number down.
 
 ### Find
 
 1. At the bottom of the Performance tab click **Bottom-up**.
-2. Click the column **Self time** so the largest number is at the top. This list answers the
-   question "which function used the most time?".
-3. Read the first row: the function name, and on the right a link with a file name and a line
-   number. Write them down.
+2. Look at the column **Self time**. The arrow next to its name must point down (▼), so the largest number is at the top. It usually is already; click the column only if the arrow points up. This list answers the question "which function used the most time?".
+3. Read the first row: the function name and, directly after it, a link with a file name and a line number. You should see `hrTrend` and `hr-trend.ts`. Write them down.
 4. That file contains the calculation. It is called from another file: open
    `ward/trends/hr-trends.ts` (with an **s**) in your editor and find the method
    `onMainThread()`. Read the comment marked `❌ BAD` above it.
@@ -92,18 +89,19 @@ A 3-minute trend does not change much in one second, but it is calculated every 
 
 1. For the first 10 seconds the trends say **Calculating…**. That is your fix: the first value
    now arrives after 10 seconds.
-2. When the trends are back, record for **15 seconds** and count the red corners again. You
-   should find 1 or 2 instead of about 15.
+2. When the trends are back, record for **15 seconds** again and count the red corners. You should find 1 or 2 instead of about 15.
 
 ### Compare
 
 1. Click **⚡ Perf** and switch **Heavy calculation on the main thread** to **✅**.
-2. Record once more. Find the row that starts with **Worker** and has activity once a second.
+2. Record for 5 seconds once more. Find the row that starts with **Worker** and has activity once a second.
 3. Read the method `inWorker()` in the same file.
 
 Your fix was one line, but the trend is now up to 10 seconds old. The finished version moves the
 calculation to another thread: more code, but the trend stays fresh. Which one would you choose
 for a screen a nurse watches?
+
+Before you go on: set **CPU:** back to **No throttling**.
 
 ---
 
@@ -131,15 +129,15 @@ be gone from memory. Is it?
 
 ### Switch the problem on
 
-1. Click **⚡ Perf** → **all ✅**.
-2. In the list, find **Forgotten subscribe()** and click its **❌**.
+1. Click **⚡ Perf** → **all ✅**. The page reloads and the panel closes.
+2. Click **⚡ Perf** again. In the list, find **Forgotten subscribe()** and click its **❌**.
 3. Stay on the nurse station.
 
 ### See it first
 
 1. Click a bed tile. Wait until the page of the bed is shown.
 2. Go back with the browser's Back button.
-3. Look at the title of the browser tab. It still shows the heart rate of that bed, and it keeps
+3. Look at the title of the browser tab of the application (not of the DevTools window). It still shows the heart rate of that bed, and it keeps
    changing. Something from the page you left is still running.
 
 ### Measure
@@ -147,9 +145,9 @@ be gone from memory. Is it?
 A heap snapshot is a list of everything the page keeps in memory at one moment. You will take
 two and compare them.
 
-1. In DevTools open the **Memory** tab. Select **Heap snapshot** and click **Take snapshot**.
+1. In DevTools open the **Memory** tab. **Heap snapshot** is already selected. Click the blue **Take snapshot** button at the bottom of the tab.
 2. In the application, open a bed and go back. Do this **5 times**.
-3. In the Memory tab click the bin icon (**Collect garbage**). It removes everything that is
+3. In the toolbar of the Memory tab click the broom icon (its tooltip says **Collect garbage**). It removes everything that is
    really free, so what remains is kept by something.
 4. Take a second snapshot: the round button at the top left of the Memory tab.
 5. The second snapshot is shown. Above the table there is a dropdown that says **Summary**.
@@ -159,11 +157,10 @@ two and compare them.
 
 ### Find
 
-1. Click the small triangle in front of `_BedDetail`, then click one of the rows under it.
-2. Look at the **Retainers** panel at the bottom of the tab. It answers the question "who keeps
+1. Click the small triangle in front of `_BedDetail`, then click one of the rows under it. Ignore the link in that row: it shows where the object was created, not who keeps it.
+2. Look at the **Retainers** panel at the bottom of the tab; drag its top edge up to make it taller. It answers the question "who keeps
    this object in memory?". Read it from the top down.
-3. Find the first row with a link to a file of this application. Write down the file name and
-   the line number.
+3. In the Retainers panel, find the first row with a link to a file of this application (it is the second row). Write down the file name and the line number.
 
 ### Fix
 
@@ -177,12 +174,12 @@ two and compare them.
 ### Measure again
 
 1. In the Memory tab remove the old snapshots (the **Clear all profiles** icon).
-2. Repeat all seven steps of **Measure**. The table should be empty after step 6.
+2. Repeat all seven steps of **Measure**. The table should be empty after step 6: write 0.
 3. Open a bed and go back: the title of the tab should return to the nurse station.
 
 ### Compare
 
-Read the `✅ GOOD` version a few lines below your change.
+Read the `✅ GOOD` version a few lines below your change. Is yours the same?
 
 Question for your own application: which components call `subscribe` by hand?
 
@@ -195,7 +192,7 @@ while a screen stays open, and a monitoring screen stays open for a whole shift.
 
 What to look at:
 
-- In the **⚡ Perf** panel, the counter `vitals buffer · frames` goes up by one every second.
+- On the page of one bed, in the **⚡ Perf** panel (section **Gauges**, at the very bottom), the counter `vitals buffer · frames` goes up by one every second.
 - Two heap snapshots, 30 seconds apart, compared: 30 new readings arrived, and none was removed.
 - The method from exercise 2 (go in, go out, compare) finds nothing here. You have to stay on
   the screen and count.
