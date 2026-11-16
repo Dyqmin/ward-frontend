@@ -33,4 +33,16 @@
     flex-wrap: wrap;
     gap: 0.35rem;
   }
+
+  // The same width with "…" and with a value: chips do not re-wrap when trends arrive.
+  .chip {
+    min-width: 8rem;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pending {
+    font-size: 0.8rem;
+    font-weight: 400;
+  }
 }
