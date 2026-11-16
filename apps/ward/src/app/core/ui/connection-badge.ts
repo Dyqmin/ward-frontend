@@ -18,14 +18,14 @@ export class ConnectionBadge {
   });
 
   protected readonly text = computed(() => {
-    const since = this.since().toLocaleTimeString();
     switch (this.bus.state()) {
       case 'open':
         return 'Live';
       case 'connecting':
         return 'Reconnecting…';
       case 'closed':
-        return `Offline since ${since}`;
+        // formatted only here: the first Intl call is slow, and "Live" does not show a time
+        return `Offline since ${this.since().toLocaleTimeString()}`;
     }
   });
 }

@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 
 import { Clock } from '@core/clock';
 import {
+  ALL_BEDS,
   WARDS,
   bedsOf,
   isWardName,
@@ -18,6 +19,8 @@ import { AlarmActions } from '../ui/alarm-actions';
 import { BedTile } from '../ui/bed-tile';
 import { alarmsByBed, isUrgent } from '../ui/format';
 import { HrTrends } from '../trends/hr-trends';
+
+const TREND_BEDS = [...ALL_BEDS].sort((a, b) => a.localeCompare(b));
 
 /** The nurse station: every bed, live, with the alarms to act on. */
 @Component({
@@ -42,8 +45,24 @@ export default class NurseStation {
   protected readonly trends = toSignal(inject(HrTrends).trends$(), {
     initialValue: new Map<BedId, number>(),
   });
-  protected readonly trendList = computed(() =>
-    [...this.trends()].sort(([a], [b]) => a.localeCompare(b)),
+  /**
+   * One chip per bed from the first render, so the card has its final size before any trend
+   * arrives. Chips that appear one by one push the bed tiles down: a layout shift.
+   */
+  protected readonly trendList = computed(() => {
+    const trends = this.trends();
+    return TREND_BEDS.map((bed) => {
+      const t = trends.get(bed);
+      return {
+        bed,
+        text:
+          t === undefined ? '…' : `${t > 0 ? '+' : ''}${t.toFixed(1)}/min`,
+        warn: t !== undefined && (t > 2 || t < -2),
+      };
+    });
+  });
+  protected readonly calculating = computed(
+    () => this.trends().size < TREND_BEDS.length,
   );
 
   protected readonly bad = {
