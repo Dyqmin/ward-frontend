@@ -14,8 +14,21 @@ Set **Live buffer that only grows** to ❌ and open a bed. Then stay there.
 - **⚡ Perf gauge:** **vitals buffer · frames** goes 600 → 601 → 602… one per second, and never
   stops. With ✅ it stays at **600**.
 - **The screen looks fine.** The chart only draws the last 10 minutes, so nobody notices.
-- **Memory → Allocations on timeline** (record about 20 s): with ❌ the bars stay **blue**, meaning
-  every frame is still alive. With ✅ they turn grey, meaning old frames were freed.
+- **Memory → Heap snapshot**, wait 30 s, take a second one, then switch the second snapshot from
+  _Summary_ to **Comparison** and type `bed` into **Filter by class**. One row is left, the frames:
+  `{bed, ts, hr, spo2, rr}`.
+
+  |     | # New | # Deleted | # Delta |
+  | --- | ----- | --------- | ------- |
+  | ❌  | 30    | 0         | **+30** |
+  | ✅  | 30    | 30        | 0       |
+
+  With ✅ a frame leaves for every frame that arrives. With ❌ nothing ever leaves.
+
+- **Allocations on timeline does not help here.** In a short recording ❌ and ✅ look the same:
+  with ✅ every frame from the last 10 minutes is still alive too, so its bar is just as blue. A
+  buffer that grows while you stay is found by counting (the gauge, or two snapshots), not by a
+  20 s profile.
 
 ## Why
 
