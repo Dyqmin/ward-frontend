@@ -15,9 +15,15 @@ outage triggers the same burst when it ends).
 
 - **Performance panel:** a dense block of thin tasks for a second or more: a picket fence so dense
   it acts as a wall. Zoom in: every task is one message plus one render.
-- **⚡ Perf → Calculations/s:** `BedTile · frames applied` ≈ the number of messages.
+- **⚡ Perf → Calculations/s:** `BedTile · frames applied` ≈ the number of messages (≈ 3,000 vs
+  ≈ 150 with ✅). Read it at Stress ×1 with no CPU throttling: the burst is over in half a second.
 - **Template checks/s:** BedTile explodes for the duration of the burst.
 - With ✅: the same 3000 messages, at most one render per tile per display frame.
+- **To see it on the chart: Stress ×5, CPU ×4.** Now watch how long the burst takes, on the
+  `burst · messages delivered` gauge: ≈ 25 s with ❌, ≈ 5 s with ✅. The per-second counters look
+  alike here (≈ 900/s both), because with ❌ the thread is saturated: it cannot go any faster.
+- **`pnpm bench ws-burst --stress 5`:** TBT is the same for ❌ and ✅ (there is no long task), the
+  busy time is not. See [Comparing two approaches](19-compare.md).
 
 ## Why
 

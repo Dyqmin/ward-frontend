@@ -3,14 +3,20 @@
 //
 //   pnpm serve:prod                      (another terminal; production build!)
 //   pnpm bench main-thread               bad vs good of one topic
-//   pnpm bench ws-burst --runs 15 --cpu 4 --seconds 10
+//   pnpm bench ws-burst --stress 5 --runs 15 --cpu 4 --seconds 10
 //
-// Metric per run: long tasks during the window (PerformanceObserver 'longtask'):
-//   TBT = Σ (duration − 50 ms), the "blocking" part of every long task. Lower is better.
+// Two metrics per run, because the two shapes need different ones:
+//   TBT  = Σ (duration − 50 ms) of every long task (PerformanceObserver 'longtask'). It sees a WALL.
+//   busy = time the main thread spent running tasks in the window (CDP Performance.getMetrics,
+//          TaskDuration). It sees a PICKET FENCE too: thousands of 1 ms tasks are no long task, and
+//          TBT stays 0, but the thread is busy all the same.
+// Lower is better for both.
 // Uses YOUR installed Chrome (channel 'chrome'): no browser download.
 // Not a project dependency, so the lockfile stays as it is. Once: pnpm add -D playwright-core
 const { chromium } = await import('playwright-core').catch(() => {
-  console.error('Missing playwright-core. Run once: pnpm add -D playwright-core');
+  console.error(
+    'Missing playwright-core. Run once: pnpm add -D playwright-core',
+  );
   process.exit(1);
 });
 
@@ -23,11 +29,12 @@ const opt = (name, dflt) => {
 const RUNS = opt('runs', 10);
 const CPU = opt('cpu', 4);
 const SECONDS = opt('seconds', 10);
+const STRESS = opt('stress', 1);
 const BASE = process.env.BASE_URL ?? 'http://localhost:4200';
 
 if (!topic) {
   console.error(
-    'usage: pnpm bench <topic> [--runs 10] [--cpu 4] [--seconds 10]',
+    'usage: pnpm bench <topic> [--runs 10] [--cpu 4] [--seconds 10] [--stress 1]',
   );
   process.exit(1);
 }
@@ -46,7 +53,7 @@ async function run(browser, mode) {
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.addInitScript(
-    ([topic, mode, session]) => {
+    ([topic, mode, session, stress]) => {
       // signed in, mock broker, every topic ✅ except the one we compare
       sessionStorage.setItem('ward.session', JSON.stringify(session));
       sessionStorage.setItem('ward.mock', '1');
@@ -56,7 +63,7 @@ async function run(browser, mode) {
       modes[topic] = mode;
       localStorage.setItem(
         'wm.perf',
-        JSON.stringify({ modes, stress: 1, counters: false }),
+        JSON.stringify({ modes, stress, counters: false }),
       );
       // collect long tasks from the very start
       window.__long = [];
@@ -65,15 +72,21 @@ async function run(browser, mode) {
           window.__long.push({ start: e.startTime, dur: e.duration });
       }).observe({ type: 'longtask', buffered: true });
     },
-    [topic, mode, session],
+    [topic, mode, session, STRESS],
   );
   const cdp = await context.newCDPSession(page);
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: CPU });
+  await cdp.send('Performance.enable');
+  const taskSeconds = async () =>
+    (await cdp.send('Performance.getMetrics')).metrics.find(
+      (m) => m.name === 'TaskDuration',
+    ).value;
 
   await page.goto(`${BASE}/ward`);
   await page.waitForSelector('app-bed-tile');
   await page.waitForTimeout(3000); // warm-up: snapshots, first renders
   const from = await page.evaluate(() => performance.now());
+  const busyFrom = await taskSeconds();
   if (topic === 'ws-burst') {
     await page.evaluate(() =>
       document.querySelector('.toolbar .toggle')?.click(),
@@ -85,8 +98,10 @@ async function run(browser, mode) {
     (from) => window.__long.filter((t) => t.start >= from),
     from,
   );
+  const busy = (await taskSeconds()) - busyFrom;
   await context.close();
   return {
+    busy: busy * 1000,
     tbt: long.reduce((s, t) => s + Math.max(0, t.dur - 50), 0),
     count: long.length,
     max: Math.max(0, ...long.map((t) => t.dur)),
@@ -116,7 +131,7 @@ for (let i = 0; i < RUNS; i++) {
 await browser.close();
 
 console.log(
-  `\n\n${topic} · ${RUNS} runs each · CPU ×${CPU} · ${SECONDS} s window\n`,
+  `\n\n${topic} · ${RUNS} runs each · CPU ×${CPU} · stress ×${STRESS} · ${SECONDS} s window\n`,
 );
 console.table(
   Object.fromEntries(
@@ -127,6 +142,13 @@ console.table(
         'TBT p90 (ms)': Math.round(
           p(
             rs.map((r) => r.tbt),
+            0.9,
+          ),
+        ),
+        'busy median (ms)': Math.round(median(rs.map((r) => r.busy))),
+        'busy p90 (ms)': Math.round(
+          p(
+            rs.map((r) => r.busy),
             0.9,
           ),
         ),
