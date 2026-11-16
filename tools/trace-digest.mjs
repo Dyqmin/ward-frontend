@@ -22,13 +22,23 @@ const events = Array.isArray(json) ? json : json.traceEvents;
 const mains = events.filter(
   (e) => e.name === 'thread_name' && e.args?.name === 'CrRendererMain',
 );
+// A trace recorded with a reload also holds the renderer of the page that was there before, and
+// that one can have MORE events while doing almost no work. The page is where the task time is.
 const busiest = mains
   .map((m) => ({
     pid: m.pid,
     tid: m.tid,
-    n: events.filter((e) => e.pid === m.pid && e.tid === m.tid).length,
+    busy: events
+      .filter(
+        (e) =>
+          e.pid === m.pid &&
+          e.tid === m.tid &&
+          e.name === 'RunTask' &&
+          e.ph === 'X',
+      )
+      .reduce((s, e) => s + (e.dur ?? 0), 0),
   }))
-  .sort((a, b) => b.n - a.n)[0];
+  .sort((a, b) => b.busy - a.busy)[0];
 if (!busiest) throw new Error('No CrRendererMain thread in this trace');
 const onMain = (e) => e.pid === busiest.pid && e.tid === busiest.tid;
 const main = events.filter(onMain);
@@ -65,10 +75,17 @@ const kindOf = (name) =>
   Object.keys(KINDS).find((k) => KINDS[k].includes(name));
 
 // ── self time per function, from the CPU profile samples ─────────────────────
+// one profile per thread (a worker has its own, in the same process): keep the main thread's
+const mainProfiles = new Set(
+  events.filter((e) => e.name === 'Profile' && onMain(e)).map((e) => e.id),
+);
 const nodes = new Map();
 const self = new Map();
 for (const e of events.filter(
-  (e) => e.name === 'ProfileChunk' && e.pid === busiest.pid,
+  (e) =>
+    e.name === 'ProfileChunk' &&
+    e.pid === busiest.pid &&
+    mainProfiles.has(e.id),
 )) {
   const p = e.args?.data?.cpuProfile;
   for (const n of p?.nodes ?? []) nodes.set(n.id, n);
@@ -117,9 +134,7 @@ const forced = main.filter((e) => {
   const i = lastCallBefore(e.ts);
   return i >= 0 && maxEnd[i] > e.ts;
 });
-const gcs = events.filter(
-  (e) => e.pid === busiest.pid && KINDS.gc.includes(e.name) && e.dur,
-);
+const gcs = main.filter((e) => KINDS.gc.includes(e.name) && e.dur);
 const angular = new Map();
 for (const e of events) {
   const d = e.args?.data ?? e.args ?? {};
