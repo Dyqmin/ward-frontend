@@ -1,206 +1,212 @@
 # Exercises: measure, find, fix, measure again
 
-Four exercises, the same five steps every time:
+Two exercises you do yourself, and two demos you watch. The exercises follow the same five steps:
 
-1. **Measure** with the topic on ❌ and write the number down.
-2. **Find** the line of code the tool points at.
-3. **Fix** the ❌ branch in that file. Leave the topic on ❌. The ✅ branch is right next to it and
-   it is the answer: before you read it, write down in your own words what you will change.
+1. **Measure** with Chrome DevTools and write the number down.
+2. **Find** the line of code: DevTools gives you a link to it.
+3. **Fix** that code.
 4. **Measure again**, the same way. The number must move.
-5. **Compare** your fix with the ✅ branch.
+5. **Compare** your fix with the finished one in the same file.
 
 ## Setup
 
-- Run `pnpm start` (development build: class names stay readable).
-- Open `http://localhost:4200/ward?mock=0`. Type any name, leave the room code as it is, choose
-  role **Nurse**, tick **Use my private sandbox room (for the lab)** and click **Join ward**. The
-  header must show **Live** and **sandbox**, and no **MOCK** badge. You are now on the real
-  server, in a room of your own.
-- If the page says **Backend unreachable**, look at the address bar: the application must run on
-  port **4200**.
-- If the server is not available, everything below also works with in-memory data: open
-  `http://localhost:4200/ward?mock` instead (in every new tab).
-- Topics are switched in the **⚡ Perf** panel: the button is in the **bottom right** corner.
-  Switching a topic reloads the page. When a topic is on ❌ the button says **❌ bad on**.
-- The panel is taller than the window. The **Gauges** section is at the very bottom: scroll
-  inside the panel.
-- Open DevTools in a **separate window** (⋮ → Dock side → undock). Docked at the bottom, it hides
-  parts of the app's own panels.
-- All file paths below are inside `apps/ward/src/app/`.
+1. Run `pnpm start`. The application must run on port **4200**.
+2. Open `http://localhost:4200/ward`.
+3. Type any name. Leave the room code as it is. Choose the role **Nurse**. Tick **Use my private
+   sandbox room (for the lab)**. Click **Join ward**.
+4. Check the header: it must show **Live** and **sandbox**.
+5. Open Chrome DevTools in a **separate window**: the ⋮ menu of DevTools → **Dock side** → the
+   first icon (undock).
 
-**Before every exercise:** in the ⚡ Perf panel click **all ✅**, set **Stress** to **×1**, then
-switch only that exercise's topic to ❌.
+If the page says **Backend unreachable**, look at the address bar: the port must be 4200.
+
+All file paths below are inside `apps/ward/src/app/`.
+
+### How a problem is switched on
+
+Every problem in this application can be switched on and off.
+
+1. Click the **⚡ Perf** button in the **bottom right** corner of the page. A panel opens with a
+   list of problems. Each one has two buttons: **❌** (the problem is on) and **✅** (it is off).
+2. Click **❌** next to a problem. The page reloads. The button now says **⚡ Perf · ❌ bad on**.
+3. To switch everything off again, click **all ✅** at the top of the panel.
+
+In the code, both versions are next to each other: the ❌ version is marked `❌ BAD`, the finished
+one `✅ GOOD`. You will change the ❌ version. Do not read the ✅ version before step 5.
 
 Write your numbers here:
 
-| Exercise         | Metric                           | ❌ before | after your fix |
-| ---------------- | -------------------------------- | --------- | -------------- |
-| 1 · wall         | tasks with a red corner          |           |                |
-| 2 · burst        | seconds to deliver 3,000         |           |                |
-| 3 · leak         | `_BedDetail` # Delta             |           |                |
-| 4 · growing list | `{bed, …}` # Delta in about 30 s |           |                |
+| Exercise                | What you count                         | Before | After your fix |
+| ----------------------- | -------------------------------------- | ------ | -------------- |
+| 1 · a wall              | tasks with a red corner                |        |                |
+| 2 · a page never leaves | `_BedDetail` in the column **# Delta** |        |                |
 
 ---
 
-## 1 · A wall on the main thread
+## Exercise 1 · A wall on the main thread
 
-**Topic:** Heavy calculation on the main thread → ❌. **Page:** nurse station.
+The nurse station shows a heart-rate trend for every bed. Something about it makes the page
+freeze for a moment, again and again.
 
-**Measure**
+### Switch the problem on
 
-1. DevTools → **Performance**. Open the panel's settings (the gear icon in the panel's own
-   toolbar) and set **CPU throttling** to 4× slowdown. Keep DevTools open: throttling only works
-   while it is open.
-2. Click the round **Record** button (not "Record and reload"). Wait 5 seconds. Click **Stop**.
-3. In the **Main** track, count the tasks with a red corner. Skip the very first one: it is the
-   recording starting. That is your number.
-4. At the bottom of the panel open the **Bottom-up** tab and sort by **Self time**. Write down the
-   function at the top and its file and line. (It may be an unnamed function from the same file.)
+1. Click **⚡ Perf** → **all ✅**.
+2. In the list, find **Heavy calculation on the main thread** and click its **❌**.
+3. Stay on the nurse station (the first page, with all the beds).
 
-**Find**
+### Measure
 
-That file is `ward/trends/hr-trend.ts`: the calculation itself. Now open, in your editor,
-`ward/trends/hr-trends.ts` (with an **s**) and find the method `onMainThread()`. This is where
-the calculation is called, for every bed. The frames of all 18 beds are held back until a shared
-one-second tick, so all 18 calculations run together, in one task.
+1. In DevTools open the **Performance** tab.
+2. Click the gear icon in the toolbar of that tab and set **CPU throttling** to **4× slowdown**.
+   Your laptop is faster than the computer on the ward; this makes it comparable.
+3. Click the round **Record** button. Wait 5 seconds. Click **Stop**.
+4. Look at the row called **Main**. Each grey block at the top of it is one task: one piece of
+   work the page did without a break. A task with a **red corner** took longer than 50 ms, and
+   the page could not react to a click during that time.
+5. Count the tasks with a red corner. Skip the very first one (that is the recording starting).
+   Write the number down.
 
-**Fix**
+### Find
 
-A 3-minute trend barely changes in one second. Make each bed's stream pass a value on at most
-once every 10 seconds, before the trend is calculated. RxJS has an operator that emits the latest
-value on a fixed interval. `onMainThread()` has two `pipe` calls. Use the first one, directly
-after `snapshotThenStream(...)`. It already holds two operators, `sample` and `map`: add yours as
-the first one, before `sample`. Import it from `rxjs`.
+1. At the bottom of the Performance tab click **Bottom-up**.
+2. Click the column **Self time** so the largest number is at the top. This list answers the
+   question "which function used the most time?".
+3. Read the first row: the function name, and on the right a link with a file name and a line
+   number. Write them down.
+4. That file contains the calculation. It is called from another file: open
+   `ward/trends/hr-trends.ts` (with an **s**) in your editor and find the method
+   `onMainThread()`. Read the comment marked `❌ BAD` above it.
 
-**Measure again**
+### Fix
 
-1. Save. The page reloads. The trends show **Calculating…** for the first 10 seconds: that is
-   your fix working, not a bug.
-2. When the trends are back, record for **15 seconds**. Count the red corners again. You should
-   find 1 or 2 instead of about 15.
+A 3-minute trend does not change much in one second, but it is calculated every second.
 
-The trend now refreshes every 10 seconds instead of every second. Is that acceptable for a nurse?
+1. In `onMainThread()` find the first `.pipe(` — the one directly after
+   `snapshotThenStream(...)`. It holds two operators: `sample` and `map`.
+2. Add the RxJS operator `sampleTime` as the **first** operator in that `pipe`, before `sample`.
+   Give it 10 000 milliseconds.
+3. Add `sampleTime` to the import from `rxjs` at the top of the file.
+4. Save. The page reloads.
 
-**Compare:** switch the topic to ✅ and record once more. One of the **Worker** tracks now has
-activity once a second. Which approach changed less code? Which one keeps the trend fresh?
+### Measure again
 
----
+1. For the first 10 seconds the trends say **Calculating…**. That is your fix: the first value
+   now arrives after 10 seconds.
+2. When the trends are back, record for **15 seconds** and count the red corners again. You
+   should find 1 or 2 instead of about 15.
 
-## 2 · A burst of messages
+### Compare
 
-**Topic:** Message burst after reconnect → ❌. **Stress:** ×5 (the buttons are in the ⚡ Perf
-panel, under the topics). **Page:** nurse station.
+1. Click **⚡ Perf** and switch **Heavy calculation on the main thread** to **✅**.
+2. Record once more. Find the row that starts with **Worker** and has activity once a second.
+3. Read the method `inWorker()` in the same file.
 
-**Measure**
-
-1. Open the **⚡ Perf** panel, scroll to **Gauges** and find `burst · messages delivered`. It
-   shows 0. The panel refreshes once a second, so your result is exact to about a second.
-2. DevTools → Performance → **CPU throttling** 4× slowdown. Do not record. Keep DevTools open.
-3. Open **🛠 Dev** (bottom left), click **Burst 3000 msgs** and start a stopwatch.
-4. Stop it when the gauge reaches 3000. That is your number.
-
-The gauge does not go back to 0. Reload the page before you measure again.
-
-The burst is simulated in your browser: nothing is sent to the server, and nobody else sees it.
-For a moment the tiles show made-up values.
-
-**Find**
-
-Open `ward/ui/bed-tile.ts` and find the `vitals` resource. Read the ❌ branch: what happens to a
-tile for each message?
-
-**Fix**
-
-A tile can only show the latest frame. In the ❌ branch, let at most one frame per display frame
-through, and drop the rest. RxJS has an operator that waits for a period of time and then emits
-the latest value; use it with a period of 0 and the scheduler that runs on animation frames.
-
-**Measure again:** reload, then the same stopwatch. The burst should finish clearly faster.
-How many times faster depends on your machine: write down your own number.
-
-**Your own application:** which screens need **every** message, and which only the **latest**?
+Your fix was one line, but the trend is now up to 10 seconds old. The finished version moves the
+calculation to another thread: more code, but the trend stays fresh. Which one would you choose
+for a screen a nurse watches?
 
 ---
 
-## 3 · A page that never leaves
+## Demo · A burst of messages
 
-**Topic:** Forgotten subscribe() → ❌. **Page:** start on the nurse station.
+Watch the trainer. After a lost connection, a message broker delivers everything it queued:
+thousands of messages, one after another.
 
-**See it first**
+What to look at:
 
-Click a bed tile, wait for the page, then go back (the browser's Back button or **← Ward**).
-Look at the title of the browser tab: it still shows that bed's heart rate, and it keeps
-changing. Something from the page you left is still running.
+- The whole recording is one solid block: the page is busy from the first message to the last.
+- In **Bottom-up** the first rows are **Layout** and **Paint**. The time goes into drawing, not
+  into calculating.
+- A bed tile is drawn again for every message, although it can only show the latest value.
 
-**Measure**
-
-1. DevTools → **Memory** → **Heap snapshot** → **Take snapshot**.
-2. Open a bed and go back. Do this 5 times.
-3. Click the bin icon (**Collect garbage**).
-4. Take a second snapshot (the round record button, top left of the panel).
-5. Above the table of the second snapshot there is a dropdown that says **Summary**. Change it to
-   **Comparison**.
-6. Type `_BedDetail` into **Filter by class**. Write down **# Delta**.
-
-**Find**
-
-1. Expand the `_BedDetail` row and click one of the objects under it.
-2. Look at the **Retainers** panel at the bottom (not at the link in the row you clicked). Read
-   it from the top down: it is the chain of objects that keeps this page alive. Find the first
-   row with a link to a file of this application. Write down the file and line.
-
-**Fix**
-
-Open that line. A subscription is started there and never ended. Make it end when the component
-is destroyed: Angular's RxJS interop package has an operator for exactly this, and this file
-already imports it. The line has no `pipe` yet: add one before `subscribe`, with that operator
-in it.
-
-**Measure again**
-
-1. Save. The page reloads.
-2. In the Memory panel remove the old snapshots (the **Clear all profiles** icon).
-3. Repeat steps 1–6. The list should be empty. The tab title should stop changing after you
-   leave a bed.
-
-**Your own application:** which of your screens start a subscription by hand?
+Question for your own application: which screens need **every** message, and which only the
+**latest**?
 
 ---
 
-## 4 · A list that grows while you stay
+## Exercise 2 · A page that never leaves
 
-**Topic:** Live buffer that only grows → ❌. **Page:** a bed (click a tile and stay there).
+A nurse opens a bed, looks at it and goes back to the nurse station. The page of that bed should
+be gone from memory. Is it?
 
-**Measure**
+### Switch the problem on
 
-1. **⚡ Perf** panel → **Gauges** → `vitals buffer · frames`. Watch it for 10 seconds.
-2. DevTools → **Memory** → take a heap snapshot.
-3. Wait about 30 seconds. Take a second snapshot.
-4. Change **Summary** to **Comparison** and type `bed` into **Filter by class**.
-5. Write down **# New**, **# Deleted** and **# Delta** of the row `{bed, ts, hr, spo2, rr}`.
+1. Click **⚡ Perf** → **all ✅**.
+2. In the list, find **Forgotten subscribe()** and click its **❌**.
+3. Stay on the nurse station.
 
-**Find**
+### See it first
 
-Open `ward/bed-detail/snapshot-then-stream.ts` and find the function `keep`. Read the ❌ branch.
-The chart draws the last 10 minutes: 600 frames.
+1. Click a bed tile. Wait until the page of the bed is shown.
+2. Go back with the browser's Back button.
+3. Look at the title of the browser tab. It still shows the heart rate of that bed, and it keeps
+   changing. Something from the page you left is still running.
 
-**Fix**
+### Measure
 
-In the ❌ branch of `keep`, return only the last `VITALS_WINDOW` frames of the array.
+A heap snapshot is a list of everything the page keeps in memory at one moment. You will take
+two and compare them.
 
-**Measure again:** the gauge stays at 600. In the comparison, # New and # Deleted are equal.
+1. In DevTools open the **Memory** tab. Select **Heap snapshot** and click **Take snapshot**.
+2. In the application, open a bed and go back. Do this **5 times**.
+3. In the Memory tab click the bin icon (**Collect garbage**). It removes everything that is
+   really free, so what remains is kept by something.
+4. Take a second snapshot: the round button at the top left of the Memory tab.
+5. The second snapshot is shown. Above the table there is a dropdown that says **Summary**.
+   Change it to **Comparison**. The table now shows what changed between the two snapshots.
+6. Click **Filter by class** and type `_BedDetail`. That is the component of the bed page.
+7. Read the column **# Delta**: how many more of them exist now. Write the number down.
 
-**Think about it:** nothing was "forgotten" here. Leaving the page frees everything. The method
-from exercise 3 (go in, go out, compare) would find nothing. This problem only exists while the
-screen stays open, and a monitoring screen stays open for a whole shift.
+### Find
+
+1. Click the small triangle in front of `_BedDetail`, then click one of the rows under it.
+2. Look at the **Retainers** panel at the bottom of the tab. It answers the question "who keeps
+   this object in memory?". Read it from the top down.
+3. Find the first row with a link to a file of this application. Write down the file name and
+   the line number.
+
+### Fix
+
+1. Open that file at that line. A subscription is started there with `subscribe`, and nothing
+   ever ends it.
+2. Make the subscription end when the component is destroyed. Angular has an operator for this:
+   `takeUntilDestroyed`, from `@angular/core/rxjs-interop`. The file already imports it.
+3. The line has no `.pipe(` yet. Add one before `.subscribe(`, with `takeUntilDestroyed()` in it.
+4. Save. The page reloads.
+
+### Measure again
+
+1. In the Memory tab remove the old snapshots (the **Clear all profiles** icon).
+2. Repeat all seven steps of **Measure**. The table should be empty after step 6.
+3. Open a bed and go back: the title of the tab should return to the nurse station.
+
+### Compare
+
+Read the `✅ GOOD` version a few lines below your change.
+
+Question for your own application: which components call `subscribe` by hand?
+
+---
+
+## Demo · A list that grows while you stay
+
+Watch the trainer. This time nothing is left behind after leaving a page. The problem only exists
+while a screen stays open, and a monitoring screen stays open for a whole shift.
+
+What to look at:
+
+- In the **⚡ Perf** panel, the counter `vitals buffer · frames` goes up by one every second.
+- Two heap snapshots, 30 seconds apart, compared: 30 new readings arrived, and none was removed.
+- The method from exercise 2 (go in, go out, compare) finds nothing here. You have to stay on
+  the screen and count.
 
 ---
 
 ## Take this with you
 
-| You see                                    | Tool                                   | Usual cause                            | Fix                                       |
-| ------------------------------------------ | -------------------------------------- | -------------------------------------- | ----------------------------------------- |
-| The screen freezes for a moment, regularly | Performance → Bottom-up, Self time     | a heavy calculation per message        | less often, a cheaper algorithm, a worker |
-| The screen is slow after a reconnect       | a counter and a stopwatch              | one render per message                 | keep the latest value per display frame   |
-| Memory grows as you navigate               | Memory → Comparison → Retainers        | a subscription or listener never ended | end it with the component                 |
-| Memory grows while you stay on one screen  | a counter, or two snapshots 30 s apart | a list with no limit                   | keep only what the screen shows           |
+| You see                                    | Tool                               | Usual cause                            | Fix                                       |
+| ------------------------------------------ | ---------------------------------- | -------------------------------------- | ----------------------------------------- |
+| The screen freezes for a moment, regularly | Performance → Bottom-up, Self time | a heavy calculation per message        | less often, a cheaper algorithm, a worker |
+| The screen is slow after a reconnect       | Performance → Bottom-up            | one redraw per message                 | keep the latest value per display frame   |
+| Memory grows as you navigate               | Memory → Comparison → Retainers    | a subscription or listener never ended | end it with the component                 |
+| Memory grows while you stay on one screen  | two snapshots 30 seconds apart     | a list with no limit                   | keep only what the screen shows           |
